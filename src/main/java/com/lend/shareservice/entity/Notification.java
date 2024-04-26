@@ -1,6 +1,6 @@
 package com.lend.shareservice.entity;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.sql.Date;
 
 public class Notification {

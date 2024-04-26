@@ -1,11 +1,8 @@
 package com.lend.shareservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonTypeId;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.sql.Date;
 
 // 게시판
@@ -14,7 +11,7 @@ public class Board {
 
     // 글 번호 (ID)
     @NotNull
-    private Integer borad_id;
+    private Integer board_id;
 
     // 판매자 아이디 (FK)
     @NotNull
