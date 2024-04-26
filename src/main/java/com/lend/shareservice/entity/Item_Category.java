@@ -2,7 +2,7 @@ package com.lend.shareservice.entity;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 // 물건 카테고리
 @Data

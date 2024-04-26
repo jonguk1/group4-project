@@ -1,8 +1,8 @@
 package com.lend.shareservice.entity;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 // 경매
