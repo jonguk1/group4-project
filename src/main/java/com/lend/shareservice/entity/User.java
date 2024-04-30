@@ -53,5 +53,8 @@ public class User {
     @NotNull
     private String address;
 
+    // 정지 여부
+    @NotNull
+    private Boolean ban;
 
 }
