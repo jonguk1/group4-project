@@ -35,4 +35,9 @@ public class TestController {
     public String myInterest() {
         return "/jspp/myInterest";
     }
+
+    @GetMapping("/chatRoom")
+    public String newProj(){
+        return "/Chatting/chatRoom";
+    }
 }
