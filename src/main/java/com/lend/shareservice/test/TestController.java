@@ -10,4 +10,10 @@ public class TestController {
     public String test() {
         return "/test";
     }
+
+    @GetMapping("/chatRoom")
+    public String newProj(){
+        return "/chatRoom";
+    }
+
 }
