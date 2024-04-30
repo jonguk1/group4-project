@@ -55,4 +55,7 @@ public class Message {
     // 경도
     private Double longitude;
 
+    // 예약 날짜
+    private Date reservation;
+
 }
