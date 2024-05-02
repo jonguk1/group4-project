@@ -9,6 +9,10 @@ import java.sql.Date;
 @Data
 public class Board {
 
+    // 작성자 (FK)
+    @NotNull
+    private String writer;
+
     // 글 번호 (ID)
     @NotNull
     private Integer board_id;
