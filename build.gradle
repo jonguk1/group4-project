@@ -48,6 +48,8 @@ dependencies {
 	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	// 소켓
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
 tasks.named('test') {
