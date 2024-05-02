@@ -4,6 +4,8 @@ import lombok.Data;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 // 채팅방
 @Data
 public class Favorite {
@@ -14,9 +16,11 @@ public class Favorite {
 
     // 유저 아이디 (FK)
     @NotNull
-    private Integer user_id;
+    private String user_id;
 
     // 글번호 (FK)
     @NotNull
     private Integer board_id;
+
+    private List<Board> boards;
 }

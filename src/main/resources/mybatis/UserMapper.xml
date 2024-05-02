@@ -2,6 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lend.shareservice.domain.user.UserMapper">
 
+    <select id="userList" resultType="string">
+        select name from user;
+    </select>
 
-
+    <select id="getUserId" resultType="String" parameterType="String">
+        select user_id from user
+        <where>
+            user_id=#{value}
+        </where>
+    </select>
 </mapper>
