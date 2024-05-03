@@ -56,7 +56,7 @@ public class UserController {
 
 
 
-        return "jspp/login";
+        return "test";
     }
 
 }
