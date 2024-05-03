@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -148,14 +148,15 @@
                 					<label for="exampleInputEmail1">
                 						아이디
                 					</label>
-                					<input type="email" class="form-control" id="exampleInputEmail1" />
+                					<c:forEach var="user" items="${userList}">
+                					    <input type="email" class="form-control" id="exampleInputEmail1" value="${user}"/>
+                					</c:forEach>
                 				</div>
                 				<div class="form-group">
-
                 					<label for="exampleInputPassword1">
                 						이름
                 					</label>
-                					<input type="password" class="form-control" id="exampleInputPassword1" />
+                					<input type="password" class="form-control" id="exampleInputPassword1"/>
                 				</div>
                 				<div class="form-group">
 
