@@ -1,14 +1,16 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-     <link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
@@ -39,7 +41,7 @@
                                     <a class="nav-link" href="#" style="color: black;">알림</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: black;">로그아웃</a>
+                                    <a class="nav-link" href="#" style="color: black;">로그인</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#" style="color: black;">채팅</a>
@@ -100,7 +102,7 @@
 
    <div class="row">
        		<div class="col-md-2">
-       		</div>
+       		    </div>
        		<div class="col-md-8 text-center">
 
        		<span>
@@ -141,9 +143,10 @@
        		</div>
        		<div class="col-md-2">
        		</div>
+
        		<div class="col-md-4">
        		    <div class="form-group">
-
+                    <form name="signup" action="/user/signup" method="post" accept-charset-"utf-8">
                 					<label for="exampleInputEmail1">
                 						아이디
                 					</label>
@@ -151,7 +154,7 @@
                                 <div class="row">
                                     <div class="col-md-8 text start">
                                       <div class="form-group">
-                					<input type="user_id" class="form-control" id="user_id1" placeholder="아이디 입력(6~20자)" />
+                					<input type="user_id" name="user_id" class="form-control" id="user_id1" placeholder="아이디 입력(6~20자)" />
 
                                     </div>
                                     </div>
@@ -170,7 +173,7 @@
                 					<label for="exampleInputPassword1">
                 						비밀번호
                 					</label>
-                					<input type="password" class="form-control" id="exampleInputPassword1" />
+                					<input type="password" name="pw" class="form-control" id="exampleInputPassword1" />
                 				</div>
                 				<br>
                 				<div class="form-group">
@@ -187,7 +190,7 @@
                                 <label for="exampleInputName1">
                                     이름
                                 </label>
-                                <input type="text" class="form-control" id="exampleInputName1" />
+                                <input type="text" name="name"class="form-control" id="exampleInputName1" />
                             </div>
                             <br>
                             <div class="form-group">
@@ -195,7 +198,7 @@
                                     <label for="exampleInputPhone_number1">
                                         전화번호
                                     </label>
-                                    <input type="tel" class="form-control" id="exampleInputPhone_number1" />
+                                    <input type="tel" name="phone_number" class="form-control" id="exampleInputPhone_number1" />
                                 </div>
                                 <br>
 
@@ -208,7 +211,7 @@
                                 <div class="row">
                                     <div class="col-md-8 text-start">
                                         <div class="form-group">
-                                            <input type="input" class="form-control" id="myAroundHome" />
+                                            <input type="input"name="address" class="form-control" id="myAroundHome" />
                                         </div>
                                     </div>
                                     <div class="col-md-4 text-start">
@@ -225,7 +228,7 @@
                                 <div class="row">
                                     <div class="col text-center">
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-info btn-block" style="width: 60%;">
+                                            <button type="submit" value="회원가입" class="btn btn-info btn-block" style="width: 60%;">
                                                 가입완료
                                             </button>
                                         </div>
@@ -235,6 +238,7 @@
 
 
                 			</form>
+                			</form>
 
        		</div>
        		<div class="col-md-2">
@@ -242,6 +246,7 @@
        		<div class="col-md-2">
        		</div>
        	</div>
+
 
 
 </body>

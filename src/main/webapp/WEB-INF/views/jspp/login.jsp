@@ -37,7 +37,7 @@
                                     <a class="nav-link" href="#" style="color: black;">알림</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: black;">로그아웃</a>
+                                    <a class="nav-link" href="#" style="color: black;">로그인</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#" style="color: black;">채팅</a>
@@ -167,7 +167,7 @@
 
     <div class="col text-center">
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block" style="width: 100%;"> <!-- width: 100%;로 버튼을 가로로 확장 -->
+            <button type="submit" class="btn btn-primary btn-block" style="width: 100%;">
                 login
             </button>
         </div>
@@ -179,7 +179,7 @@
                                     <div class="col-md text-center">
                                         <div class="form-group">
 
-                                            <button type="submit" onclick="location.href='signup'"  class="btn btn-info" style="width: 100%;">
+                                            <button type="submit" onclick="location.href='user/signup'"  class="btn btn-info" style="width: 100%;">
 
 
                                             회원가입
