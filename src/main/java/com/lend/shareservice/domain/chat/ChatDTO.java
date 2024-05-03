@@ -12,7 +12,7 @@ public class ChatDTO {
         ENTER, TALK
     }
     private MessageType type; // 메세지 타입
-    private String  roomId; //채팅방번호
+    private String roomId; //채팅방 아이디 - 수정 예정
     private String sender; // 메시지 보낸 사람
     private String message; // 메시지
 }

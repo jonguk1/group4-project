@@ -29,8 +29,11 @@ public class ChatHandler extends TextWebSocketHandler {
         log.info("payload {}", payload);
         // TextMessage textMessage = new TextMessage("Welcome!!This is Chat Server");
         // session.sendMessage(textMessage);
+        // 웹소켓 클라이언트로부터 채팅 메세지를 전달받아 채팅 메시지 객체로 변환
         ChatDTO chatMessage = objectMapper.readValue(payload, ChatDTO.class);
+        //전달 받은 메세지에 담긴 채팅방 ID로 발송 대상 채팅방 정보를 조회함
         ChatRoomDTO room = chatService.findRoomById(chatMessage.getRoomId());
+        //해당 채팅방에 입장해있는 모든 클라이언트들(Websocket session)에게 타입에 따른 메세지 발송
         room.handleActions(session, chatMessage, chatService);
 
     }

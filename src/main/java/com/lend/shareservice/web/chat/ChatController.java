@@ -5,10 +5,7 @@ import com.lend.shareservice.domain.chat.ChatServiceImpl;
 import com.lend.shareservice.entity.Chatroom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,6 +16,7 @@ public class ChatController {
 
     private final ChatServiceImpl chatService;
 
+    @ResponseBody
     @PostMapping
     public ChatRoomDTO createRoom(@RequestParam String name){
         return chatService.createRoom(name);
