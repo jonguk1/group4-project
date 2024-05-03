@@ -25,21 +25,19 @@ public class FavoriteController {
     public String favoriteView(Model model, @PathVariable("userid") String userId,
                                @RequestParam(defaultValue = "1") int pageNum){
 
-        System.out.println(userId);
         userId=userService.getUserId(userId);
 
         if(pageNum<1){
             pageNum=1;
         }
         int totalCount=favoriteService.getFavoriteTotalCount();
-        System.out.println(totalCount);
         int oneRecordPage=4;
         int pageCount= (totalCount-1)/oneRecordPage+1;
         if(pageNum>pageCount) {
             pageNum = pageCount;
         }
 
-        int pagingBlock=4;
+        int pagingBlock=5;
         int prevBlock = (pageNum-1)/pagingBlock*pagingBlock;
         int nextBlock = prevBlock + (pagingBlock + 1);
 
@@ -48,14 +46,11 @@ public class FavoriteController {
 
         List<Favorite> favorites=favoriteService.favorites(limit,offset,userId);
 
-        System.out.println(favorites.size());
-
         model.addAttribute("favorites",favorites);
         model.addAttribute("totalCount",totalCount);
         model.addAttribute("pageCount",pageCount);
         model.addAttribute("userId",userId);
         model.addAttribute("oneRecordPage",oneRecordPage);
-
         model.addAttribute("prevBlock",prevBlock);
         model.addAttribute("nextBlock",nextBlock);
         model.addAttribute("pagingBlock",pagingBlock);
