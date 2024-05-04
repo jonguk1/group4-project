@@ -38,6 +38,7 @@ public class UserController {
     }
 
 
+
     //회원가입 페이지 출력
     @GetMapping("/user/signup")
     public String userSignupForm(){
@@ -60,3 +61,6 @@ public class UserController {
     }
 
 }
+
+}
+

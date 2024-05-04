@@ -16,7 +16,7 @@
 <body>
 
 <div class="container bg-green text-center">
-        <div class="row">
+    <div class="row">
             <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
                 <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
                     <a class="navbar-brand" href="#" style="color: black;">썸띵랜드</a>
@@ -24,7 +24,7 @@
             </div>
             <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
                 <form class="d-flex">
-                    <div class="input-group mt-3"> <!-- 여기에 mt-3 클래스 추가 -->
+                    <div class="input-group mt-3">
                         <input class="form-control me-2" type="search" placeholder="빌리고 싶은 물건을 입력하세요">
                         <button class="btn btn-secondary" type="submit">Search</button>
                     </div>
@@ -100,27 +100,27 @@
 
 
     <div class="row">
-           		<div class="col-md-2">
-           		</div>
-           		<div class="col-md-8 text-center">
-           			<h3>
-           				${userId}님의 관심 목록
-           			</h3>
-           		</div>
-           		<div class="col-md-2">
-           		</div>
-           	</div>
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8 text-center">
+           	<h3>
+           	    <c:out value="${userId}"/>님의 관심 목록
+           	</h3>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
 
-           	<br><br>
+    <br><br>
 
-    <div class="container-fluid">
+    <div class="container-fluid" style="margin-left:80px">
     	<div class="row">
-    		<div class="col-md-2">
+    		<div class="col-md-2" style="margin-right:30px">
     		    <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                여기 뭐 넣지?
+                                마이페이지
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
@@ -130,7 +130,8 @@
                                     <a href="#" class="list-group-item list-group-item-action">관심 목록</a>
                                     <a href="#" class="list-group-item list-group-item-action">빌려준 목록</a>
                                     <a href="#" class="list-group-item list-group-item-action">빌린 목록</a>
-                                    <a href="#" class="list-group-item list-group-item-action">채팅 목록</a>
+                                    <a href="#" class="list-group-item list-group-item-action">차단 목록</a>
+                                    <a href="#" class="list-group-item list-group-item-action">리뷰 목록</a>
                                     <a href="#" class="list-group-item list-group-item-action">내 경매 목록</a>
                                 </div>
                             </div>
@@ -138,7 +139,7 @@
                     </div>
                 </div>
     		</div>
-    		<div class="col-md-8">
+    		<div class="col-md-8 text-center">
     		    <c:choose>
                     <c:when test="${favorites eq null or empty favorites}">
                         <div class="col-md-8">
@@ -148,14 +149,16 @@
                     <c:otherwise>
                         <div class="row">
                             <c:forEach var="favorite" items="${favorites}" varStatus="status" begin="0" end="${oneRecordPage-3}">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="card">
                                         <h5 class="card-header">
                                             <c:out value="${favorite.boards[0].title}"/>
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
-                                                <img src="/images/${favorite.boards[0].item_image1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                <a href="board/${favorite.boards[0].board_id}">
+                                                    <img src="/images/${favorite.boards[0].item_image1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                </a>
                                             </p>
                                         </div>
                                         <div class="card-footer">
@@ -181,7 +184,10 @@
                                                     <span class="badge bg-success">대여후</span>
                                                 </c:when>
                                             </c:choose>
-                                            <p><fmt:formatNumber value="${favorite.boards[0].price}" pattern="#,###"/>원</p>
+                                            <p>
+                                                <c:out value="${favorite.boards[0].item_name}"/>
+                                                <fmt:formatNumber value="${favorite.boards[0].price}" pattern="#,###"/>원
+                                            </p>
                                             <span>관심 <c:out value="${favorite.boards[0].interestCnt}"/></span>
                                             <span>조회 <c:out value="${favorite.boards[0].hits}"/></span>
                                         </div>
@@ -190,16 +196,19 @@
                             </c:forEach>
                             <br>
                         </div>
+                        <br>
                         <div class="row">
                         <c:forEach var="favorite" items="${favorites}" varStatus="status" begin="${oneRecordPage-2}" end="${oneRecordPage}">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="card">
                                     <h5 class="card-header">
                                         <c:out value="${favorite.boards[0].title}"/>
                                     </h5>
                                     <div class="card-body">
                                         <p class="card-text">
-                                            <img src="/images/${favorite.boards[0].item_image1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                            <a href="board/${favorite.boards[0].board_id}">
+                                                <img src="/images/${favorite.boards[0].item_image1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                            </a>
                                         </p>
                                     </div>
                                     <div class="card-footer">
@@ -225,7 +234,10 @@
                                                 <span class="badge bg-success">대여후</span>
                                             </c:when>
                                         </c:choose>
-                                        <p><fmt:formatNumber value="${favorite.boards[0].price}" pattern="#,###"/>원</p>
+                                        <p>
+                                            <c:out value="${favorite.boards[0].item_name}"/>
+                                            <fmt:formatNumber value="${favorite.boards[0].price}" pattern="#,###"/>원
+                                        </p>
                                         <span>관심 <c:out value="${favorite.boards[0].interestCnt}"/></span>
                                         <span>조회 <c:out value="${favorite.boards[0].hits}"/></span>
                                     </div>
@@ -237,51 +249,54 @@
                     </c:otherwise>
                 </c:choose>
             </div>
-
     		<div class="col-md-2">
     		</div>
+        </div>
     		<br>
-            <div class="row">
-                    <div class="col-md-2">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-md-4">
-                            </div>
-                            <div class="col-md-4">
-                                <nav>
-                                    <ul class="pagination">
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">Previous</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">1</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">2</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">3</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">4</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">5</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">Next</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            <div class="col-md-4">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                    </div>
+        <div class="row">
+            <div class="col-md-4">
             </div>
-    	</div>
+            <br>
+            <div class="col-md-8">
+                <div class="row" style="margin-right:100px">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-4">
+                        <nav>
+                            <ul class="pagination pagination-lg">
+                                <c:if test="${prevBlock>0}">
+                                    <li class="page-item">
+                                        <a class="page-link" href="/favorite/${userId}?pageNum=${prevBlock}">Previous</a>
+                                    </li>
+                                </c:if>
+                                <c:forEach var="i" begin="${prevBlock+1}" end="${nextBlock-1}">
+                                        <c:if test="${i<=pageCount}">
+                                            <c:choose>
+                                                <c:when test="${param.pageNum eq i}">
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="/favorite/${userId}?pageNum=${i}">${i}</a>
+                                                    </li>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="/favorite/${userId}?pageNum=${i}">${i}</a>
+                                                    </li>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:if>
+                                </c:forEach>
+                                <c:if test="${nextBlock<=pageCount}">
+                                    <li class="page-item">
+                                        <a class="page-link" href="/favorite/${userId}?pageNum=${nextBlock}">Next</a>
+                                    </li>
+                                </c:if>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+    	        </div>
+            </div>
+        </div>
     </div>
 </body>

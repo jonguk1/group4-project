@@ -1,12 +1,35 @@
 package com.lend.shareservice.web.chat;
-
-import com.lend.shareservice.domain.chat.ChatService;
+// 채팅 컨트롤러 구현
+import com.lend.shareservice.domain.chat.ChatRoomDTO;
+import com.lend.shareservice.domain.chat.ChatServiceImpl;
+import com.lend.shareservice.entity.Chatroom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/chat")
 public class ChatController {
 
-    private final ChatService chatService;
+    private final ChatServiceImpl chatService;
+
+    @ResponseBody
+    @PostMapping
+    public ChatRoomDTO createRoom(@RequestParam String name){
+        return chatService.createRoom(name);
+    }
+
+    @GetMapping
+    public List<ChatRoomDTO> findAllRoom(){
+        return chatService.findAllRoom();
+    }
+
+    @GetMapping("/chatRoom")
+    public String chatRoom(){
+        return "/chat/chatRoom";
+    }
+
 }
