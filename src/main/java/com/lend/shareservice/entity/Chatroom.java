@@ -11,11 +11,11 @@ public class Chatroom {
 
     // 채팅방번호 (ID)
     @NotNull
-    private Integer chat_id;
+    private Integer chatId;
 
     // 글번호 (FK)
     @NotNull
-    private Integer writing_no;
+    private Integer writingNo;
 
     // 구매자 (FK)
     @NotNull
@@ -27,7 +27,7 @@ public class Chatroom {
 
     // 채팅방 생성일
     @NotNull
-    private Date chat_date;
+    private Date chatDate;
 
     // 위도
     private Double latitude;
@@ -36,7 +36,7 @@ public class Chatroom {
     private Double longtitude;
 
     // 예약날짜
-    private Date Reservation;
+    private Date ReservationDate;
 
 
 }
