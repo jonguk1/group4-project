@@ -10,14 +10,14 @@ public class Block {
 
     // 차단 번호 (Id)
     @NotNull
-    private Integer block_id;
+    private Integer blockId;
 
     // 차단한 사람 (FK)
     @NotNull
-    private String blocker;
+    private String blockUserId;
 
     // 차단당한 사람 (FK)
     @NotNull
-    private String blockedUser;
+    private String blockedUserId;
 
 }

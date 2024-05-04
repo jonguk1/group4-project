@@ -2,6 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lend.shareservice.domain.review.ReviewMapper">
 
+    <resultMap id="reviews" type="com.lend.shareservice.web.review.dto.ReviewDTO">
+    </resultMap>
 
+    <select id="receiveds" parameterType="map" resultMap="reviews">
+        select content,star,reviewer,reviewee
+        from review
+        <where>
+            reviewee=#{userId}
+        </where>
+        order by reviewId desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="receivedGetTotalCount" resultType="_int" parameterType="String">
+        select count(*) from review
+        <where>
+            reviewee=#{userId}
+        </where>
+    </select>
+
+    <select id="sents" parameterType="map" resultMap="reviews">
+        select content,star,reviewer,reviewee
+        from review
+        <where>
+            reviewer=#{userId}
+        </where>
+        order by reviewId desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="sentGetTotalCount" resultType="_int" parameterType="String">
+        select count(*) from review
+        <where>
+            reviewer=#{userId}
+        </where>
+    </select>
 
 </mapper>

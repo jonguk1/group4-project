@@ -104,7 +104,7 @@
            		</div>
            		<div class="col-md-8 text-center">
            			<h3>
-           				${userId}님의 관심 목록
+           				<c:out value="${userId}"/>님의 빌려준 목록
            			</h3>
            		</div>
            		<div class="col-md-2">
@@ -120,7 +120,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                여기 뭐 넣지?
+                                마이페이지
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
@@ -130,7 +130,6 @@
                                     <a href="#" class="list-group-item list-group-item-action">관심 목록</a>
                                     <a href="#" class="list-group-item list-group-item-action">빌려준 목록</a>
                                     <a href="#" class="list-group-item list-group-item-action">빌린 목록</a>
-                                    <a href="#" class="list-group-item list-group-item-action">채팅 목록</a>
                                     <a href="#" class="list-group-item list-group-item-action">내 경매 목록</a>
                                 </div>
                             </div>
@@ -138,16 +137,16 @@
                     </div>
                 </div>
     		</div>
-    		<div class="col-md-8">
-    		    <c:choose>
-                    <c:when test="${favorites eq null or empty favorites}">
-                        <div class="col-md-8">
-                            <h2>관심 등록한 내역이 없습니다<h2>
-                        </div>
-                    </c:when>
-                    <c:otherwise>
+    		<c:choose>
+    		    <c:when test="${favorites eq null or empty favorites}">
+    		        <div class="col-md-8">
+    		            등록한 관심 목록이 없습니다
+    		        </div>
+    		    </c:when>
+    		    <c:otherwise>
+    		        <div class="col-md-8">
                         <div class="row">
-                            <c:forEach var="favorite" items="${favorites}" varStatus="status" begin="0" end="${oneRecordPage-3}">
+                            <c:forEach var="favorite" items="${favorites}" varStatus="status" begin="0" end="${page.oneRecordPage-4}">
                                 <div class="col-md-4">
                                     <div class="card">
                                         <h5 class="card-header">
@@ -155,7 +154,7 @@
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
-                                                <img src="/images/${favorite.boards[0].item_image1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                <img src="/images/clean.jpeg" alt="대체_텍스트" style="width: 180px; height: 250px;">
                                             </p>
                                         </div>
                                         <div class="card-footer">
@@ -181,107 +180,103 @@
                                                     <span class="badge bg-success">대여후</span>
                                                 </c:when>
                                             </c:choose>
-                                            <p><fmt:formatNumber value="${favorite.boards[0].price}" pattern="#,###"/>원</p>
+                                            <p>
+                                                <c:out value="${favorite.boards[0].item_name}"/>
+                                                <fmt:formatNumber value="${favorite.boards[0].price}" pattern="#,###"/>원
+                                            </p>
                                             <span>관심 <c:out value="${favorite.boards[0].interestCnt}"/></span>
                                             <span>조회 <c:out value="${favorite.boards[0].hits}"/></span>
                                         </div>
                                     </div>
                                 </div>
                             </c:forEach>
-                            <br>
                         </div>
-                        <div class="row">
-                        <c:forEach var="favorite" items="${favorites}" varStatus="status" begin="${oneRecordPage-2}" end="${oneRecordPage}">
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <h5 class="card-header">
-                                        <c:out value="${favorite.boards[0].title}"/>
-                                    </h5>
-                                    <div class="card-body">
-                                        <p class="card-text">
-                                            <img src="/images/${favorite.boards[0].item_image1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
-                                        </p>
-                                    </div>
-                                    <div class="card-footer">
-                                        <c:choose>
-                                            <c:when test="${favorite.boards[0].isAuction eq 0}">
-                                                <p><span class="badge bg-danger">경매전</span>
-                                            </c:when>
-                                            <c:when test="${favorite.boards[0].isAuction eq 1}">
-                                                <p><span class="badge bg-danger">경매중</span>
-                                            </c:when>
-                                            <c:when test="${favorite.boards[0].isAuction eq 2}">
-                                                <p><span class="badge bg-danger">경매후</span>
-                                            </c:when>
-                                        </c:choose>
-                                        <c:choose>
-                                            <c:when test="${favorite.boards[0].isLend eq 0}">
-                                                <span class="badge bg-success">대여전</span>
-                                            </c:when>
-                                            <c:when test="${favorite.boards[0].isLend eq 1}">
-                                                <span class="badge bg-success">대여중</span>
-                                            </c:when>
-                                            <c:when test="${favorite.boards[0].isLend eq 2}">
-                                                <span class="badge bg-success">대여후</span>
-                                            </c:when>
-                                        </c:choose>
-                                        <p><fmt:formatNumber value="${favorite.boards[0].price}" pattern="#,###"/>원</p>
-                                        <span>관심 <c:out value="${favorite.boards[0].interestCnt}"/></span>
-                                        <span>조회 <c:out value="${favorite.boards[0].hits}"/></span>
-                                    </div>
-                                </div>
-                            </div>
-                           </c:forEach>
-                        <br>
                     </div>
-                    </c:otherwise>
-                </c:choose>
-            </div>
 
     		<div class="col-md-2">
     		</div>
-    		<br>
-            <div class="row">
-                    <div class="col-md-2">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-md-4">
-                            </div>
-                            <div class="col-md-4">
-                                <nav>
-                                    <ul class="pagination">
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">Previous</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">1</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">2</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">3</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">4</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">5</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">Next</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            <div class="col-md-4">
+    	</div>
+
+        <br>
+
+    	<div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <c:forEach var="favorite" items="${favorites}" varStatus="status" begin="${page.oneRecordPage-3}" end="${page.oneRecordPage}">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <h5 class="card-header">
+                                    <c:out value="${favorite.boards[0].title}"/>
+                                </h5>
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <img src="/images/${favorite.boards[0].item_image1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <c:choose>
+                                        <c:when test="${favorite.boards[0].isAuction eq 0}">
+                                            <p><span class="badge bg-danger">경매전</span>
+                                        </c:when>
+                                        <c:when test="${favorite.boards[0].isAuction eq 1}">
+                                            <p><span class="badge bg-danger">경매중</span>
+                                        </c:when>
+                                        <c:when test="${favorite.boards[0].isAuction eq 2}">
+                                            <p><span class="badge bg-danger">경매후</span>
+                                        </c:when>
+                                    </c:choose>
+                                    <c:choose>
+                                        <c:when test="${favorite.boards[0].isLend eq 0}">
+                                            <span class="badge bg-success">대여전</span>
+                                        </c:when>
+                                        <c:when test="${favorite.boards[0].isLend eq 1}">
+                                            <span class="badge bg-success">대여중</span>
+                                        </c:when>
+                                        <c:when test="${favorite.boards[0].isLend eq 2}">
+                                            <span class="badge bg-success">대여후</span>
+                                        </c:when>
+                                    </c:choose>
+                                    <p>
+                                        <c:out value="${favorite.boards[0].item_name}"/>
+                                        <fmt:formatNumber value="${favorite.boards[0].price}" pattern="#,###"/>원
+                                    </p>
+                                    <span>관심 <c:out value="${favorite.boards[0].interestCnt}"/></span>
+                                    <span>조회 <c:out value="${favorite.boards[0].hits}"/></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-2">
-                    </div>
+                    </c:forEach>
+                </div>
             </div>
-    	</div>
+            <div class="col-md-2">
+            </div>
+        </div>
+
+        	<br>
+
+            <div class="row">
+            		<div class="col-md-2">
+            		</div>
+            		<div class="col-md-8">
+            			<div class="row">
+            				<div class="col-md-4">
+            				</div>
+            				<div class="col-md-4">
+            					<nav>
+            						<c:out value="${pageNavi}" escapeXml="false"/>
+            					</nav>
+            				</div>
+            				<div class="col-md-4">
+            				</div>
+            			</div>
+            		</div>
+            		<div class="col-md-2">
+            		</div>
+            	</div>
+            </c:otherwise>
+        </c:choose>
     </div>
 </body>
+

@@ -10,7 +10,7 @@ public class User {
 
     // 아이디 (Id)
     @NotBlank
-    private String user_id;
+    private String userId;
 
     // 이름
     @NotBlank
@@ -23,7 +23,7 @@ public class User {
     // 전화번호
     @NotNull
     @Pattern(regexp="^\\d{3}-\\d{3,4}-\\d{4}$", message="올바른 전화번호 형식이 아닙니다.")
-    private String phone_number;
+    private String phoneNumber;
 
     // 포인트 (default = 0)
     @NotNull
