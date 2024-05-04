@@ -4,10 +4,15 @@ import com.lend.shareservice.domain.review.ReviewService;
 import com.lend.shareservice.domain.user.UserService;
 import com.lend.shareservice.entity.Favorite;
 import com.lend.shareservice.entity.Review;
+import com.lend.shareservice.web.favorite.dto.FavoriteDTO;
+import com.lend.shareservice.web.paging.dto.PagingDTO;
+import com.lend.shareservice.web.review.dto.ReviewDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -23,45 +28,37 @@ public class ReviewController {
 
 
     @GetMapping("/review/{userid}/received")
-    public String receivedReviewList(Model model, @PathVariable("userid") String userId,
+    public String receivedReviewList(Model model,
+                                     PagingDTO page,
+                                     @PathVariable("userid") String userId,
                                      @RequestParam(defaultValue = "1") int pageNum){
 
         userId=userService.getUserId(userId);
 
-        if(pageNum<1){
-            pageNum=1;
-        }
+        int totalCount= reviewService.receivedGetTotalCount(userId);
 
-        int totalCount=reviewService.receivedGetTotalCount(userId);
-        int oneRecordPage=4;
-        int pageCount= (totalCount-1)/oneRecordPage+1;
-        if(pageNum>pageCount) {
-            pageNum = pageCount;
-        }
+        page.setTotalCount(totalCount);
+        page.setOneRecordPage(6);
+        page.setPagingBlock(5);
 
-        int pagingBlock=5;
-        int prevBlock = (pageNum-1)/pagingBlock*pagingBlock;
-        int nextBlock = prevBlock + (pagingBlock + 1);
+        List<ReviewDTO> receiveds=reviewService.receiveds(page,userId);
 
-        int offset=(pageNum-1) * oneRecordPage;
-        int limit= oneRecordPage;
+        String loc ="/review/"+userId+"/received";
 
-        List<Review> receiveds=reviewService.receiveds(limit,offset,userId);
+        String pageNavi=page.getPageNavi(loc);
 
         model.addAttribute("receiveds",receiveds);
-        model.addAttribute("totalCount",totalCount);
-        model.addAttribute("pageCount",pageCount);
         model.addAttribute("userId",userId);
-        model.addAttribute("oneRecordPage",oneRecordPage);
-        model.addAttribute("prevBlock",prevBlock);
-        model.addAttribute("nextBlock",nextBlock);
-        model.addAttribute("pagingBlock",pagingBlock);
+        model.addAttribute("page",page);
+        model.addAttribute("pageNavi",pageNavi);
 
         return "jspp/myReceivedReview";
     }
 
     @GetMapping("/review/{userid}/sent")
-    public String sentReviewList(Model model, @PathVariable("userid") String userId,
+    public String sentReviewList(Model model,
+                                 PagingDTO page,
+                                 @PathVariable("userid") String userId,
                                      @RequestParam(defaultValue = "1") int pageNum){
 
         userId=userService.getUserId(userId);
@@ -71,29 +68,12 @@ public class ReviewController {
         }
 
         int totalCount=reviewService.sentGetTotalCount(userId);
-        int oneRecordPage=4;
-        int pageCount= (totalCount-1)/oneRecordPage+1;
-        if(pageNum>pageCount) {
-            pageNum = pageCount;
-        }
 
-        int pagingBlock=5;
-        int prevBlock = (pageNum-1)/pagingBlock*pagingBlock;
-        int nextBlock = prevBlock + (pagingBlock + 1);
-
-        int offset=(pageNum-1) * oneRecordPage;
-        int limit= oneRecordPage;
-
-        List<Review> sents=reviewService.sents(limit,offset,userId);
+        List<ReviewDTO> sents=reviewService.sents(page,userId);
 
         model.addAttribute("sents",sents);
-        model.addAttribute("totalCount",totalCount);
-        model.addAttribute("pageCount",pageCount);
         model.addAttribute("userId",userId);
-        model.addAttribute("oneRecordPage",oneRecordPage);
-        model.addAttribute("prevBlock",prevBlock);
-        model.addAttribute("nextBlock",nextBlock);
-        model.addAttribute("pagingBlock",pagingBlock);
+        model.addAttribute("page",page);
 
         return "jspp/mySentReview";
     }

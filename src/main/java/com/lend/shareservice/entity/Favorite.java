@@ -22,5 +22,4 @@ public class Favorite {
     @NotNull
     private Integer board_id;
 
-    private List<Board> boards;
 }
