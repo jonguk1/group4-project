@@ -13,7 +13,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
     <meta charset="UTF-8">
     <title>Title</title>
 
@@ -104,116 +104,4 @@
 
 <br><br>
 
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-12">
-			<div class="row">
-				<div class="col-md-2">
-				</div>
-				<div class="col-md-8 text-center">
-					<h3>
-						청소기
-					</h3>
-				</div>
-				<div class="col-md-2">
-				    <a href="/board/boardForm" class="btn btn-info">글쓰기</a>
-				</div>
-			</div>
-        </div>
-    </div>
-</div>
 
-<br><br><br><br>
-
-<div class="row">
-    <div class="col-md-2">
-    </div>
-    <div class="col-md-8">
-        <c:forEach var="post" items="${allPostsByCategorys}" varStatus="status">
-            <c:if test="${status.index % 3 == 0}">
-                <div class="row">
-            </c:if>
-            <div class="col-md-4">
-                <div class="card border-light mb-3" style="max-width: 20rem;">
-                    <h5 class="card-header">
-                        ${post.title}
-                    </h5>
-                    <div class="card-body">
-                        <p class="card-text">
-                            <a href="/board/${post.boardId}">
-                                <img src="images/clean.jpeg" alt="대체_텍스트" style="width: 180px; height: 250px;">
-                            </a>
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <p>
-                            <span class="badge bg-danger">경매중</span>
-                            <span class="badge bg-success">대여전</span>
-                            <span class="badge bg-warning">매너유저</span>
-                        </p>
-                        <p>${post.price} 원</p>
-                        <p>강원도 영월군 구포읍</p>
-                        <span>관심 ${post.interestCnt}</span>
-                        <span>채팅 42</span>
-                        <span>조회 ${post.hits}</span>
-                    </div>
-                </div>
-            </div>
-            <c:if test="${status.index % 3 == 2 or status.last}">
-                </div>
-            </c:if>
-        </c:forEach>
-
-    </div>
-    <div class="col-md-2">
-    </div>
-</div>
-</div>
-
-	<br>
-
-	</div>
-
-	<div class="row">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-8 d-flex justify-content-center">
-                    <button class="btn btn-lg btn-light" type="button" style="width: 100%;">더보기</button>
-                </div>
-                <div class="col-md-2">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<script>
-    $(document).ready(function() {
-
-        $.ajax({
-            url: "/board/board-category",
-            type: "GET",
-            dataType: "json",
-            success: function(response) {
-                console.log(response);
-
-                $.each(response, function(index, value) {
-                    $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                    $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                    $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>")
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error("요청 실패:", status, error);
-            }
-        });
-
-
-
-    });
-</script>
-
-
-</body>
-</html>

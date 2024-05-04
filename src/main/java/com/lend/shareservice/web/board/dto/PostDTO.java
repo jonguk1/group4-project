@@ -1,17 +1,12 @@
-package com.lend.shareservice.entity;
-
-import lombok.Data;
+package com.lend.shareservice.web.board.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Data;
+
 import java.sql.Date;
 
-// 게시판
 @Data
-public class Board {
-
-    // 작성자 (FK)
-    @NotNull
-    private String writer;
+public class PostDTO {
 
     // 글 번호 (ID)
     @NotNull
@@ -20,6 +15,10 @@ public class Board {
     // 글 카테고리 (FK)
     @NotNull
     private Integer boardCategoryId;
+
+    // 작성자 (FK)
+    @NotNull
+    private String writer;
 
     // 글 제목
     @NotEmpty
@@ -38,7 +37,7 @@ public class Board {
     // 판매 금액
     @PositiveOrZero
     @NotNull
-    private Integer price;
+    private String price;
 
     // 경매 마감 시간 (경매 가능인 글에서만 설정)
     @Future
@@ -100,39 +99,5 @@ public class Board {
     // 확성기 여부
     @NotNull
     private Boolean isMegaphone;
-
-
-    public String IsAuction(String isAuction) {
-
-        if (isAuction == null) {
-            return "";
-        }
-
-        if (isAuction.equals("0")) {
-            return "경매전";
-        } else if (isAuction.equals("1")) {
-            return "경매중";
-        } else {
-            return "경매완료";
-        }
-    }
-
-    public String IsLend(String isLend) {
-        if (isLend.equals("0")) {
-            return "대여전";
-        } else if (isLend.equals("1")) {
-            return "대여중";
-        }
-
-        return "반납 완료";
-    }
-
-    public String IsMegaphone(Boolean isMegaphone) {
-        if (isMegaphone) {
-            return "확성기";
-        }
-        return "";
-    }
-
 
 }

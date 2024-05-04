@@ -12,7 +12,7 @@ public class Review {
 
     // 리뷰 번호
     @NotNull
-    private Integer review_id;
+    private Integer reviewId;
 
     // 내용
     @NotBlank(message = "리뷰 내용을 입력해주세요")
