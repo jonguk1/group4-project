@@ -2,8 +2,9 @@ package com.lend.shareservice.web.favorite;
 
 import com.lend.shareservice.domain.favorite.FavoriteService;
 import com.lend.shareservice.domain.user.UserService;
-import com.lend.shareservice.entity.Favorite;
-import com.lend.shareservice.entity.User;
+import com.lend.shareservice.web.favorite.dto.FavoriteDTO;
+import com.lend.shareservice.web.paging.dto.PagingDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,38 +23,31 @@ public class FavoriteController {
     private final UserService userService;
 
     @GetMapping("/favorite/{userid}")
-    public String favoriteView(Model model, @PathVariable("userid") String userId,
+    public String favoriteView(Model model,
+                               PagingDTO page,
+                               @PathVariable("userid") String userId,
                                @RequestParam(defaultValue = "1") int pageNum){
 
         userId=userService.getUserId(userId);
 
-        if(pageNum<1){
-            pageNum=1;
-        }
-        int totalCount=favoriteService.getFavoriteTotalCount();
-        int oneRecordPage=4;
-        int pageCount= (totalCount-1)/oneRecordPage+1;
-        if(pageNum>pageCount) {
-            pageNum = pageCount;
-        }
+        int totalCount= favoriteService.getFavoriteTotalCount(page);
 
-        int pagingBlock=5;
-        int prevBlock = (pageNum-1)/pagingBlock*pagingBlock;
-        int nextBlock = prevBlock + (pagingBlock + 1);
+        page.setTotalCount(totalCount);
+        page.setOneRecordPage(6);
+        page.setPagingBlock(5);
 
-        int offset=(pageNum-1) * oneRecordPage;
-        int limit= oneRecordPage;
+        page.init();
 
-        List<Favorite> favorites=favoriteService.favorites(limit,offset,userId);
+        List<FavoriteDTO> favorites=favoriteService.favorites(page,userId);
+
+        String loc ="/favorite/"+userId;
+
+        String pageNavi=page.getPageNavi(loc);
 
         model.addAttribute("favorites",favorites);
-        model.addAttribute("totalCount",totalCount);
-        model.addAttribute("pageCount",pageCount);
         model.addAttribute("userId",userId);
-        model.addAttribute("oneRecordPage",oneRecordPage);
-        model.addAttribute("prevBlock",prevBlock);
-        model.addAttribute("nextBlock",nextBlock);
-        model.addAttribute("pagingBlock",pagingBlock);
+        model.addAttribute("page",page);
+        model.addAttribute("pageNavi",pageNavi);
 
         return "jspp/myInterest";
     }
