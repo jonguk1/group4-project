@@ -1,5 +1,6 @@
 package com.lend.shareservice.domain.board;
 
+import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.web.board.dto.*;
 import lombok.AllArgsConstructor;
@@ -9,14 +10,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Date;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,12 +26,24 @@ import java.util.UUID;
 public class BoardServiceImpl implements BoardService{
 
     private final BoardMapper boardMapper;
-
+    private final AddressService addressService;
     // 해당 상품 카테고리와 아이템 카테고리 글들 추출
+    @Value("${file-url}")
+    private String url;
+
+    @Value("${file-relative-url}")
+    private String relativeUrl;
     @Override
     public List<PostDTO> findAllPostsByCategorys(ItemAndBoardCategoryDTO itemAndBoardCategoryDTO) {
 
         List<Board> getBoard = boardMapper.selectAllPostsByCategorys(itemAndBoardCategoryDTO);
+
+        List<PostDTO> posts = getPostDTOS(getBoard);
+
+        return posts;
+    }
+
+    private List<PostDTO> getPostDTOS(List<Board> getBoard) {
         List<PostDTO> posts = new ArrayList<>();
         for (Board board : getBoard) {
 
@@ -43,26 +57,32 @@ public class BoardServiceImpl implements BoardService{
             postDTO.setRegDate(board.getRegDate());
             postDTO.setPrice(new DecimalFormat("#,###").format(board.getPrice()));
             postDTO.setDeadline(board.getDeadline());
-            postDTO.setIsAuction(board.getIsAuction());
-            postDTO.setIsLend(board.getIsLend());
+            postDTO.setIsAuction(board.IsAuction(board.getIsAuction()));
+            postDTO.setIsLend(board.IsLend(board.getIsLend()));
             postDTO.setHits(board.getHits());
             postDTO.setInterestCnt(board.getInterestCnt());
             postDTO.setLendDate(board.getLendDate());
             postDTO.setReturnDate(board.getReturnDate());
             postDTO.setItemName(board.getItemName());
-            postDTO.setItemImage1(board.getItemImage1());
-            postDTO.setItemImage2(board.getItemImage2());
-            postDTO.setItemImage3(board.getItemImage3());
+
+            if (board.getItemImage1() != null) {
+                postDTO.setImgSrc(relativeUrl + board.getItemImage1());
+            } else if (board.getItemImage2() != null) {
+                postDTO.setImgSrc(relativeUrl + board.getItemImage2());
+            } else if (board.getItemImage3() != null) {
+                postDTO.setImgSrc(relativeUrl +  board.getItemImage3());
+            }
+
             postDTO.setItemCategoryId(board.getItemCategoryId());
             postDTO.setLatitude(board.getLatitude());
             postDTO.setLongitude(board.getLongitude());
-            postDTO.setIsMegaphone(board.getIsMegaphone());
+            postDTO.setIsMegaphone(board.IsMegaphone(board.getIsMegaphone()));
+            postDTO.setAddress(addressService.getAddressFromLatLng(board.getLatitude(), board.getLongitude()));
+
             posts.add(postDTO);
         }
-
         return posts;
     }
-
 
     // 상품 카테고리 긁어오기
     @Override
@@ -71,32 +91,45 @@ public class BoardServiceImpl implements BoardService{
         return boardMapper.selectAllItemCategory();
     }
 
-    @Value("${file-url}")
-    private String url;
 
     // 글 저장
     @Override
     public void savePost(PostRegistrationDTO postRegistrationDTO) throws ParseException {
+
         log.info("url = {}", url);
         List<MultipartFile> fileInput = postRegistrationDTO.getFileInput();
 
         Board board = new Board();
 
         for (MultipartFile multipartFile : fileInput) {
+
             if (multipartFile.getOriginalFilename().isEmpty()) {
                 continue;
             }
+
             String fileUUID = UUID.randomUUID().toString();
             String originalFilename = multipartFile.getOriginalFilename();
             String[] split = originalFilename.split("\\.");
+
             String ext = split[1];
 
+            try {
+                byte[] bytes = multipartFile.getBytes();
+                String fileName = multipartFile.getOriginalFilename();
+                BufferedOutputStream stream = new BufferedOutputStream(
+                        new FileOutputStream(new File(url + fileUUID + "." + ext)));
+                stream.write(bytes);
+                stream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             if (board.getItemImage1() == null) {
-                board.setItemImage1(fileUUID + ext);
+                board.setItemImage1(fileUUID + "." + ext);
             } else if (board.getItemImage2() == null) {
-                board.setItemImage2(fileUUID + ext);
+                board.setItemImage2(fileUUID + "." + ext);
             } else if (board.getItemImage3() == null) {
-                board.setItemImage3(fileUUID + ext);
+                board.setItemImage3(fileUUID + "." + ext);
             }
         }
 
@@ -167,10 +200,18 @@ public class BoardServiceImpl implements BoardService{
         itemDetailDTO.setInterestCnt(board.getInterestCnt());
         itemDetailDTO.setHits(board.getHits());
         itemDetailDTO.setItemName(board.getItemName());
-        itemDetailDTO.setItemImage1(board.getItemImage1());
-        itemDetailDTO.setItemImage2(board.getItemImage2());
-        itemDetailDTO.setItemImage3(board.getItemImage3());
-        itemDetailDTO.setBoardCategory(board.getBoardCategoryId());
+        List<String> itemImages = new ArrayList<>();
+        if (board.getItemImage1() != null) {
+            itemImages.add(relativeUrl + board.getItemImage1());
+        }
+        if (board.getItemImage2() != null) {
+            itemImages.add(relativeUrl + board.getItemImage2());
+        }
+        if (board.getItemImage3() != null) {
+            itemImages.add(relativeUrl + board.getItemImage3());
+        }
+        itemDetailDTO.setItemImage(itemImages);
+        itemDetailDTO.setBoardCategoryId(board.getBoardCategoryId());
         itemDetailDTO.setItemCategoryId(board.getItemCategoryId());
         itemDetailDTO.setLatitude(board.getLatitude());
         itemDetailDTO.setLongitude(board.getLongitude());
@@ -178,4 +219,52 @@ public class BoardServiceImpl implements BoardService{
 
         return itemDetailDTO;
     }
+
+    @Override
+    public List<PostDTO> findPostsBySearchTerm(String searchTerm) {
+
+        List<Board> postDTOS = boardMapper.selectPostsBySearchTerm(searchTerm);
+        List<PostDTO> postDTOS1 = getPostDTOS(postDTOS);
+        return postDTOS1;
+    }
+
+    // 조회수 1 증가
+    public void incrementingViewCount(Integer boarId) {
+
+        boardMapper.incrementingViewCount(boarId);
+    }
+
+    // 인기글 찾기
+    public List<PostDTO> findHitPosts() {
+        List<Board> board = boardMapper.selectAllPostsInOrderOfHits();
+
+        List<PostDTO> postDTOInOrderOfHits = getPostDTOS(board);
+
+        return postDTOInOrderOfHits;
+    }
+
+    // 인기순으로 정렬
+    @Override
+    public List<PostDTO> sortForHits(List<PostDTO> postDTOS) {
+        return postDTOS.stream()
+                .sorted(Comparator.comparingInt(PostDTO::getHits).reversed())
+                .collect(Collectors.toList());
+    }
+
+    // 관심순으로 정렬
+    @Override
+    public List<PostDTO> sortForInterest(List<PostDTO> postDTOS) {
+        return postDTOS.stream()
+                .sorted(Comparator.comparingInt(PostDTO::getInterestCnt).reversed())
+                .collect(Collectors.toList());
+    }
+
+    // 가격 낮은순으로 정렬
+    @Override
+    public List<PostDTO> sortForLowPrice(List<PostDTO> postDTOS) throws ParseException {
+        return postDTOS.stream()
+                .sorted(Comparator.comparingDouble(dto -> Double.parseDouble(dto.getPrice().replace(",", ""))))
+                .collect(Collectors.toList());
+    }
+
 }

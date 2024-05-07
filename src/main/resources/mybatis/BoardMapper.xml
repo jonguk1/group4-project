@@ -21,9 +21,29 @@
     </select>
 
 
+    <!-- 해당 ID 글 조회   -->
     <select id="selectPostById" parameterType="Integer" resultType="com.lend.shareservice.entity.Board">
         SELECT * FROM Board
         WHERE boardId = #{value}
+    </select>
+
+    <!-- 상품명 검색어로 글들 조회   -->
+    <select id="selectPostsBySearchTerm" parameterType="String" resultType="com.lend.shareservice.entity.Board">
+        SELECT * FROM Board
+        WHERE itemName LIKE CONCAT('%', #{searchTerm}, '%')
+    </select>
+
+    <!-- 조회수 1증가   -->
+    <update id="incrementingViewCount" parameterType="Integer">
+        UPDATE Board
+        SET hits = hits + 1
+        WHERE boardId = #{boardId}
+    </update>
+
+    <!-- 인기순 글 조회   -->
+    <select id="selectAllPostsInOrderOfHits" resultType="com.lend.shareservice.entity.Board">
+        SELECT * FROM Board
+        ORDER BY hits DESC
     </select>
 
 </mapper>

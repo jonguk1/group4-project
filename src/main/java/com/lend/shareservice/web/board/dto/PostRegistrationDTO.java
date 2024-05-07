@@ -13,25 +13,23 @@ import java.util.List;
 public class PostRegistrationDTO {
 
     private Integer boardCategoryId;
+    private Integer itemCategoryId;
 
-    @NotBlank
-    @Size(max = 100, message = "글 내용 100자 초과")
+    @NotBlank(message = "글 제목을 입력해주세요")
+    @Size(max = 100, message = "글 제목 100자 초과")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "상품명을 입력해주세요")
     @Size(max = 100, message = "상품명 30자 초과")
     private String itemName;
 
-    @NotBlank
+    @NotBlank(message = "가격을 입력해주세요")
     private String price;
 
-    private Integer itemCategoryId;
-
-    @NotNull(message = "상품이미지를 최소 하나를 등록해야합니다.")
     private List<MultipartFile> fileInput;
 
-    @NotNull
-    @Size(max = 100, message = "글 내용 3000자 초과")
+    @NotBlank(message = "글 내용을 입력해주세요")
+    @Size(max = 3000, message = "글 내용 3000자 초과")
     private String content;
 
     private Boolean isMegaphone;
@@ -43,6 +41,11 @@ public class PostRegistrationDTO {
 
     @Future
     private LocalDate deadline;
+
+    @AssertTrue(message = "경매 날짜를 입력해주세요")
+    private boolean isDeadlineSetForAuctions() {
+        return !Boolean.TRUE.equals(isAuction) || deadline != null;
+    }
 
     @NotNull(message = "거래할 장소를 클릭해주세요")
     private Double latitude;

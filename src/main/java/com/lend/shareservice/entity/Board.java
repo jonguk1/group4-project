@@ -105,7 +105,7 @@ public class Board {
     public String IsAuction(String isAuction) {
 
         if (isAuction == null) {
-            return "";
+            return "경매 불가";
         }
 
         if (isAuction.equals("0")) {
@@ -113,7 +113,7 @@ public class Board {
         } else if (isAuction.equals("1")) {
             return "경매중";
         } else {
-            return "경매완료";
+            return "경매 불가";
         }
     }
 
@@ -124,12 +124,12 @@ public class Board {
             return "대여중";
         }
 
-        return "반납 완료";
+        return "대여 완료";
     }
 
     public String IsMegaphone(Boolean isMegaphone) {
         if (isMegaphone) {
-            return "확성기";
+            return "급구";
         }
         return "";
     }

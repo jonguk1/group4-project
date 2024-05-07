@@ -3,6 +3,7 @@ package com.lend.shareservice.web.board.dto;
 import lombok.Data;
 
 import java.sql.Date;
+import java.util.List;
 
 @Data
 public class ItemDetailDTO {
@@ -44,10 +45,8 @@ public class ItemDetailDTO {
     private Integer interestCnt;
     private Integer hits;
     private String itemName;
-    private String itemImage1;
-    private String itemImage2;
-    private String itemImage3;
-    private Integer boardCategory;
+    private List<String> itemImage;
+    private Integer boardCategoryId;
     private Integer itemCategoryId;
     private Double latitude;
     private Double longitude;

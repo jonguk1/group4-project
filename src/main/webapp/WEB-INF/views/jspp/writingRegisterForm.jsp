@@ -31,45 +31,49 @@
 </head>
 
 <body>
-<div class="container bg-green text-center">
-    <div class="row">
-        <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
-            <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
-                <a class="navbar-brand" href="#" style="color: black;">썸띵랜드</a>
-            </nav>
-        </div>
-        <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
-            <form class="d-flex">
-                <div class="input-group mt-3"> <!-- 여기에 mt-3 클래스 추가 -->
-                    <input class="form-control me-2" type="search" placeholder="빌리고 싶은 물건을 입력하세요">
-                    <button class="btn btn-secondary" type="submit">Search</button>
-                </div>
-            </form>
-        </div>
-        <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
-            <nav class="navbar navbar-expand-lg bg-green">
-                <div class="container-fluid">
-                    <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" style="color: black;">알림</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" style="color: black;">로그아웃</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" style="color: black;">채팅</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" style="color: black;">메시지</a>
-                            </li>
-                        </ul>
+ <body>
+            <div class="container bg-green text-center">
+                <div class="row">
+                    <div class="col" >
+                        <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
+                            <a href="/">
+                            <img src="/images/logo.png" style="height: 55px; width: 55px; margin-right: 8px;">
+                            </a>
+                            <a class="navbar-brand" href="/" style="color: black; font-size: 25px;">썸띵랜드</a>
+                        </nav>
+                    </div>
+                    <div class="col" >
+                        <form class="d-flex" method="get" action="/board/search">
+                            <div class="input-group mt-3">
+                                <input class="form-control me-2" type="search" name="searchTerm" id="searchTerm" placeholder="빌리고 싶은 물건을 입력하세요">
+                                <button class="btn btn-secondary" type="submit">상품명 검색</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col" >
+                        <nav class="navbar navbar-expand-lg bg-green">
+                            <div class="container-fluid">
+                                <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
+                                    <ul class="navbar-nav">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#" style="color: black;">알림</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#" style="color: black;">로그아웃</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#" style="color: black;">채팅</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#" style="color: black;">메시지</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
                     </div>
                 </div>
-            </nav>
-        </div>
-    </div>
-</div>
+            </div>
 
 <div class="container d-flex justify-content-center">
     <nav class="navbar navbar-expand-lg" data-bs-theme="light">
@@ -91,11 +95,9 @@
             <li class="nav-item dropdown text-center">
                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Separated link</a>
+                    <a class="dropdown-item" href="#">경매 현황</a>
+                    <a class="dropdown-item" href="#">마감 임박</a>
+
                 </div>
             </li>
         </ul>
@@ -128,18 +130,39 @@
 
                             <div>
                                 <label for="title" class="form-label mt-4">제목</label>
+                                <c:if test="${postRegistrationBindingResult.hasFieldErrors('title')}">
+                                    <div>
+                                        <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('title').defaultMessage}</span>
+                                    </div>
+                            </c:if>
                                 <input type="input" class="form-control" id="title" name="title" placeholder="글 제목" autocomplete="off">
+
 
                             </div>
                             <div>
                                 <label for="item_name" class="form-label mt-4">상품명</label>
-                                <input type="input" class="form-control" id="itemName" name="itemName" placeholder="상품명" autocomplete="off">
+                                <c:if test="${postRegistrationBindingResult.hasFieldErrors('itemName')}">
+                                    <div>
+                                        <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('itemName').defaultMessage}</span>
+                                    </div>
+                                </c:if>
+                                <input type="text" class="form-control" id="itemName" name="itemName"  placeholder="상품명" autocomplete="off">
                                 <small id="itemNameHelp" class="form-text text-muted">상품명을 정확하게 입력해주세요 (예시 : 선풍기)</small>
+
                             </div>
 
                             <div>
                                 <label for="price" class="form-label mt-4">희망 가격</label>
-                                <input type="input" class="form-control" id="price" name="price" oninput="formatPrice()" placeholder="희망 가격" autocomplete="off">
+                                <c:if test="${postRegistrationBindingResult.hasFieldErrors('price')}">
+                                    <div><span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('price').defaultMessage}</span></div>
+                                </c:if>
+                                <div class="input-group mb-3">
+
+                                <span class="input-group-text">$</span>
+                                <input type="input" class="form-control" id="price" name="price" aria-label="Amount (to the nearest dollar)" oninput="formatPrice()" placeholder="희망 가격" autocomplete="off">
+                                </div>
+
+
                             </div>
 
                             <div>
@@ -152,6 +175,11 @@
 
                             <div class="mb-3">
                                 <label for="fileInput1" class="form-label">상품 이미지1</label>
+                                <c:if test="${postRegistrationBindingResult.hasFieldErrors('fileInput')}">
+                                    <div>
+                                        <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('fileInput').defaultMessage}</span>
+                                    </div>
+                                </c:if>
                                 <input class="form-control" type="file" id="fileInput1" name="fileInput">
                             </div>
                             <div class="mb-3">
@@ -166,12 +194,18 @@
 
                             <div>
                                 <label for="exampleTextarea" class="form-label mt-4">자세한 설명</label>
+                                <c:if test="${postRegistrationBindingResult.hasFieldErrors('content')}">
+                                    <div><span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('content').defaultMessage}</span></div>
+                                </c:if>
                                 <textarea class="form-control" id="content" name="content" rows="10"></textarea>
                             </div>
 
                             <br>
 
                             <p>희망 거래 장소</p>
+                            <c:if test="${postRegistrationBindingResult.hasFieldErrors('latitude')}">
+                                <div><span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('latitude').defaultMessage}</span></div>
+                            </c:if>
                             <div id="map"></div>
                             <input type="hidden" id="latitude" name="latitude" >
                             <input type="hidden" id="longitude" name="longitude" >
@@ -204,6 +238,11 @@
                                 </div>
                                 <div class="col">
                                     <label for="deadline">경매 마감 날짜</label>
+                                    <c:if test="${postRegistrationBindingResult.hasFieldErrors('deadlineSetForAuctions')}">
+                                        <div>
+                                            <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('deadlineSetForAuctions').defaultMessage}</span>
+                                        </div>
+                                    </c:if>
                                     <input type="date" class="form-control" id="deadline" name="deadline">
                                 </div>
                             </div>
@@ -222,8 +261,6 @@
         </div>
     </div>
 </div>
-
-
 
 
     <script>
