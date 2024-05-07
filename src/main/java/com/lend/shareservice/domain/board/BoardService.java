@@ -15,4 +15,16 @@ public interface BoardService {
     List<PostDTO> findAllPostsByCategorys(ItemAndBoardCategoryDTO itemAndBoardCategoryDTO);
 
     ItemDetailDTO findPostById(Integer board_id);
+
+    List<PostDTO> findPostsBySearchTerm(String searchTerm);
+
+    void incrementingViewCount(Integer boarId);
+
+     List<PostDTO> findHitPosts();
+
+    List<PostDTO> sortForHits(List<PostDTO> postDTOS);
+
+    List<PostDTO> sortForInterest(List<PostDTO> postDTOS);
+
+    List<PostDTO> sortForLowPrice(List<PostDTO> postDTOS) throws ParseException;
 }

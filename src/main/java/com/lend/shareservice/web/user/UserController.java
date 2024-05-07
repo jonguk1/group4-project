@@ -52,15 +52,10 @@ public class UserController {
         System.out.println("userVo = " + userVo);
         userSignupService.joinUser(userVo);
 
-
-
-
-
-
         return "test";
     }
 
 }
 
-}
+
 
