@@ -17,7 +17,7 @@
     <select id="receivedGetTotalCount" resultType="_int" parameterType="String">
         select count(*) from review
         <where>
-            reviewee=#{userId}
+            reviewee=#{values}
         </where>
     </select>
 
@@ -33,7 +33,7 @@
     <select id="sentGetTotalCount" resultType="_int" parameterType="String">
         select count(*) from review
         <where>
-            reviewer=#{userId}
+            reviewer=#{values}
         </where>
     </select>
 

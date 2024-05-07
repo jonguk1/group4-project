@@ -168,6 +168,26 @@
                                 </div>
                             </c:forEach>
                         </div>
+                        <div class="row">
+                            <c:forEach var="received" items="${receiveds}" varStatus="status" begin="${page.oneRecordPage-3}" end="${page.oneRecordPage}">
+                                <div class="col-md-4">
+                                    <div class="card bg-light mb-3" style="max-width: 30rem;">
+                                      <div class="card-header">아이디:&nbsp&nbsp<c:out value="${received.reviewer}"/>님</div>
+                                      <div class="card-body">
+                                        <h4 class="card-title"><c:out value="${received.content}"/></h4>
+                                        <p class="card-text">
+                                            <c:forEach var="k" begin="0" end="${received.star-1}">
+                                                <i class="bi bi-star-fill" style="font-size:24px;"></i>
+                                            </c:forEach>
+                                            <c:forEach var="k" begin="${received.star}" end="4">
+                                                <i class="bi bi-star" style="font-size:24px;"></i>
+                                            </c:forEach>
+                                        </p>
+                                      </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
                     </div>
 
     		<div class="col-md-2">
@@ -175,37 +195,6 @@
     	</div>
 
         <br>
-
-    	<div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-8">
-                <div class="row">
-                    <c:forEach var="received" items="${receiveds}" varStatus="status" begin="${page.oneRecordPage-3}" end="${page.oneRecordPage}">
-                        <div class="col-md-4">
-                            <div class="card bg-light mb-3" style="max-width: 30rem;">
-                              <div class="card-header">아이디:&nbsp&nbsp<c:out value="${received.reviewer}"/>님</div>
-                              <div class="card-body">
-                                <h4 class="card-title"><c:out value="${received.content}"/></h4>
-                                <p class="card-text">
-                                    <c:forEach var="k" begin="0" end="${received.star-1}">
-                                        <i class="bi bi-star-fill" style="font-size:24px;"></i>
-                                    </c:forEach>
-                                    <c:forEach var="k" begin="${received.star}" end="4">
-                                        <i class="bi bi-star" style="font-size:24px;"></i>
-                                    </c:forEach>
-                                </p>
-                              </div>
-                            </div>
-                        </div>
-                    </c:forEach>
-                </div>
-            </div>
-            <div class="col-md-2">
-            </div>
-        </div>
-
-        	<br>
 
             <div class="row">
             		<div class="col-md-2">

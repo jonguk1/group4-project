@@ -22,6 +22,7 @@ public class ReviewServiceImpl implements ReviewService{
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
+        System.out.println(map);
         return reviewMapper.receiveds(map);
     }
 
