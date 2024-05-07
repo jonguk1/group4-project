@@ -2,6 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lend.shareservice.domain.user.UserMapper">
 
+    <resultMap id="MyLenderAndMyLendyMap" type="com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO">
+    </resultMap>
+
     <insert id="saveUser" parameterType="com.lend.shareservice.domain.user.vo.UserVo">
         INSERT INTO user
         (user_id, name, phone_number, pw, address)
@@ -18,4 +21,44 @@
             userId=#{value}
         </where>
     </select>
+
+    <select id="lenders" parameterType="map" resultMap="MyLenderAndMyLendyMap">
+        select
+        writer,title,content,price,isAuction,isLend,interestCnt,hits,
+        itemName,itemImage1
+        from chatroom c inner join board b
+        on c.boardId=b.boardId
+        <where>
+            c.lender= #{userId}
+        </where>
+        order by b.boardId desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="lendys" parameterType="map" resultMap="MyLenderAndMyLendyMap">
+        select
+        writer,title,content,price,isAuction,isLend,interestCnt,hits,
+        itemName,itemImage1
+        from chatroom c inner join board b
+        on c.boardId=b.boardId
+        <where>
+            c.lendy= #{userId}
+        </where>
+        order by b.boardId desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getLenderCount" resultType="_int" parameterType="String">
+        select count(*) from chatroom
+        <where>
+            lender=#{values}
+        </where>
+    </select>
+
+    <select id="getLendyCount" resultType="_int" parameterType="String">
+        select count(*) from chatroom
+        <where>
+            lendy=#{values}
+        </where>
+    </select>
+
+
 </mapper>
