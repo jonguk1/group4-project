@@ -13,7 +13,6 @@
 </head>
 
 <body>
-
 <div class="container bg-green text-center">
         <div class="row">
             <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
@@ -38,7 +37,7 @@
                                     <a class="nav-link" href="#" style="color: black;">알림</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: black;">로그아웃</a>
+                                    <a class="nav-link" href="#" style="color: black;">로그인</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#" style="color: black;">채팅</a>
@@ -97,15 +96,15 @@
 
    <br><br>
 
+
    <div class="row">
        		<div class="col-md-2">
        		</div>
        		<div class="col-md-8 text-center">
 
        		<span>
-       				<h3>Lee Jae Woong 님의 경매</h3>
+       				<h3>로그인</h3>
        		</span>
-
        		</div>
        		<div class="col-md-2">
        		</div>
@@ -113,73 +112,91 @@
 
        	<br><br>
 
-   <div class="row">
-   		<div class="col-md-2">
-            <div class="accordion" id="accordionExample">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            여기 뭐 넣지?
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
-                        <div class="accordion-body">
+   <div class="container-fluid">
+       	<div class="row">
+       		<div class="col-md-2">
+       		    <div class="accordion" id="accordionExample">
+                     <div class="accordion-item">
+                       <h2 class="accordion-header" id="headingOne">
+                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                           여기 뭐 넣지?
+                         </button>
+                       </h2>
+                       <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                         <div class="accordion-body">
                             <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action">내 정보</a>
-                                <a href="#" class="list-group-item list-group-item-action">관심 목록</a>
-                                <a href="#" class="list-group-item list-group-item-action">빌려준 목록</a>
-                                <a href="#" class="list-group-item list-group-item-action">빌린 목록</a>
-                                <a href="#" class="list-group-item list-group-item-action">채팅 목록</a>
-                                <a href="#" class="list-group-item list-group-item-action">내 경매 목록</a>
+                              <a href="#" class="list-group-item list-group-item-action">내 정보</a>
+                              <a href="#" class="list-group-item list-group-item-action">관심 목록</a>
+                              <a href="#" class="list-group-item list-group-item-action">빌려준 목록</a>
+                              <a href="#" class="list-group-item list-group-item-action">빌린 목록</a>
+                              <a href="#" class="list-group-item list-group-item-action">채팅 목록</a>
+                              <a href="#" class="list-group-item list-group-item-action">내 경매 목록</a>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                         </div>
+                       </div>
+                     </div>
+       		    </div>
+       		</div>
+       		<div class="col-md-2">
+       		</div>
+       		<div class="col-md-4">
+       		    <div class="form-group">
+
+                					<label for="exampleInputEmail1">
+                						아이디
+                					</label>
+                					<input type="text" class="form-control" id="userid1" />
+                				</div>
+                                <br>
+                				<div class="form-group">
+
+                					<label for="exampleInputPassword1">
+                						비밀번호
+                					</label>
+                					<input type="password" class="form-control" id="exampleInputPassword1" />
+                				</div>
+<br>
+<label for="remember-check">
+                <input type="checkbox" id="remember-check">아이디 저장하기
+            </label>
+
+                                <br>
+                                <br>
+
+                               <div class="row">
+
+    <div class="col text-center">
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block" style="width: 100%;">
+                login
+            </button>
         </div>
+    </div>
+</div>
+                                     <br>
+
+                                     <div class="row">
+                                    <div class="col-md text-center">
+                                        <div class="form-group">
+
+                                            <button type="submit" onclick="location.href='user/signup'"  class="btn btn-info" style="width: 100%;">
 
 
-   		<div class="col-md-8">
-            <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <h5 class="card-header">
-                            집에 굴러다니는 청..
-                        </h5>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <img src="images/clean.jpeg" alt="대체_텍스트" style="width: 180px; height: 100px;">
-                            </p>
-                        </div>
-                        <div class="card-footer">
-                            <p><span class="badge bg-danger">경매중</span>
-                            <span class="badge bg-success">대여전</span>
-                            <span class="badge bg-warning">매너유저</span></p>
-                            <p>2,500원</p>
-                            <p>강원도 영월군 구포읍</p>
-                            <span>관심 32</span>
-                            <span>채팅 41</span>
-                            <span>조회 312</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5">
+                                            회원가입
+                                            </button>
+                                        </div>
+                                    </div>
+</div>
 
 
-                    <h1>경매 마감 : 3일전</h1>
-                    <h1>현재 가격 : 2,000원</h1>
-                    <h1>상한가 : 3,500원</h1>
-                    <input type="text" placeholder="가격을 올려주세요"/ >
-                    <button type="button" class="btn btn-primary">가격 올리기</button>
-                </div>
-                <div class="col-md-2">
-                </div>
-            </div>
-        </div>
+                			</form>
 
-   		<div class="col-md-2">
-   		</div>
-   	</div>
+       		</div>
+       		<div class="col-md-2">
+                   		</div>
+       		<div class="col-md-2">
+       		</div>
+       	</div>
+
+
 </body>

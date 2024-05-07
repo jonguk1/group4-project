@@ -12,18 +12,18 @@ public class Message {
 
     // 메세지 번호 (ID)
     @NotNull
-    private Integer message_no;
+    private Integer messageId;
 
     // 채팅방번호 (FK)
     @NotNull
-    private Integer chat_id;
+    private Integer chatId;
 
     // 메세지 내용
     private String content;
 
     // 보낸 시간 (default = sysdate)
     @NotNull
-    private Date send_time;
+    private Date sendTime;
 
     // 확인 여부 (default = false)
     @NotNull
