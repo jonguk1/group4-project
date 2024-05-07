@@ -2,17 +2,25 @@ package com.lend.shareservice.domain.address;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+@Service
 public class AddressService {
 
-    public static String getAddressFromLatLng(double latitude, double longitude) {
-        String clientId = "k495h0yzln";
-        String clientSecret = "qg4NUZDPlCS6il7dN76afkJkmFwdORhkHWsyZ1OH";
+    @Value("${clientId}")
+    private String clientId;
+    @Value("${clientSecret}")
+    private String clientSecret;
+
+    public String getAddressFromLatLng(double latitude, double longitude) {
+
         try {
 
             String encodedClientId = URLEncoder.encode(clientId, "UTF-8");
@@ -33,7 +41,6 @@ public class AddressService {
                     response.append(inputLine);
                 }
                 in.close();
-
 
                 JSONObject jsonObject = new JSONObject(response.toString());
                 JSONArray results = jsonObject.getJSONArray("results");

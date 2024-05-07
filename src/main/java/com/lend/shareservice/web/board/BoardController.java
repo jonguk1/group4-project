@@ -1,5 +1,7 @@
 package com.lend.shareservice.web.board;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lend.shareservice.domain.board.BoardService;
 import com.lend.shareservice.web.board.dto.*;
 import jakarta.validation.Valid;
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,23 +26,32 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
 
-
+    private final ObjectMapper objectMapper;
     @GetMapping("/boardForm")
     public String test() {
 
         return "jspp/writingRegisterForm";
     }
 
+    // 글 등록 요청
     @PostMapping
     public String postRegister(@Valid @ModelAttribute PostRegistrationDTO postRegistrationDTO, BindingResult bindingResult, Model model) throws ParseException {
-        model.addAttribute("bindingResult", bindingResult);
+
+        if (postRegistrationDTO.getFileInput().get(0).getSize() == 0 &&
+                postRegistrationDTO.getFileInput().get(1).getSize() == 0 &&
+        postRegistrationDTO.getFileInput().get(2).getSize() == 0) {
+            bindingResult.rejectValue("fileInput", "error.fileInput", "상품 이미지를 최소 하나를 등록해야합니다.");
+        }
         if (bindingResult.hasErrors()) {
             log.info("bindingResult = {}", bindingResult);
+
+            model.addAttribute("postRegistrationBindingResult", bindingResult);
 
             return "jspp/writingRegisterForm";
         }
 
         boardService.savePost(postRegistrationDTO);
+
         return "redirect:/board/boardForm";
     }
 
@@ -54,17 +66,22 @@ public class BoardController {
         return ResponseEntity.ok(allItemCategory);
     }
 
+    // 글 카테고리 + 물건 카테고리에 해당하는 글들 응답 -> 메뉴에서 선택하면 나오는 글들
     @GetMapping()
     public String getPostsByCategory(Model model, @RequestParam("boardCategoryId") Integer boardCategoryId
-    , @RequestParam("itemCategoryId") Integer itemCategoryId) {
-
-        log.info("board_category_id = {}", boardCategoryId);
-        log.info("item_category_id = {}", itemCategoryId);
+            , @RequestParam("itemCategoryId") Integer itemCategoryId) {
 
         List<PostDTO> allPostsByCategorys = boardService.findAllPostsByCategorys(new ItemAndBoardCategoryDTO(itemCategoryId, boardCategoryId));
-        log.info("allPostByCategorys = {}", allPostsByCategorys);
 
-        model.addAttribute("allPostsByCategorys", allPostsByCategorys);
+        String allPostsByCategorysJson = null;
+        try {
+            allPostsByCategorysJson = objectMapper.writeValueAsString(allPostsByCategorys);
+        } catch (JsonProcessingException e) {
+
+        }
+
+        model.addAttribute("allPostsByCategorys", allPostsByCategorysJson);
+
         return "jspp/itemList";
     }
 
@@ -75,19 +92,90 @@ public class BoardController {
 
     @GetMapping("/itemDetail")
     public String itemDetail() {
+
+
         return "jspp/itemDetail";
     }
 
+
+    // 글의 사진을 클릭하면 나오는 글 상세
     @GetMapping("/{boardId}")
     public String boardDetail(@PathVariable("boardId") Integer boardId, Model model) {
 
         ItemDetailDTO postById = boardService.findPostById(boardId);
+        List<PostDTO> postsBySearchTerm = boardService.findPostsBySearchTerm(postById.getItemName());
+        List<PostDTO> hitPosts = boardService.findHitPosts();
+        // 조회수 1증가
+        boardService.incrementingViewCount(boardId);
 
-        log.info("postById = {}", postById);
         model.addAttribute("postById", postById);
+        model.addAttribute("postsBySearchTerm", postsBySearchTerm);
+        model.addAttribute("hitPosts", hitPosts);
         return "jspp/itemDetail";
     }
 
+    @GetMapping("/search")
+    public String postsBySearchTerm(Model model, @RequestParam("searchTerm") String searchTerm) {
 
+        List<PostDTO> postsBySearchTerm = boardService.findPostsBySearchTerm(searchTerm);
+        log.info("postsBySearchTerm = {}", postsBySearchTerm);
+
+        String allPostsByCategorysJson = null;
+        try {
+            allPostsByCategorysJson = objectMapper.writeValueAsString(postsBySearchTerm);
+        } catch (JsonProcessingException e) {
+
+        }
+        model.addAttribute("allPostsByCategorys", allPostsByCategorysJson);
+        return "jspp/itemList";
+    }
+
+    @PostMapping("/hits")
+    @ResponseBody
+    public ResponseEntity<String> postsByHits(@RequestBody List<PostDTO> postDTOS) {
+        log.info("haha = {}", postDTOS);
+        List<PostDTO> hitPosts = boardService.sortForHits(postDTOS);
+
+        String allPostsByCategorysJson = null;
+        try {
+            allPostsByCategorysJson = objectMapper.writeValueAsString(hitPosts);
+        } catch (JsonProcessingException e) {
+
+        }
+
+        return ResponseEntity.ok(allPostsByCategorysJson);
+    }
+
+    @PostMapping("/interest")
+    @ResponseBody
+    public ResponseEntity<String> postsByInterest(@RequestBody List<PostDTO> postDTOS) {
+        log.info("haha = {}", postDTOS);
+        List<PostDTO> interestPosts = boardService.sortForInterest(postDTOS);
+
+        String allPostsByCategorysJson = null;
+        try {
+            allPostsByCategorysJson = objectMapper.writeValueAsString(interestPosts);
+        } catch (JsonProcessingException e) {
+
+        }
+
+        return ResponseEntity.ok(allPostsByCategorysJson);
+    }
+
+    @PostMapping("/price")
+    @ResponseBody
+    public ResponseEntity<String> postsByLowPrice(@RequestBody List<PostDTO> postDTOS) throws ParseException {
+        log.info("haha = {}", postDTOS);
+        List<PostDTO> lowPricePosts = boardService.sortForLowPrice(postDTOS);
+
+        String allPostsByCategorysJson = null;
+        try {
+            allPostsByCategorysJson = objectMapper.writeValueAsString(lowPricePosts);
+        } catch (JsonProcessingException e) {
+
+        }
+
+        return ResponseEntity.ok(allPostsByCategorysJson);
+    }
 
 }
