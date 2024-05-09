@@ -51,5 +51,5 @@ public class ItemDetailDTO {
     private Double latitude;
     private Double longitude;
     private String isMegaphone;
-
+    private String address;
 }

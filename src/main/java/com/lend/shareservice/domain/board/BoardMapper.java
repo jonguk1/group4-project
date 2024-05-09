@@ -1,6 +1,7 @@
 package com.lend.shareservice.domain.board;
 
 import com.lend.shareservice.entity.Board;
+import com.lend.shareservice.entity.Favorite;
 import com.lend.shareservice.web.board.dto.ItemAndBoardCategoryDTO;
 import com.lend.shareservice.web.board.dto.ItemCategoryDTO;
 import com.lend.shareservice.web.board.dto.PostDTO;
@@ -23,5 +24,13 @@ public interface BoardMapper {
 
     void incrementingViewCount(Integer boardId);
 
-    List<Board> selectAllPostsInOrderOfHits();
+    List<Board> selectAllPostsInOrderOfInterest();
+
+    int insertFavorite(Favorite favorite);
+
+    int deleteFavorite(Favorite favorite);
+
+    int incrementInterest(Favorite favorite);
+
+    int decreaseInterest(Favorite favorite);
 }

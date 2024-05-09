@@ -26,6 +26,12 @@ public class PostRegistrationDTO {
     @NotBlank(message = "가격을 입력해주세요")
     private String price;
 
+    private String maxPrice;
+    @AssertTrue(message = "경매 최고가를 입력해주세요")
+    private boolean isMaxPriceSetForAuctions() {
+        return !Boolean.TRUE.equals(isAuction) || maxPrice != null && !maxPrice.isEmpty() && !maxPrice.isBlank();
+    }
+
     private List<MultipartFile> fileInput;
 
     @NotBlank(message = "글 내용을 입력해주세요")

@@ -37,5 +37,8 @@
         select count(*) from favorite
     </select>
 
-
+    <select id="selectByBoardIdAndUserId" parameterType="com.lend.shareservice.entity.Favorite" resultType="com.lend.shareservice.entity.Favorite">
+        SELECT * FROM FAVORITE
+        WHERE boardId = #{boardId} AND userId = #{userId}
+    </select>
 </mapper>
