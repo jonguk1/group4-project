@@ -46,24 +46,18 @@
                 obj.innerHTML += line;  //내용을 추가한다.
             }
         }
-
         let socket = null;
         let stompClient = null;
-
         function chat_connect(){
             socket = new SockJS("${pageContext.request.contextPath}/chat"); // end point => "/chat"
             stompClient = Stomp.over(socket); // 소켓을 이용하여 stomp 생성
             //stomp 이용해서 서버에 연결
             stompClient.connect({}, function(frame){
                 alert('연결됨: ' + frame);
-
             })
-
         }//chat_connect() end ----------------
-
     </script>
     <!------------------------------- script ----------------------------------->
-
 </head>
 <body>
     <div class="container-fluid">
@@ -75,7 +69,6 @@
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-2">
-
                                 <button type="button" class="btn btn-success">
                                     뒤로가기
                                 </button>
@@ -94,7 +87,6 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="dropdown">
-
                                             <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
                                                 대여전
                                             </button>
@@ -112,7 +104,6 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="btn-group btn-group-md" role="group">
-
                                     <button class="btn btn-secondary" type="button">
                                         신고
                                     </button>
@@ -122,14 +113,14 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- 채팅폼 들어갈예정 -->
-
                         <!-- 채팅폼 들어갈예정 -->
+                        <div class="alert alert-success my-4">
+                            <strong id="status">채팅을 연결후 사용하세요....</strong>
+                        </div>
                         <div class="row">
                             <div class="col-md-2">
                                 <div class="dropdown">
-
                                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                                         <img src="/images/plus.png"/>
                                     </a>
@@ -143,7 +134,7 @@
                             <div class="col-md-10">
                                 <div id="talk_view" class="talk_view"></div>
                                 <input type="text" class="talk_input" id="talk_input" placeholder="채팅을 입력해주세요" aria-label="Recipient's username" aria-describedby="button-addon2">
-                                <button class="btn btn-primary chatButton" id="connectBtn" OnClick="chat_connect()">연 결</button>
+                                <button class="btn btn-primary chatButton" OnClick="chat_connect()">연 결</button>
                                 <button class="btn btn-primary chatButton" id="talk_send" OnClick="sendTalk()">전 송</button>
                             </div>
                         </div>
