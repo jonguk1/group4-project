@@ -154,7 +154,7 @@
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
-                                                <img src="/images/clean.jpeg" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                <img src="/images/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
                                             </p>
                                         </div>
                                         <div class="card-footer">
@@ -181,7 +181,7 @@
                                                 </c:when>
                                             </c:choose>
                                             <p>
-                                                <c:out value="${favorite.boards[0].item_name}"/>
+                                                <c:out value="${favorite.boards[0].itemName}"/>
                                                 <fmt:formatNumber value="${favorite.boards[0].price}" pattern="#,###"/>원
                                             </p>
                                             <span>관심 <c:out value="${favorite.boards[0].interestCnt}"/></span>
@@ -212,7 +212,7 @@
                                 </h5>
                                 <div class="card-body">
                                     <p class="card-text">
-                                        <img src="/images/${favorite.boards[0].item_image1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                        <img src="/images/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
                                     </p>
                                 </div>
                                 <div class="card-footer">
@@ -239,7 +239,7 @@
                                         </c:when>
                                     </c:choose>
                                     <p>
-                                        <c:out value="${favorite.boards[0].item_name}"/>
+                                        <c:out value="${favorite.boards[0].itemName}"/>
                                         <fmt:formatNumber value="${favorite.boards[0].price}" pattern="#,###"/>원
                                     </p>
                                     <span>관심 <c:out value="${favorite.boards[0].interestCnt}"/></span>
