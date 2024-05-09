@@ -6,6 +6,8 @@ import com.lend.shareservice.web.favorite.dto.FavoriteDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
@@ -50,5 +53,20 @@ public class FavoriteController {
         model.addAttribute("pageNavi",pageNavi);
 
         return "jspp/myInterest";
+    }
+
+
+    // 유저 해당 글에 대한 관심 유무 체크
+    @GetMapping("/favorite/is/{boardId}")
+    public ResponseEntity<String> isFavorite(@PathVariable("boardId") Integer boardId) {
+
+        String userId = "hong";
+        boolean isFavorite = favoriteService.findFavoriteByBoardIdAndUserId(userId, boardId);
+
+        if (isFavorite) {
+            return ResponseEntity.ok("ok");
+        } else {
+            return ResponseEntity.ok("no");
+        }
     }
 }

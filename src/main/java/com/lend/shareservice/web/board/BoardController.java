@@ -2,11 +2,13 @@ package com.lend.shareservice.web.board;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.domain.board.BoardService;
 import com.lend.shareservice.web.board.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +27,7 @@ import java.util.List;
 @RequestMapping("/board")
 public class BoardController {
     private final BoardService boardService;
-
+    private final AddressService addressService;
     private final ObjectMapper objectMapper;
     @GetMapping("/boardForm")
     public String test() {
@@ -52,7 +54,7 @@ public class BoardController {
 
         boardService.savePost(postRegistrationDTO);
 
-        return "redirect:/board/boardForm";
+        return "redirect:/board?boardCategoryId=" +  postRegistrationDTO.getBoardCategoryId() + "&itemCategoryId=" + postRegistrationDTO.getItemCategoryId() ;
     }
 
 
@@ -103,14 +105,19 @@ public class BoardController {
     public String boardDetail(@PathVariable("boardId") Integer boardId, Model model) {
 
         ItemDetailDTO postById = boardService.findPostById(boardId);
+        postById.setAddress(addressService.getAddressFromLatLng(postById.getLatitude(), postById.getLongitude()));
         List<PostDTO> postsBySearchTerm = boardService.findPostsBySearchTerm(postById.getItemName());
-        List<PostDTO> hitPosts = boardService.findHitPosts();
+        List<PostDTO> interestPosts = boardService.findInterestPosts();
+
         // 조회수 1증가
         boardService.incrementingViewCount(boardId);
 
+
+        String userId = "hong";
         model.addAttribute("postById", postById);
         model.addAttribute("postsBySearchTerm", postsBySearchTerm);
-        model.addAttribute("hitPosts", hitPosts);
+        model.addAttribute("interestPosts", interestPosts);
+        model.addAttribute("userId", userId);
         return "jspp/itemDetail";
     }
 
@@ -178,4 +185,26 @@ public class BoardController {
         return ResponseEntity.ok(allPostsByCategorysJson);
     }
 
+
+    // 관심글 등록
+    @PostMapping("/{boardId}/favorite")
+    public ResponseEntity<String> registerInterestPost(@PathVariable("boardId") Integer boardId) {
+        String userId = "hong";
+        if (boardService.registerInterestPost(userId, boardId)) {
+            return ResponseEntity.ok("ok");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register interest.");
+        }
+    }
+
+    // 관심글 삭제
+    @DeleteMapping("/{boardId}/favorite")
+    public ResponseEntity<String> deleteInterestPost(@PathVariable("boardId") Integer boardId) {
+        String userId = "hong";
+        if (boardService.deleteInterestPost(userId, boardId)) {
+            return ResponseEntity.ok("ok");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register interest.");
+        }
+    }
 }

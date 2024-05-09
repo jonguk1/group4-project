@@ -199,9 +199,6 @@
                console.error("요청 실패:", status, error);
            }
        });
-
-
-
    });
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -333,20 +330,7 @@
                   var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
                   allPostsByCategorysScript.textContent = responseData;
 
-                  // 최신순과 클릭된 항목의 텍스트와 링크를 교환
-                  var dropdownToggle = document.getElementById('top');
-                  var dropdownItemText = dropdownToggle.textContent;
-                  var dropdownItemLink = dropdownToggle.getAttribute('href');
 
-                  var clickedItem = document.getElementById('low-price-link');
-                  var clickedItemText = clickedItem.textContent;
-                  var clickedItemLink = clickedItem.getAttribute('href');
-
-                  dropdownToggle.textContent = clickedItemText;
-                  dropdownToggle.setAttribute('href', clickedItemLink);
-
-                  clickedItem.textContent = dropdownItemText;
-                  clickedItem.setAttribute('href', dropdownItemLink);
                   start();
                }
            };
