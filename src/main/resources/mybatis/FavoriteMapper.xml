@@ -11,9 +11,9 @@
             <result property="board_id" column="boardId"/>
             <result property="content" column="content"/>
             <result property="title" column="title"/>
-            <result property="item_image1" column="itemImage1"/>
+            <result property="itemImage1" column="itemImage1"/>
             <result property="price" column="price"/>
-            <result property="item_name" column="itemName"/>
+            <result property="itemName" column="itemName"/>
             <result property="interestCnt" column="interestCnt"/>
             <result property="hits" column="hits"/>
             <result property="isAuction" column="isAuction"/>

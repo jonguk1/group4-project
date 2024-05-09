@@ -2,6 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lend.shareservice.domain.report.ReportMapper">
 
+    <resultMap type="com.lend.shareservice.web.report.dto.ReportDTO" id="reportMap">
+        <result property="userId" column="userId"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="regDate" column="regDate"/>
+        <result property="writerCnt" column="writerCnt"/>
+        <collection property="boards" javaType="java.util.ArrayList"
+                    ofType="com.lend.shareservice.entity.Board">
+            <result property="writer" column="writer"/>
+        </collection>
+    </resultMap>
 
+    <select id="reports" parameterType="map" resultMap="reportMap">
+        select count(*) as writerCnt,b.writer
+        from report r inner join board b
+        on r.boardId = b.boardId
+        group by b.writer
+        order by b.writer limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getReportCount" resultType="_int">
+        select count(a.writer)
+        from(
+        select count(*),b.writer
+        from report r inner join board b
+        on r.boardId = b.boardId
+        group by b.writer
+        ) as a
+    </select>
 
 </mapper>

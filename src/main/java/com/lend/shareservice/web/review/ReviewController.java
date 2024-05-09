@@ -41,6 +41,8 @@ public class ReviewController {
         page.setOneRecordPage(6);
         page.setPagingBlock(5);
 
+        page.init();
+
         List<ReviewDTO> receiveds=reviewService.receiveds(page,userId);
 
         String loc ="/review/"+userId+"/received";
@@ -63,17 +65,24 @@ public class ReviewController {
 
         userId=userService.getUserId(userId);
 
-        if(pageNum<1){
-            pageNum=1;
-        }
-
         int totalCount=reviewService.sentGetTotalCount(userId);
 
+        page.setTotalCount(totalCount);
+        page.setOneRecordPage(6);
+        page.setPagingBlock(5);
+
+        page.init();
+
         List<ReviewDTO> sents=reviewService.sents(page,userId);
+
+        String loc ="/review/"+userId+"/sent";
+
+        String pageNavi=page.getPageNavi(loc);
 
         model.addAttribute("sents",sents);
         model.addAttribute("userId",userId);
         model.addAttribute("page",page);
+        model.addAttribute("pageNavi",pageNavi);
 
         return "jspp/mySentReview";
     }
