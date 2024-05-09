@@ -686,7 +686,7 @@
                     $.ajax({
                       url: "../chat/chat2",
                       method: "GET",
-                      data : boardId2,
+                      
                       success:function(data){
                         alert("이게뭐지: "+data);
                       }
