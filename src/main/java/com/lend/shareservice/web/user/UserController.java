@@ -4,13 +4,17 @@ import com.lend.shareservice.domain.user.UserService;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.domain.user.service.UserSignupService;
 import com.lend.shareservice.entity.User;
+import com.lend.shareservice.web.paging.dto.PagingDTO;
+import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
 import lombok.AllArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.List;
@@ -37,7 +41,67 @@ public class UserController {
 
     }
 
+    @GetMapping("/user/{user_id}/lender")
+    public String lenderList(Model model,
+                             PagingDTO page,
+                             @PathVariable("user_id") String userId,
+                             @RequestParam(defaultValue = "1") int pageNum) {
 
+        userId=userService.getUserId(userId);
+
+        int totalCount = userService.getLenderCount(userId);
+
+        page.setTotalCount(totalCount);
+        page.setOneRecordPage(6);
+        page.setPagingBlock(5);
+
+        page.init();
+
+        List<MyLenderAndMyLendyDTO> lenders= userService.lenders(page,userId);
+
+        String loc ="/user/"+userId+"/lender";
+
+        String pageNavi=page.getPageNavi(loc);
+
+        model.addAttribute("lenders",lenders);
+        model.addAttribute("userId",userId);
+        model.addAttribute("page",page);
+        model.addAttribute("pageNavi",pageNavi);
+
+
+        return "jspp/myLender";
+    }
+
+    @GetMapping("/user/{user_id}/lendy")
+    public String lendyList(Model model,
+                             PagingDTO page,
+                             @PathVariable("user_id") String userId,
+                             @RequestParam(defaultValue = "1") int pageNum) {
+
+        userId=userService.getUserId(userId);
+
+        int totalCount = userService.getLendyCount(userId);
+
+        page.setTotalCount(totalCount);
+        page.setOneRecordPage(6);
+        page.setPagingBlock(5);
+
+        page.init();
+
+        List<MyLenderAndMyLendyDTO> lendys= userService.lendys(page,userId);
+
+        String loc ="/user/"+userId+"/lendy";
+
+        String pageNavi=page.getPageNavi(loc);
+
+        model.addAttribute("lendys",lendys);
+        model.addAttribute("userId",userId);
+        model.addAttribute("page",page);
+        model.addAttribute("pageNavi",pageNavi);
+
+
+        return "jspp/myLendy";
+    }
 
     //회원가입 페이지 출력
     @GetMapping("/user/signup")
@@ -56,6 +120,4 @@ public class UserController {
     }
 
 }
-
-
 

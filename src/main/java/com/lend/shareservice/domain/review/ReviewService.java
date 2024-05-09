@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface ReviewService {
 
-    public List<ReviewDTO> receiveds(PagingDTO page, String userId);
+    List<ReviewDTO> receiveds(PagingDTO page, String userId);
 
-    public List<ReviewDTO> sents(PagingDTO page,String userId);
+    List<ReviewDTO> sents(PagingDTO page,String userId);
 
-    public int receivedGetTotalCount(String userId);
+    int receivedGetTotalCount(String userId);
 
-    public int sentGetTotalCount(String userId);
+    int sentGetTotalCount(String userId);
 
 }
