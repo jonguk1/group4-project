@@ -27,4 +27,10 @@ public interface BoardMapper {
     List<Board> selectAllPostsInOrderOfInterest();
 
     int insertFavorite(Favorite favorite);
+
+    int deleteFavorite(Favorite favorite);
+
+    int incrementInterest(Favorite favorite);
+
+    int decreaseInterest(Favorite favorite);
 }

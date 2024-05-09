@@ -52,4 +52,20 @@
         VALUES (#{userId}, #{boardId})
     </insert>
 
+    <delete id="deleteFavorite" parameterType="com.lend.shareservice.entity.Favorite">
+        DELETE FROM FAVORITE
+        WHERE boardId = #{boardId} AND userId = #{userId}
+    </delete>
+
+    <update id="incrementInterest" parameterType="com.lend.shareservice.entity.Favorite">
+        UPDATE BOARD
+        SET interestCnt = interestCnt + 1
+        WHERE boardId = #{boardId}
+    </update>
+
+    <update id="decreaseInterest" parameterType="com.lend.shareservice.entity.Favorite">
+        UPDATE BOARD
+        SET interestCnt = interestCnt - 1
+        WHERE boardId = #{boardId}
+    </update>
 </mapper>

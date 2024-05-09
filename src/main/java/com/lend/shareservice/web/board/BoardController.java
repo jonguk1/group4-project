@@ -190,7 +190,18 @@ public class BoardController {
     @PostMapping("/{boardId}/favorite")
     public ResponseEntity<String> registerInterestPost(@PathVariable("boardId") Integer boardId) {
         String userId = "hong";
-        if (boardService.registerInterestPost(userId, boardId) > 0) {
+        if (boardService.registerInterestPost(userId, boardId)) {
+            return ResponseEntity.ok("ok");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register interest.");
+        }
+    }
+
+    // 관심글 삭제
+    @DeleteMapping("/{boardId}/favorite")
+    public ResponseEntity<String> deleteInterestPost(@PathVariable("boardId") Integer boardId) {
+        String userId = "hong";
+        if (boardService.deleteInterestPost(userId, boardId)) {
             return ResponseEntity.ok("ok");
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register interest.");

@@ -739,7 +739,7 @@
 
                     eventSource.addEventListener('sse', event => {
                         console.log(event);
-                        alert(event.data);
+
                     });
 
                      var userId = document.getElementById("userId").value;
@@ -750,8 +750,6 @@
                         boardId: boardIdMatch ? boardIdMatch[1] : null,
                      };
 
-                     alert(userId);
-                     alert(boardId.boardId);
                      $.ajax({
                          url: "/favorite/is/" + boardId.boardId,
                          type: "GET",
@@ -843,19 +841,42 @@
                       });
                   });
 
+                   var dataString = document.getElementById("postById").textContent;
+                   var boardIdMatch = dataString.match(/boardId=([^,]+)/);
+
+                   var boardId = {
+                       boardId: boardIdMatch ? boardIdMatch[1] : null,
+
+                   };
                    document.getElementById('interestButton').addEventListener('click', function(event) {
                        var buttonText = document.getElementById('interestButton').textContent;
                        if (buttonText == '관심') {
                            // ajax 요청 보내서 관심 등록 후 버튼을 관심 취소로 바꾸기
                            // 요청 성공 시
-                           var button = document.getElementById('interestButton');
-                           button.textContent = '관심 취소';
+                           $.ajax({
+                               url: '/board/' + boardId.boardId + '/favorite',
+                               type: 'POST',
+                               success: function(response) {
+                                    var button = document.getElementById('interestButton');
+                                    button.textContent = '관심 해제';
 
-                       } else if (buttonText == '관심 취소') {
+                               }
+
+                           });
+
+                       } else if (buttonText == '관심 해제') {
                            // ajax 요청 보내서 관심 취소 후 버튼을 관심으로 바꾸기
 
-                           var button = document.getElementById('interestButton');
-                           button.textContent = '관심';
+                           $.ajax({
+                               url: '/board/' + boardId.boardId + '/favorite',
+                               type: 'DELETE',
+                               success: function(response) {
+                                    var button = document.getElementById('interestButton');
+                                    button.textContent = '관심';
+
+                               }
+
+                           });
                        }
 
                    })

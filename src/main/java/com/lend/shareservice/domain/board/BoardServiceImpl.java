@@ -270,11 +270,28 @@ public class BoardServiceImpl implements BoardService{
 
     // 관심글 등록
     @Override
-    public int registerInterestPost(String userId, Integer boardId) {
+    public boolean registerInterestPost(String userId, Integer boardId) {
         Favorite favorite = new Favorite();
         favorite.setBoardId(boardId);
         favorite.setUserId(userId);
         log.info("haha");
-        return boardMapper.insertFavorite(favorite);
+        if (boardMapper.insertFavorite(favorite) > 0 && boardMapper.incrementInterest(favorite) > 0) {
+            return true;
+        }
+        return false;
     }
+
+    @Override
+    public boolean deleteInterestPost(String userId, Integer boardId) {
+        Favorite favorite = new Favorite();
+        favorite.setBoardId(boardId);
+        favorite.setUserId(userId);
+        if (boardMapper.deleteFavorite(favorite) > 0 && boardMapper.decreaseInterest(favorite) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+
 }

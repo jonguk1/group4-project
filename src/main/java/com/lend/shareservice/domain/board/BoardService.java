@@ -28,5 +28,9 @@ public interface BoardService {
 
     List<PostDTO> sortForLowPrice(List<PostDTO> postDTOS) throws ParseException;
 
-    int registerInterestPost(String userId, Integer boardId);
+    boolean registerInterestPost(String userId, Integer boardId);
+
+    boolean deleteInterestPost(String userId, Integer boardId);
+
+
 }
