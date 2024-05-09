@@ -1,5 +1,6 @@
 package com.lend.shareservice.domain.user;
 
+import com.lend.shareservice.entity.Block;
 import com.lend.shareservice.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,10 @@ public class UserServiceImpl implements UserService{
         return userMapper.getUserId(userId);
     }
 
-
-
+    @Override
+    public int blockUser(String userId) {
+        Block block = new Block();
+        block.setBlockedUserId(userId);
+        return userMapper.blockUser(block);
+    }
 }

@@ -2,6 +2,7 @@ package com.lend.shareservice.domain.board;
 
 import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.entity.Board;
+import com.lend.shareservice.entity.Favorite;
 import com.lend.shareservice.web.board.dto.*;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -96,7 +97,6 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public void savePost(PostRegistrationDTO postRegistrationDTO) throws ParseException {
 
-        log.info("url = {}", url);
         List<MultipartFile> fileInput = postRegistrationDTO.getFileInput();
 
         Board board = new Board();
@@ -138,6 +138,7 @@ public class BoardServiceImpl implements BoardService{
         board.setBoardCategoryId(postRegistrationDTO.getBoardCategoryId());
         board.setTitle(postRegistrationDTO.getTitle());
         board.setPrice(Integer.valueOf(NumberFormat.getInstance(Locale.KOREA).parse(postRegistrationDTO.getPrice()).intValue()));
+        board.setMaxPrice(Integer.valueOf(NumberFormat.getInstance(Locale.KOREA).parse(postRegistrationDTO.getMaxPrice()).intValue()));
 
         if (postRegistrationDTO.getDeadline() == null) {
             board.setDeadline(null);
@@ -235,15 +236,15 @@ public class BoardServiceImpl implements BoardService{
     }
 
     // 인기글 찾기
-    public List<PostDTO> findHitPosts() {
-        List<Board> board = boardMapper.selectAllPostsInOrderOfHits();
+    public List<PostDTO> findInterestPosts() {
+        List<Board> board = boardMapper.selectAllPostsInOrderOfInterest();
 
-        List<PostDTO> postDTOInOrderOfHits = getPostDTOS(board);
+        List<PostDTO> postDTOInOrderOfInterest = getPostDTOS(board);
 
-        return postDTOInOrderOfHits;
+        return postDTOInOrderOfInterest;
     }
 
-    // 인기순으로 정렬
+    // 조회순으로 정렬
     @Override
     public List<PostDTO> sortForHits(List<PostDTO> postDTOS) {
         return postDTOS.stream()
@@ -267,4 +268,12 @@ public class BoardServiceImpl implements BoardService{
                 .collect(Collectors.toList());
     }
 
+    // 관심글 등록
+    @Override
+    public int registerInterestPost(String userId, Integer boardId) {
+        Favorite favorite = new Favorite();
+        favorite.setBoardId(boardId);
+        favorite.setUserId(userId);
+        return boardMapper.insertFavorite(favorite);
+    }
 }

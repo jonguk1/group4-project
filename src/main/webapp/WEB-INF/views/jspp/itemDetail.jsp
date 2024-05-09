@@ -105,6 +105,9 @@
                     </div>
                     <div class="col-md-6 text-center">
                         <span class="badge bg-danger">
+                            ${postById.isMegaphone}
+                        </span>
+                        <span class="badge bg-danger">
                             ${postById.isAuction}
                         </span>
                         <span class="badge bg-success">
@@ -187,15 +190,36 @@
                                 <button type="button" class="btn btn-primary">채팅</button>
                             </span>
                             <span>
-                                <button type="button" class="btn btn-primary">경매</button>
+                                <button type="button" id="auctionButton" class="btn btn-primary">경매</button>
                             </span>
 
                             <span>
-                                <button type="button" class="btn btn-primary">관심</button>
+                                <button type="button" id="interestButton" class="btn btn-primary">관심</button>
                             </span>
 
                             <span>
-                                <img src="/images/ban.png" alt="대체" style="width: 50px; height:20px;">
+                                <a href="#" id="blockUserLink">
+                                    <img src="/images/ban.png" alt="대체" style="width: 50px; height:20px;">
+                                </a>
+                                <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmModalLabel">유저를 차단하겠습니까?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+                                        차단한 유저는 더 이상 접근할 수 없습니다. 계속하시겠습니까?
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" id="cancelButton" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                                        <button type="button" id="confirmButton" class="btn btn-primary">확인</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                             </span>
 
                             <span>
@@ -221,12 +245,21 @@
                     <div class="col-md-3">
                     </div>
                     <div class="col-md-6">
-                        <span id="address">서울특별시 종로구 혜화</span>
+                        <span id="address">${postById.address}</span>
                     </div>
                     <div class="col-md-3">
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-6">
+                        <span id="address">${postById.price}원</span>
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col-md-3">
@@ -304,14 +337,19 @@
                                 <div class="col-md-4">
                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                         <h5 class="card-header">
+                                            <span class="badge bg-danger">${postsBySearchTerm[0].isMegaphone}</span>
                                             <span>${postsBySearchTerm[0].title}</span>
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
-                                                <img src="${postsBySearchTerm[0].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                <a href="/board/${postsBySearchTerm[0].boardId}">
+                                                    <img src="${postsBySearchTerm[0].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                </a>
                                             </p>
                                         </div>
                                         <div class="card-footer">
+                                            <span class="badge bg-danger">${postsBySearchTerm[0].isAuction}</span>
+                                            <span class="badge bg-success">${postsBySearchTerm[0].isLend}</span>
                                             <p>${postsBySearchTerm[0].price}원</p>
                                             <p>${postsBySearchTerm[0].address}</p>
                                             <span>관심 ${postsBySearchTerm[0].interestCnt}</span>
@@ -324,14 +362,19 @@
                                 <div class="col-md-4">
                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                         <h5 class="card-header">
+                                            <span class="badge bg-danger">${postsBySearchTerm[1].isMegaphone}</span>
                                             <span>${postsBySearchTerm[1].title}</span>
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
-                                                <img src="${postsBySearchTerm[1].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                <a href="/board/${postsBySearchTerm[1].boardId}">
+                                                    <img src="${postsBySearchTerm[1].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                </a>
                                             </p>
                                         </div>
                                         <div class="card-footer">
+                                            <span class="badge bg-danger">${postsBySearchTerm[1].isAuction}</span>
+                                            <span class="badge bg-success">${postsBySearchTerm[1].isLend}</span>
                                             <p>${postsBySearchTerm[1].price}원</p>
                                             <p>${postsBySearchTerm[1].address}</p>
                                             <span>관심 ${postsBySearchTerm[1].interestCnt}</span>
@@ -345,14 +388,19 @@
                                 <div class="col-md-4">
                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                         <h5 class="card-header">
+                                            <span class="badge bg-danger">${postsBySearchTerm[2].isMegaphone}</span>
                                             <span>${postsBySearchTerm[2].title}</span>
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
-                                                <img src="${postsBySearchTerm[2].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                <a href="/board/${postsBySearchTerm[2].boardId}">
+                                                    <img src="${postsBySearchTerm[2].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                </a>
                                             </p>
                                         </div>
                                         <div class="card-footer">
+                                            <span class="badge bg-danger">${postsBySearchTerm[2].isAuction}</span>
+                                            <span class="badge bg-success">${postsBySearchTerm[2].isLend}</span>
                                             <p>${postsBySearchTerm[2].price}원</p>
                                             <p>${postsBySearchTerm[2].address}</p>
                                             <span>관심 ${postsBySearchTerm[2].interestCnt}</span>
@@ -378,14 +426,20 @@
                                         <div class="col-md-4">
                                             <div class="card border-light mb-3" style="max-width: 20rem;">
                                                 <h5 class="card-header">
+
+                                                    <span class="badge bg-danger">${postsBySearchTerm[3].isMegaphone}</span>
                                                     <span>${postsBySearchTerm[3].title}</span>
                                                 </h5>
                                                 <div class="card-body">
                                                     <p class="card-text">
-                                                        <img src="${postsBySearchTerm[3].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                        <a href="/board/${postsBySearchTerm[3].boardId}">
+                                                            <img src="${postsBySearchTerm[3].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                        </a>
                                                     </p>
                                                 </div>
                                                 <div class="card-footer">
+                                                    <span class="badge bg-danger">${postsBySearchTerm[3].isAuction}</span>
+                                                    <span class="badge bg-success">${postsBySearchTerm[3].isLend}</span>
                                                     <p>${postsBySearchTerm[3].price}원</p>
                                                     <p>${postsBySearchTerm[3].address}</p>
                                                     <span>관심 ${postsBySearchTerm[3].interestCnt}</span>
@@ -399,14 +453,19 @@
 
                                             <div class="card border-light mb-3" style="max-width: 20rem;">
                                                 <h5 class="card-header">
+                                                    <span class="badge bg-danger">${postsBySearchTerm[4].isMegaphone}</span>
                                                     <span>${postsBySearchTerm[4].title}</span>
                                                 </h5>
                                                 <div class="card-body">
                                                     <p class="card-text">
-                                                        <img src="${postsBySearchTerm[4].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                        <a href="/board/${postsBySearchTerm[4].boardId}">
+                                                            <img src="${postsBySearchTerm[4].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                        </a>
                                                     </p>
                                                 </div>
                                                 <div class="card-footer">
+                                                    <span class="badge bg-danger">${postsBySearchTerm[4].isAuction}</span>
+                                                    <span class="badge bg-success">${postsBySearchTerm[4].isLend}</span>
                                                     <p>${postsBySearchTerm[4].price}원</p>
                                                     <p>${postsBySearchTerm[4].address}</p>
                                                     <span>관심 ${postsBySearchTerm[4].interestCnt}</span>
@@ -421,14 +480,19 @@
                                         <div class="col-md-4">
                                             <div class="card border-light mb-3" style="max-width: 20rem;">
                                                 <h5 class="card-header">
+                                                    <span class="badge bg-danger">${postsBySearchTerm[5].isMegaphone}</span>
                                                     <span>${postsBySearchTerm[5].title}</span>
                                                 </h5>
                                                 <div class="card-body">
                                                     <p class="card-text">
-                                                        <img src="${postsBySearchTerm[5].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                        <a href="/board/${postsBySearchTerm[5].boardId}">
+                                                            <img src="${postsBySearchTerm[5].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                        </a>
                                                     </p>
                                                 </div>
                                                 <div class="card-footer">
+                                                    <span class="badge bg-danger">${postsBySearchTerm[5].isAuction}</span>
+                                                    <span class="badge bg-success">${postsBySearchTerm[5].isLend}</span>
                                                     <p>${postsBySearchTerm[5].price}원</p>
                                                     <p>${postsBySearchTerm[5].address}</p>
                                                     <span>관심 ${postsBySearchTerm[5].interestCnt}</span>
@@ -477,7 +541,7 @@
 
 
                 <br>
-                <c:if test="${not empty hitPosts[0]}">
+                <c:if test="${not empty interestPosts[0]}">
                 <div class="row">
                                         <div class="col-md-3">
                                         </div>
@@ -486,60 +550,75 @@
                                                 <div class="col-md-4">
                                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                                         <h5 class="card-header">
-                                                            <span>${hitPosts[0].title}</span>
+                                                            <span class="badge bg-danger">${interestPosts[0].isMegaphone}</span>
+                                                            <span>${interestPosts[0].title}</span>
                                                         </h5>
                                                         <div class="card-body">
                                                             <p class="card-text">
-                                                                <img src="${hitPosts[0].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                <a href="/board/${interestPosts[0].boardId}">
+                                                                    <img src="${interestPosts[0].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                </a>
                                                             </p>
                                                         </div>
                                                         <div class="card-footer">
-                                                            <p>${hitPosts[0].price}원</p>
-                                                            <p>${hitPosts[0].address}</p>
-                                                            <span>관심 ${hitPosts[0].interestCnt}</span>
+                                                            <span class="badge bg-danger">${interestPosts[0].isAuction}</span>
+                                                            <span class="badge bg-success">${interestPosts[0].isLend}</span>
+                                                            <p>${interestPosts[0].price}원</p>
+                                                            <p>${interestPosts[0].address}</p>
+                                                            <span>관심 ${interestPosts[0].interestCnt}</span>
                                                             <span>채팅 41</span>
-                                                            <span>조회 ${hitPosts[0].hits}</span>
+                                                            <span>조회 ${interestPosts[0].hits}</span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <c:if test="${not empty hitPosts[1]}">
+                                                <c:if test="${not empty interestPosts[1]}">
                                                 <div class="col-md-4">
                                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                                         <h5 class="card-header">
-                                                            <span>${hitPosts[1].title}</span>
+                                                            <span class="badge bg-danger">${interestPosts[1].isMegaphone}</span>
+                                                            <span>${interestPosts[1].title}</span>
                                                         </h5>
                                                         <div class="card-body">
                                                             <p class="card-text">
-                                                                <img src="${hitPosts[1].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                <a href="/board/${interestPosts[1].boardId}">
+                                                                    <img src="${interestPosts[1].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                </a>
                                                             </p>
                                                         </div>
                                                         <div class="card-footer">
-                                                            <p>${hitPosts[1].price}원</p>
-                                                            <p>${hitPosts[1].address}</p>
-                                                            <span>관심 ${hitPosts[1].interestCnt}</span>
+                                                            <span class="badge bg-danger">${interestPosts[1].isAuction}</span>
+                                                            <span class="badge bg-success">${interestPosts[1].isLend}</span>
+                                                            <p>${interestPosts[1].price}원</p>
+                                                            <p>${interestPosts[1].address}</p>
+                                                            <span>관심 ${interestPosts[1].interestCnt}</span>
                                                             <span>채팅 41</span>
-                                                            <span>조회 ${hitPosts[1].hits}</span>
+                                                            <span>조회 ${interestPosts[1].hits}</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 </c:if>
-                                                <c:if test="${not empty hitPosts[2]}">
+                                                <c:if test="${not empty interestPosts[2]}">
                                                 <div class="col-md-4">
                                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                                         <h5 class="card-header">
-                                                            <span>${hitPosts[2].title}</span>
+                                                            <span class="badge bg-danger">${interestPosts[2].isMegaphone}</span>
+                                                            <span>${interestPosts[2].title}</span>
                                                         </h5>
                                                         <div class="card-body">
                                                             <p class="card-text">
-                                                                <img src="${hitPosts[2].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                <a href="/board/${interestPosts[2].boardId}">
+                                                                    <img src="${interestPosts[2].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                </a>
                                                             </p>
                                                         </div>
                                                         <div class="card-footer">
-                                                            <p>${hitPosts[2].price}원</p>
-                                                            <p>${hitPosts[2].address}</p>
-                                                            <span>관심 ${hitPosts[2].interestCnt}</span>
+                                                            <span class="badge bg-danger">${interestPosts[2].isAuction}</span>
+                                                            <span class="badge bg-success">${interestPosts[2].isLend}</span>
+                                                            <p>${interestPosts[2].price}원</p>
+                                                            <p>${interestPosts[2].address}</p>
+                                                            <span>관심 ${interestPosts[2].interestCnt}</span>
                                                             <span>채팅 41</span>
-                                                            <span>조회 ${hitPosts[2].hits}</span>
+                                                            <span>조회 ${interestPosts[2].hits}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -552,7 +631,7 @@
 
                                     </c:if>
                                     <br>
-                                    <c:if test="${not empty hitPosts[3]}">
+                                    <c:if test="${not empty interestPosts[3]}">
                                     <div class="row">
                                                             <div class="col-md-3">
                                                             </div>
@@ -561,60 +640,75 @@
                                                                     <div class="col-md-4">
                                                                         <div class="card border-light mb-3" style="max-width: 20rem;">
                                                                             <h5 class="card-header">
-                                                                                <span>${hitPosts[3].title}</span>
+                                                                                <span class="badge bg-danger">${interestPosts[3].isMegaphone}</span>
+                                                                                <span>${interestPosts[3].title}</span>
                                                                             </h5>
                                                                             <div class="card-body">
                                                                                 <p class="card-text">
-                                                                                    <img src="${hitPosts[3].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                                    <a href="/board/${interestPosts[3].boardId}">
+                                                                                        <img src="${interestPosts[3].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                                    </a>
                                                                                 </p>
                                                                             </div>
                                                                             <div class="card-footer">
-                                                                                <p>${hitPosts[3].price}원</p>
-                                                                                <p>${hitPosts[3].address}</p>
-                                                                                <span>관심 ${hitPosts[3].interestCnt}</span>
+                                                                                <span class="badge bg-danger">${interestPosts[3].isAuction}</span>
+                                                                                <span class="badge bg-success">${interestPosts[3].isLend}</span>
+                                                                                <p>${interestPosts[3].price}원</p>
+                                                                                <p>${interestPosts[3].address}</p>
+                                                                                <span>관심 ${interestPosts[3].interestCnt}</span>
                                                                                 <span>채팅 41</span>
-                                                                                <span>조회 ${hitPosts[3].hits}</span>
+                                                                                <span>조회 ${interestPosts[3].hits}</span>
                                                                             </div>
                                                                         </div>
-                                                                    <c:if test="${not empty hitPosts[4]}">
+                                                                    <c:if test="${not empty interestPosts[4]}">
                                                                     </div>
                                                                     <div class="col-md-4">
                                                                         <div class="card border-light mb-3" style="max-width: 20rem;">
                                                                             <h5 class="card-header">
-                                                                                <span>${hitPosts[4].title}</span>
+                                                                                <span class="badge bg-danger">${interestPosts[4].isMegaphone}</span>
+                                                                                <span>${interestPosts[4].title}</span>
                                                                             </h5>
                                                                             <div class="card-body">
                                                                                 <p class="card-text">
-                                                                                    <img src="${hitPosts[4].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                                    <a href="/board/${interestPosts[4].boardId}">
+                                                                                        <img src="${interestPosts[4].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                                    </a>
                                                                                 </p>
                                                                             </div>
                                                                             <div class="card-footer">
-                                                                                 <p>${hitPosts[4].price}원</p>
-                                                                                 <p>${hitPosts[4].address}</p>
-                                                                                 <span>관심 ${hitPosts[4].interestCnt}</span>
+                                                                                <span class="badge bg-danger">${interestPosts[4].isAuction}</span>
+                                                                                <span class="badge bg-success">${interestPosts[4].isLend}</span>
+                                                                                 <p>${interestPosts[4].price}원</p>
+                                                                                 <p>${interestPosts[4].address}</p>
+                                                                                 <span>관심 ${interestPosts[4].interestCnt}</span>
                                                                                  <span>채팅 41</span>
-                                                                                 <span>조회 ${hitPosts[4].hits}</span>
+                                                                                 <span>조회 ${interestPosts[4].hits}</span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                     </c:if>
-                                                                    <c:if test="${not empty hitPosts[5]}">
+                                                                    <c:if test="${not empty interestPosts[5]}">
                                                                     <div class="col-md-4">
                                                                         <div class="card border-light mb-3" style="max-width: 20rem;">
                                                                             <h5 class="card-header">
-                                                                                <span>${hitPosts[5].title}</span>
+                                                                                <span class="badge bg-danger">${interestPosts[5].isMegaphone}</span>
+                                                                                <span>${interestPosts[5].title}</span>
                                                                             </h5>
                                                                             <div class="card-body">
                                                                                 <p class="card-text">
-                                                                                    <img src="${hitPosts[5].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                                    <a href="/board/${interestPosts[5].boardId}">
+                                                                                        <img src="${interestPosts[5].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                                    </a>
                                                                                 </p>
                                                                             </div>
                                                                             <div class="card-footer">
-                                                                                 <p>${hitPosts[5].price}원</p>
-                                                                                 <p>${hitPosts[5].address}</p>
-                                                                                 <span>관심 ${hitPosts[5].interestCnt}</span>
+                                                                                 <span class="badge bg-danger">${interestPosts[5].isAuction}</span>
+                                                                                 <span class="badge bg-success">${interestPosts[5].isLend}</span>
+                                                                                 <p>${interestPosts[5].price}원</p>
+                                                                                 <p>${interestPosts[5].address}</p>
+                                                                                 <span>관심 ${interestPosts[5].interestCnt}</span>
                                                                                  <span>채팅 41</span>
-                                                                                 <span>조회 ${hitPosts[5].hits}</span>
+                                                                                 <span>조회 ${interestPosts[5].hits}</span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -628,15 +722,49 @@
                         <br><br>
                         <input type="hidden" name="latitude" id="latitude" value="${postById.latitude}">
                         <input type="hidden" name="longitude" id="longitude" value="${postById.longitude}">
+                        <input type="hidden" name="userId" id="userId" value="${userId}">
             </div>
             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+            <div id="postById" style="display: none;">${postById}</div>
+            ]
             <script>
+
                 $(document).ready(function() {
+
+                    const eventSource = new EventSource('http://localhost:8081/subscribe');
+
+                    eventSource.addEventListener('sse', event => {
+                        console.log(event);
+                        alert(event.data);
+                    });
+
+                     var userId = document.getElementById("userId").value;
+                     var dataString = document.getElementById("postById").textContent;
+                     var boardIdMatch = dataString.match(/boardId=([^,]+)/);
+
+                     var boardId = {
+                        boardId: boardIdMatch ? boardIdMatch[1] : null,
+                     };
+
+                     alert(userId);
+                     alert(boardId.boardId);
+                     $.ajax({
+                         url: "/favorite/is/" + boardId.boardId,
+                         type: "GET",
+                         dataType: "text",
+                         success: function(response) {
+                            if (response === "ok") {
+                                document.getElementById('interestButton').textContent = '관심 해제';
+                            } else if (response === "no") {
+                                document.getElementById('interestButton').textContent = '관심';
+                            }
+                         }
+
+                     });
 
                     $.ajax({
                         url: "/board/board-category",
@@ -676,6 +804,74 @@
                         interval: 2000
                     });
                 });
+
+
+
+                  document.getElementById('blockUserLink').addEventListener('click', function(event) {
+                      event.preventDefault();
+                      $('#confirmModal').modal('show');
+                  });
+
+
+                  document.getElementById('cancelButton').addEventListener('click', function(event) {
+                      event.preventDefault();
+                      $('#confirmModal').modal('hide');
+                  });
+
+                  document.getElementById('confirmButton').addEventListener('click', function(event) {
+                      event.preventDefault();
+
+                      var dataString = document.getElementById("postById").textContent;
+                      var writerMatch = dataString.match(/writer=([^,]+)/);
+
+                      var writer = {
+                          writer: writerMatch ? writerMatch[1] : null,
+                      };
+
+                      $.ajax({
+                          url: '/user/' + writer.writer + '/block',
+                          type: 'POST',
+                          success: function(response) {
+                              console.log('Success:', response);
+
+                              $('#confirmModal').modal('hide');
+                          },
+                          error: function(xhr, status, error) {
+                              console.error('Error:', error);
+                              $('#confirmModal').modal('hide');
+                          }
+                      });
+                  });
+
+                   document.getElementById('interestButton').addEventListener('click', function(event) {
+                       var buttonText = document.getElementById('interestButton').textContent;
+                       if (buttonText == '관심') {
+                           // ajax 요청 보내서 관심 등록 후 버튼을 관심 취소로 바꾸기
+                           // 요청 성공 시
+                           var button = document.getElementById('interestButton');
+                           button.textContent = '관심 취소';
+
+                       } else if (buttonText == '관심 취소') {
+                           // ajax 요청 보내서 관심 취소 후 버튼을 관심으로 바꾸기
+
+                           var button = document.getElementById('interestButton');
+                           button.textContent = '관심';
+                       }
+
+                   })
+
+                   document.getElementById('auctionButton').addEventListener('click', function(event) {
+
+                       $.ajax({
+                           url: '/auction',
+                           type: 'POST',
+                           success: function(response) {
+                              alert('success');
+                           },
+                           error: function(xhr, status, error) {
+                           }
+                       });
+                   });
             </script>
 
         </body>

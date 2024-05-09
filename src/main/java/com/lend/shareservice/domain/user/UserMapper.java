@@ -1,6 +1,7 @@
 package com.lend.shareservice.domain.user;
 
 import com.lend.shareservice.domain.user.vo.UserVo;
+import com.lend.shareservice.entity.Block;
 import com.lend.shareservice.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,4 +15,6 @@ public interface UserMapper {
     List<User> userList();
 
     String getUserId(String userId);
+
+    int blockUser(Block block);
 }

@@ -15,4 +15,5 @@ public interface UserService {
     String getUserId(String userId);
 
 
+    int blockUser(String userId);
 }

@@ -4,8 +4,8 @@
 
     <!-- 글을 등록함 -->
     <insert id="insertBoard" parameterType="com.lend.shareservice.entity.Board" useGeneratedKeys="true" keyProperty="boardId">
-        INSERT INTO Board (boardCategoryId, writer, title, content, regDate, price, deadline, isAuction, isLend, interestCnt, hits, lendDate, returnDate, itemName, itemImage1, itemImage2, itemImage3, itemCategoryId, latitude, longitude, isMegaphone)
-        VALUES (#{boardCategoryId}, #{writer}, #{title}, #{content}, NOW(), #{price}, #{deadline}, #{isAuction}, #{isLend}, #{interestCnt}, #{hits}, #{lendDate}, #{returnDate}, #{itemName}, #{itemImage1}, #{itemImage2}, #{itemImage3}, #{itemCategoryId}, #{latitude}, #{longitude}, #{isMegaphone})
+        INSERT INTO Board (boardCategoryId, writer, title, content, regDate, price, deadline, isAuction, isLend, interestCnt, hits, lendDate, returnDate, itemName, itemImage1, itemImage2, itemImage3, itemCategoryId, latitude, longitude, isMegaphone, maxPrice)
+        VALUES (#{boardCategoryId}, #{writer}, #{title}, #{content}, NOW(), #{price}, #{deadline}, #{isAuction}, #{isLend}, #{interestCnt}, #{hits}, #{lendDate}, #{returnDate}, #{itemName}, #{itemImage1}, #{itemImage2}, #{itemImage3}, #{itemCategoryId}, #{latitude}, #{longitude}, #{isMegaphone}, #{maxPrice})
     </insert>
 
     <!-- 상품의 모든 카테고리 가져옴-->
@@ -41,9 +41,15 @@
     </update>
 
     <!-- 인기순 글 조회   -->
-    <select id="selectAllPostsInOrderOfHits" resultType="com.lend.shareservice.entity.Board">
+    <select id="selectAllPostsInOrderOfInterest" resultType="com.lend.shareservice.entity.Board">
         SELECT * FROM Board
-        ORDER BY hits DESC
+        ORDER BY interestCnt DESC
     </select>
+
+    <!-- 관심글 등록 -->
+    <insert id="insertFavorite" parameterType="com.lend.shareservice.entity.Favorite" useGeneratedKeys="true" keyProperty="favoriteId">
+        INSERT INTO FAVORITE (userId, boardId)
+        VALUES (#{userId}, #{boardId})
+    </insert>
 
 </mapper>

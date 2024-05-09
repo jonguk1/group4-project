@@ -12,4 +12,5 @@ public interface FavoriteService {
     int getFavoriteTotalCount(PagingDTO page);
 
 
+    boolean findFavoriteByBoardIdAndUserId(String userId, Integer boardId);
 }

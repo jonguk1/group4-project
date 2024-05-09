@@ -1,5 +1,6 @@
 package com.lend.shareservice.domain.favorite;
 
+import com.lend.shareservice.entity.Favorite;
 import com.lend.shareservice.web.favorite.dto.FavoriteDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,4 +14,5 @@ public interface FavoriteMapper {
 
     int getFavoriteTotalCount(PagingDTO page);
 
+    Favorite selectByBoardIdAndUserId(Favorite favorite);
 }

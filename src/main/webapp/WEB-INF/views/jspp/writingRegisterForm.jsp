@@ -223,11 +223,31 @@
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="isAuction" name="isAuction">
                                         <label class="form-check-label" for="isAuction">경매(경매 참여 인원이 2명 이상이 되면 경매가 자동 시작 됩니다)</label>
-
                                     </div>
+
+
                                 </div>
                             </fieldset>
 
+                            <div class="row">
+                                <div class="col">
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <c:if test="${postRegistrationBindingResult.hasFieldErrors('maxPriceSetForAuctions')}">
+                                                <div>
+                                                    <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('maxPriceSetForAuctions').defaultMessage}</span>
+                                                </div>
+                                            </c:if>
+                                            <div id="auctionInput" style="display: none;">
+
+                                                <input type="input" class="form-control" id="maxPrice" name="maxPrice" aria-label="Amount (to the nearest dollar)" oninput="formatPrice()" placeholder="경매 최고가" autocomplete="off">
+                                            </div>
+                                        </div>
+                                    </div>
+                               </div>
+                            </div>
 
                             <br>
 
@@ -266,6 +286,24 @@
     <script>
 
         $(document).ready(function() {
+
+
+            var auctionCheckbox = document.getElementById('isAuction');
+
+
+            auctionCheckbox.addEventListener('change', function () {
+
+                if (auctionCheckbox.checked) {
+                    document.getElementById('auctionInput').style.display = 'block';
+                    document.getElementById('maxPriceButton').style.display = 'block';
+
+                } else {
+
+                    document.getElementById('auctionInput').style.display = 'none';
+                    document.getElementById('maxPriceButton').style.display = 'none';
+                }
+            });
+
                     $.ajax({
                         url: "/board/board-category",
                         type: "GET",
@@ -306,13 +344,16 @@
         function formatPrice() {
             // 입력 필드에서 값을 가져옴
             let input = document.getElementById('price').value;
-
+            let input2 = document.getElementById('maxPrice').value;
             // 쉼표를 추가하여 형식 변환
             let formattedPrice = input.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
+            let formattedPrice2 = input2.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             // 변환된 값을 다시 입력 필드에 설정
             document.getElementById('price').value = formattedPrice;
+            document.getElementById('maxPrice').value = formattedPrice2;
         }
+
+
 
         // 지도를 표시할 영역을 설정
         // 클릭한 위치의 위도와 경도를 저장할 변수
@@ -400,6 +441,7 @@
                 infowindow2.close();
             }
         });
+
 
 
 

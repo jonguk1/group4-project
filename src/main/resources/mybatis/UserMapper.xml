@@ -18,4 +18,11 @@
             userId=#{value}
         </where>
     </select>
+
+
+    <!-- 차단을 등록함 -->
+    <insert id="blockUser" parameterType="com.lend.shareservice.entity.Block"  useGeneratedKeys="true" keyProperty="blockId">
+        INSERT INTO BLOCK (blockedUserId, blockUserId)
+        VALUES (#{blockedUserId}, #{blockUserId})
+    </insert>
 </mapper>
