@@ -97,7 +97,6 @@ public class BoardController {
         return "jspp/itemDetail";
     }
 
-
     // 글의 사진을 클릭하면 나오는 글 상세
     @GetMapping("/{boardId}")
     public String boardDetail(@PathVariable("boardId") Integer boardId, Model model) {
