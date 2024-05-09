@@ -274,6 +274,7 @@ public class BoardServiceImpl implements BoardService{
         Favorite favorite = new Favorite();
         favorite.setBoardId(boardId);
         favorite.setUserId(userId);
+        log.info("haha");
         return boardMapper.insertFavorite(favorite);
     }
 }
