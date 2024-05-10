@@ -1,13 +1,17 @@
 package com.lend.shareservice.web.chat;
 
+import com.lend.shareservice.domain.chat.ChatService;
 import com.lend.shareservice.web.chat.dto.ChatDTO;
+import com.lend.shareservice.web.chat.dto.ChatItemDTO;
 import com.lend.shareservice.web.chat.dto.OutputMessageVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 // 채팅방 전체적으로 조회, 생성, 입장 관리하는 Controller
@@ -16,15 +20,28 @@ import java.util.*;
 @RequiredArgsConstructor
 @RequestMapping("/chat")
 public class ChatRoomController {
-    @GetMapping("/chatRoom")
-    public String chatRoom(){
-        return "/chat/chatRoom";
-    }
-    @GetMapping("/chat2")
-    public String chatRoom2(){
-        log.info("되나요");
+//    @GetMapping("/chatRoom")
+//    public String chatRoom(){
+//        return "/chat/chatRoom";
+//    }
+
+    private final ChatService chatService;
+
+    @PostMapping("/chat2")
+    public String chatRoom2(@RequestParam("boardId2") Integer boardId, Model model){
+       //log.info("되나요");
+       //log.info("boardid : "+ boardId);
+        //chatRoom2에 글상세번호 전달하기 위함
+        model.addAttribute("boardId", boardId);
+        //글 상세번호에 맞는 작성자, 제목, 사진 등 정보 가져오기 위함
+        ChatItemDTO chatItem = chatService.selectItem(boardId);
+
+        model.addAttribute("chatItem",chatItem);
+
         return "/chat/chatRoom2";
     }
+
+    //소켓 연결 하는 아주아주 중요한 코드
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public OutputMessageVo send(ChatDTO chatDTO){

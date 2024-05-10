@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.0.0/dist/minty/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery library -->
+    <script
+    	src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <!-- websocket 라이브러리 추가 -->
     <!--  https://cdnjs.com/libraries/sockjs-client  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
@@ -46,6 +49,7 @@
                 obj.innerHTML += line;  //내용을 추가한다.
             }
         }
+
         let socket = null;
         let stompClient = null;
         function chat_connect(){
@@ -54,8 +58,37 @@
             //stomp 이용해서 서버에 연결
             stompClient.connect({}, function(frame){
                 alert('연결됨: ' + frame);
-            })
+                $('#talk_input').focus();
+
+                sendMessage(thisUserId+"님이 접속했습니다.");
+                //콘솔로그->서버가 받은 정보: ChatDTO(content=null, sender=UserID님이 접속했습니다., target=null)
+
+                //                   Controller에 작성한 SendTo랑 같게
+                stompClient.subscribe('/topic/messages', function(msg){
+                    console.log('subscribe topic → ', msg);
+                    // alert(msg.body); // msg.body → json 형태의 문자열
+                    let jsonMsg = JSON.parse(msg.body); // 문자열을 JSON 객체로 만들기
+                    // alert(jsonMsg.text);
+                    //showChatMessage(jsonMsg);
+                })//stompClient.subscribe() end ----------
+
+            })//stompClient.connect() end---------
         }//chat_connect() end ----------------
+
+        function sendMessage(sender,target,content){//서버로 메세지를 보내는 함수
+            let obj = {
+                sender : sender,
+                target : target,
+                content : content
+            }
+            stompClient.send('/app/chat',{},JSON.stringify(obj));
+        }//sendMessage() end--------------
+
+        function showChatMessage(obj){
+
+        }//showChatMessage() end---------------
+
+
     </script>
     <!------------------------------- script ----------------------------------->
 </head>
@@ -75,13 +108,13 @@
                             </div>
                             <div class="col-md-10">
                                 <h3>
-                                    000님과의 대화
+                                    ${chatItem.writer}님과의 대화
                                 </h3>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3"> <!-- 글 상세 이미지 출력 -->
-                                <img alt="Bootstrap Image Preview" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg" />
+                                <img alt="안갖고옴" src="${chatItem.images}" />
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
@@ -97,7 +130,7 @@
                                     </div>
                                     <div class="col-md-9">
                                         <h3>
-                                            글 상세 제목 출력
+                                            ${chatItem.title}
                                         </h3>
                                     </div>
                                 </div>
@@ -112,11 +145,6 @@
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        <!-- 채팅폼 들어갈예정 -->
-                        <!-- 채팅폼 들어갈예정 -->
-                        <div class="alert alert-success my-4">
-                            <strong id="status">채팅을 연결후 사용하세요....</strong>
                         </div>
                         <div class="row">
                             <div class="col-md-2">
@@ -133,6 +161,7 @@
                             </div>
                             <div class="col-md-10">
                                 <div id="talk_view" class="talk_view"></div>
+                                <p>boardId: ${boardId}</p> <!-- boardId 값 출력 -->
                                 <input type="text" class="talk_input" id="talk_input" placeholder="채팅을 입력해주세요" aria-label="Recipient's username" aria-describedby="button-addon2">
                                 <button class="btn btn-primary chatButton" OnClick="chat_connect()">연 결</button>
                                 <button class="btn btn-primary chatButton" id="talk_send" OnClick="sendTalk()">전 송</button>

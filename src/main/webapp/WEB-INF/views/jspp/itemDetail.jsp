@@ -187,7 +187,7 @@
                                 <span>${postById.writer}</span>
 
                             <span>
-                                <button type="button" class="btn btn-primary" id="chat">채팅</button>
+                                <button type="button" class="btn btn-primary" onclick="chat()">채팅</button>
                             </span>
                             <span>
                                 <button type="button" id="auctionButton" class="btn btn-primary">경매</button>
@@ -894,21 +894,32 @@
                        });
                    });
 
-                   $(document).on("click","#chat",function(){
-                      //alert("글 상세번호 : " + "${postById.boardId}");
-                      let boardId2 = ${postById.boardId};
-                      //alert(boardId2);
-                      $.ajax({
-                        url: "../chat/chat2",
-                        method: "GET",
-                        data : boardId2,
-                        success:function(data){
-                          alert("이게뭐지: "+data);
-                        }
-                      })
-                   })
+                   // 글 상세 번호 채팅에 넘겨주기 위한 함수
+                   function chat(){
+                        //alert("글 상세번호 : " + "${postById.boardId}");
+                        var boardId2 = parseInt("${postById.boardId}");//글 상세 번호
+
+                        var form = document.createElement("form");
+                        form.setAttribute("method", "post");
+                        form.setAttribute("action", "/chat/chat2");
+
+                        var hiddenField = document.createElement("input");
+                        hiddenField.setAttribute("type", "hidden");
+                        hiddenField.setAttribute("name", "boardId2");
+                        hiddenField.setAttribute("value", boardId2);
+                        form.appendChild(hiddenField);
+
+                        document.body.appendChild(form);
+                            form.submit();
+
+                   };
+
+
+
+
+
+
 
 
             </script>
-
         </body>
