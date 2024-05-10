@@ -22,6 +22,16 @@
         order by b.writer limit #{limit} offset #{offset}
     </select>
 
+    <select id="reportWriters" parameterType="map" resultMap="reportMap">
+        select r.userId,r.title,r.content,r.regDate from
+        report r inner join board b
+        on r.boardId=b.boardId
+        <where>
+            b.writer=#{writer}
+        </where>
+        order by r.reportId limit #{limit} offset #{offset}
+    </select>
+
     <select id="getReportCount" resultType="_int">
         select count(a.writer)
         from(
@@ -30,6 +40,15 @@
         on r.boardId = b.boardId
         group by b.writer
         ) as a
+    </select>
+
+    <select id="getReportWriterCount" resultType="_int" parameterType="String">
+        select count(*) from
+        report r inner join board b
+        on r.boardId=b.boardId
+        <where>
+            b.writer=#{writer}
+        </where>
     </select>
 
 </mapper>

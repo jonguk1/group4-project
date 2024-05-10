@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +8,7 @@
 
 
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-     <link rel="stylesheet" href="css/bootstrap.min.css">
+     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
@@ -103,7 +104,7 @@
        		<div class="col-md-8 text-center">
 
        		<span>
-       				<h3>Lee Jae Woong 님의 경매</h3>
+       				<h3><c:out value="${userId}"/>님의 경매</h3>
        		</span>
 
        		</div>
@@ -114,66 +115,73 @@
        	<br><br>
 
    <div class="row">
-   		<div class="col-md-2">
-            <div class="accordion" id="accordionExample">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            여기 뭐 넣지?
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
-                        <div class="accordion-body">
-                            <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action">내 정보</a>
-                                <a href="#" class="list-group-item list-group-item-action">관심 목록</a>
-                                <a href="#" class="list-group-item list-group-item-action">빌려준 목록</a>
-                                <a href="#" class="list-group-item list-group-item-action">빌린 목록</a>
-                                <a href="#" class="list-group-item list-group-item-action">채팅 목록</a>
-                                <a href="#" class="list-group-item list-group-item-action">내 경매 목록</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-2" style="margin-left:25px">
+            <%@ include file="/WEB-INF/views/jspp/include/mypage.jsp"%>
         </div>
-
-
-   		<div class="col-md-8">
+        <div class="col-md-8">
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-1">
                 </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <h5 class="card-header">
-                            집에 굴러다니는 청..
-                        </h5>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <img src="images/clean.jpeg" alt="대체_텍스트" style="width: 180px; height: 100px;">
-                            </p>
+                <c:choose>
+                    <c:when test="${auctions eq null or empty auctions}">
+                        <div class="col-md-8">
+                            경매 목록이 존재하지 않습니다
                         </div>
-                        <div class="card-footer">
-                            <p><span class="badge bg-danger">경매중</span>
-                            <span class="badge bg-success">대여전</span>
-                            <span class="badge bg-warning">매너유저</span></p>
-                            <p>2,500원</p>
-                            <p>강원도 영월군 구포읍</p>
-                            <span>관심 32</span>
-                            <span>채팅 41</span>
-                            <span>조회 312</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5">
-
-
-                    <h1>경매 마감 : 3일전</h1>
-                    <h1>현재 가격 : 2,000원</h1>
-                    <h1>상한가 : 3,500원</h1>
-                    <input type="text" placeholder="가격을 올려주세요"/ >
-                    <button type="button" class="btn btn-primary">가격 올리기</button>
-                </div>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="auction" items="${auctions}">
+                            <div class="col-md-3" style="margin-left:25px">
+                                <div class="card">
+                                    <h5 class="card-header">
+                                        <c:out value="${auction.boards[0].title}"/>
+                                    </h5>
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            <img src="/images/${auction.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 100px;">
+                                        </p>
+                                    </div>
+                                    <div class="card-footer">
+                                       <c:choose>
+                                            <c:when test="${auction.boards[0].isAuction eq 0}">
+                                                <p><span class="badge bg-danger">경매전</span>
+                                            </c:when>
+                                            <c:when test="${auction.boards[0].isAuction eq 1}">
+                                                <p><span class="badge bg-danger">경매중</span>
+                                            </c:when>
+                                            <c:when test="${auction.boards[0].isAuction eq 2}">
+                                                <p><span class="badge bg-danger">경매후</span>
+                                            </c:when>
+                                        </c:choose>
+                                        <c:choose>
+                                            <c:when test="${auction.boards[0].isLend eq 0}">
+                                                <span class="badge bg-success">대여전</span>
+                                            </c:when>
+                                            <c:when test="${auction.boards[0].isLend eq 1}">
+                                                <span class="badge bg-success">대여중</span>
+                                            </c:when>
+                                            <c:when test="${auction.boards[0].isLend eq 2}">
+                                                <span class="badge bg-success">대여후</span>
+                                            </c:when>
+                                        </c:choose>
+                                        <p><c:out value="${auction.boards[0].itemName}"/></p>
+                                        <p><fmt:formatNumber value="${auction.boards[0].price}" pattern="#,###"/>원</p>
+                                        <p>강원도 영월군 구포읍</p>
+                                        <span>관심 <c:out value="${auction.boards[0].interestCnt}"/></span>
+                                        <span>조회 <c:out value="${auction.boards[0].hits}"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="col-md-5" style="margin-left:25px">
+                                <h4>경매 마감 : <c:out value="${auction.dateDifference}"/>일전</h4>
+                                <h4>현재 가격 : <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원</h4>
+                                <h4>상한가 : <fmt:formatNumber value="${auction.maxPrice}" pattern="#,###"/>원</h4>
+                                <br>
+                                <input type="text" placeholder="가격을 올려주세요"/ >
+                                <button type="button" class="btn btn-primary">가격 올리기</button>
+                            </div>-->
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
                 <div class="col-md-2">
                 </div>
             </div>
@@ -182,4 +190,24 @@
    		<div class="col-md-2">
    		</div>
    	</div>
+   	<br>
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-4">
+                    <nav>
+                        <c:out value="${pageNavi}" escapeXml="false"/>
+                    </nav>
+                </div>
+                <div class="col-md-4">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
 </body>

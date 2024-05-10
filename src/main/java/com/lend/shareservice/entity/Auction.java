@@ -29,4 +29,6 @@ public class Auction {
     @NotNull
     private Integer boardId;
 
+    private String userId;
+
 }
