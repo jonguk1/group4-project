@@ -187,7 +187,7 @@
                                 <span>${postById.writer}</span>
 
                             <span>
-                                <button type="button" class="btn btn-primary">채팅</button>
+                                <button type="button" class="btn btn-primary" id="chat">채팅</button>
                             </span>
                             <span>
                                 <button type="button" id="auctionButton" class="btn btn-primary">경매</button>
@@ -893,6 +893,22 @@
                            }
                        });
                    });
+
+                   $(document).on("click","#chat",function(){
+                      //alert("글 상세번호 : " + "${postById.boardId}");
+                      let boardId2 = ${postById.boardId};
+                      //alert(boardId2);
+                      $.ajax({
+                        url: "../chat/chat2",
+                        method: "GET",
+                        data : boardId2,
+                        success:function(data){
+                          alert("이게뭐지: "+data);
+                        }
+                      })
+                   })
+
+
             </script>
 
         </body>
