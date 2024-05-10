@@ -138,8 +138,9 @@
                <div class="col-md-8">
                    <ul class="nav nav-pills">
                        <li class="nav-item dropdown">
-                           <a class="nav-link dropdown-toggle" id="top" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">최신순</a>
+                           <a class="nav-link dropdown-toggle" id="top" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">정렬</a>
                            <div class="dropdown-menu" style="">
+                               <a class="dropdown-item" href="/board/hits" id="recent-link">최신순</a>
                                <a class="dropdown-item" href="/board/hits" id="hits-link">조회순</a>
                                <a class="dropdown-item" href="/board/interest" id="interest-link">관심순</a>
                                <a class="dropdown-item" href="#">거리순</a>
@@ -175,6 +176,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" id="whatIsCureentState" name="whatIsCureentState" value="hiddenInputValue">
 </div>
     <script id="allPostsByCategorys" type="application/json">${allPostsByCategorys}</script>
 
@@ -205,6 +207,27 @@
         start();
     });
 
+    // 최신순을 클릭했을 때
+    document.getElementById('recent-link').addEventListener('click', function(event) {
+
+       event.preventDefault();
+       var allPostsByCategorysJson = $("#allPostsByCategorys").html();
+
+       var xhr = new XMLHttpRequest();
+       xhr.open('POST', '/board/hits', true);
+       xhr.setRequestHeader('Content-Type', 'application/json');
+       xhr.onreadystatechange = function() {
+           if (xhr.readyState === 4 && xhr.status === 200) {
+              var responseData = xhr.responseText;
+              var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
+              allPostsByCategorysScript.textContent = responseData;
+
+              document.getElementById('top').textContent = '최신순';
+              start();
+           }
+       };
+        xhr.send(allPostsByCategorysJson);
+    });
 
     // 조회순을 클릭했을 때
     document.getElementById('hits-link').addEventListener('click', function(event) {
@@ -221,20 +244,8 @@
               var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
               allPostsByCategorysScript.textContent = responseData;
 
-              // 최신순과 클릭된 항목의 텍스트와 링크를 교환
-              var dropdownToggle = document.getElementById('top');
-              var dropdownItemText = dropdownToggle.textContent;
-              var dropdownItemLink = dropdownToggle.getAttribute('href');
+              document.getElementById('top').textContent = '조회순';
 
-              var clickedItem = document.getElementById('hits-link');
-              var clickedItemText = clickedItem.textContent;
-              var clickedItemLink = clickedItem.getAttribute('href');
-
-              dropdownToggle.textContent = clickedItemText;
-              dropdownToggle.setAttribute('href', clickedItemLink);
-
-              clickedItem.textContent = dropdownItemText;
-              clickedItem.setAttribute('href', dropdownItemLink);
               start();
            }
        };
@@ -257,20 +268,8 @@
                   var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
                   allPostsByCategorysScript.textContent = responseData;
 
-                  // 최신순과 클릭된 항목의 텍스트와 링크를 교환
-                  var dropdownToggle = document.getElementById('top');
-                  var dropdownItemText = dropdownToggle.textContent;
-                  var dropdownItemLink = dropdownToggle.getAttribute('href');
+                  document.getElementById('top').textContent = '관심순';
 
-                  var clickedItem = document.getElementById('interest-link');
-                  var clickedItemText = clickedItem.textContent;
-                  var clickedItemLink = clickedItem.getAttribute('href');
-
-                  dropdownToggle.textContent = clickedItemText;
-                  dropdownToggle.setAttribute('href', clickedItemLink);
-
-                  clickedItem.textContent = dropdownItemText;
-                  clickedItem.setAttribute('href', dropdownItemLink);
                   start();
                }
            };
@@ -293,20 +292,8 @@
                   var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
                   allPostsByCategorysScript.textContent = responseData;
 
-                  // 최신순과 클릭된 항목의 텍스트와 링크를 교환
-                  var dropdownToggle = document.getElementById('top');
-                  var dropdownItemText = dropdownToggle.textContent;
-                  var dropdownItemLink = dropdownToggle.getAttribute('href');
+                  document.getElementById('top').textContent = '가격 낮은순';
 
-                  var clickedItem = document.getElementById('low-price-link');
-                  var clickedItemText = clickedItem.textContent;
-                  var clickedItemLink = clickedItem.getAttribute('href');
-
-                  dropdownToggle.textContent = clickedItemText;
-                  dropdownToggle.setAttribute('href', clickedItemLink);
-
-                  clickedItem.textContent = dropdownItemText;
-                  clickedItem.setAttribute('href', dropdownItemLink);
                   start();
                }
            };
@@ -318,11 +305,18 @@
         document.getElementById('searchTermDetailButton').addEventListener('click', function(event) {
 
            event.preventDefault();
+           var searchTermDetail = document.getElementById("searchTermDetail").value;
            var allPostsByCategorysJson = $("#allPostsByCategorys").html();
+           var allPostsByCategorysObject = JSON.parse(allPostsByCategorysJson);
+           var jsonObject = {
+               "searchTermDetail": searchTermDetail,
+               "boardCategoryId": allPostsByCategorysObject[0].boardCategoryId,
+               "itemCategoryId": allPostsByCategorysObject[0].itemCategoryId
+           };
 
             // AJAX 요청 보내기
            var xhr = new XMLHttpRequest();
-           xhr.open('POST', '/board/price', true); // 요청할 URL 설정
+           xhr.open('POST', '/board/titleAndContent', true); // 요청할 URL 설정
            xhr.setRequestHeader('Content-Type', 'application/json');
            xhr.onreadystatechange = function() {
                if (xhr.readyState === 4 && xhr.status === 200) {
@@ -330,11 +324,10 @@
                   var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
                   allPostsByCategorysScript.textContent = responseData;
 
-
                   start();
                }
            };
-            xhr.send(allPostsByCategorysJson); // JSON 데이터를 문자열로 변환하여 요청 본문에 포함시킵니다.
+            xhr.send(JSON.stringify(jsonObject)); // JSON 데이터를 문자열로 변환하여 요청 본문에 포함시킵니다.
         });
 
     function start() {
@@ -388,8 +381,8 @@
                                                 '<div class="d-flex justify-content-start">' +
                                                     '<span class="badge bg-danger">' + post.isAuction + '</span>' +
                                                     '<span class="badge bg-primary">' + post.isLend + '</span>' +
-                                                '</div><br>' +
-
+                                                '</div>' +
+                                                    '<div>' + post.regDate + '</div>' +
                                                     '<div>' + post.address + '</div>' +
                                                     '<div>' + post.price + '원</div>' +
                                                     '<div class="d-flex justify-content-start">' +

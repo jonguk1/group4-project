@@ -1,8 +1,11 @@
 package com.lend.shareservice.entity;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
 import java.sql.Date;
 
+@Data
 public class Notification {
 
     // 알림 번호 (ID)
