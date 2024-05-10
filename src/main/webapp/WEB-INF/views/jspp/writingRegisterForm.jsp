@@ -158,7 +158,7 @@
                                 </c:if>
                                 <div class="input-group mb-3">
 
-                                <span class="input-group-text">$</span>
+                                <span class="input-group-text">₩</span>
                                 <input type="input" class="form-control" id="price" name="price" aria-label="Amount (to the nearest dollar)" oninput="formatPrice()" placeholder="희망 가격" autocomplete="off">
                                 </div>
 
