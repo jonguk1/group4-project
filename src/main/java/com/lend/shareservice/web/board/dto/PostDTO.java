@@ -94,4 +94,6 @@ public class PostDTO {
     private String address;
 
     private String imgSrc;
+
+    private String currentState;
 }

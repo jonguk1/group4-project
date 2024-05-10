@@ -33,4 +33,6 @@ public interface BoardMapper {
     int incrementInterest(Favorite favorite);
 
     int decreaseInterest(Favorite favorite);
+
+    int getInterestCnt(Favorite favorite);
 }
