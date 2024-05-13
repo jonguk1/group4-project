@@ -16,6 +16,7 @@ public interface AuctionService {
 
     List<AuctionDTO> auctions(PagingDTO page,String userId);
 
-    void paticipateAuction(String id, Integer boardId);
+    int paticipateAuction(String id, Integer boardId);
 
+    boolean findCurrentAuctionState(String userId);
 }

@@ -104,9 +104,11 @@
                     <div class="col-md-3">
                     </div>
                     <div class="col-md-6 text-center">
-                        <span class="badge bg-danger">
-                            ${postById.isMegaphone}
-                        </span>
+                        <c:if test="${not empty postById.isMegaphone}">
+                            <span class="badge bg-danger">
+                                ${postById.isMegaphone}
+                            </span>
+                        </c:if>
                         <span class="badge bg-danger">
                             ${postById.isAuction}
                         </span>
@@ -187,10 +189,12 @@
                                 <span>${postById.writer}</span>
 
                             <span>
-                                <button type="button" class="btn btn-primary">채팅</button>
+                                <button type="button" class="btn btn-primary" id="chat">채팅</button>
                             </span>
                             <span>
-                                <button type="button" id="auctionButton" class="btn btn-primary">경매</button>
+                                <c:if test="${not empty postById.isAuction and postById.isAuction ne '경매 불가'}">
+                                    <button type="button" id="auctionButton" class="btn btn-primary">경매</button>
+                                </c:if>
                             </span>
 
                             <span>
@@ -290,7 +294,7 @@
                     <div class="col-md-3">
                     </div>
                     <div class="col-md-6">
-                        <span>관심 ${postById.interestCnt}</span>
+                        <span id="interestCnt">관심 ${postById.interestCnt}</span>
                         <span>채팅 12</span>
                         <span>조회 ${postById.hits}</span>
                     </div>
@@ -737,14 +741,28 @@
 
                     const eventSource = new EventSource('http://localhost:8081/subscribe');
 
-                    eventSource.addEventListener('sse', event => {
-                        console.log(event);
-
+                    eventSource.addEventListener('auction', event => {
+                        alert(event.data);
                     });
 
                      var userId = document.getElementById("userId").value;
                      var dataString = document.getElementById("postById").textContent;
                      var boardIdMatch = dataString.match(/boardId=([^,]+)/);
+
+                     // 현재 유저가 경매중 확인
+                     $.ajax({
+                         url: "/auction/is/" + userId,
+                         type: "GET",
+                         dataType: "text",
+                         success: function(response) {
+
+                             if (response === "ok") {
+                                 document.getElementById('auctionButton').textContent = '경매참여중';
+                             } else if (response === "no") {
+                                 document.getElementById('auctionButton').textContent = '경매참여';
+                             }
+                         }
+                     });
 
                      var boardId = {
                         boardId: boardIdMatch ? boardIdMatch[1] : null,
@@ -761,7 +779,6 @@
                                 document.getElementById('interestButton').textContent = '관심';
                             }
                          }
-
                      });
 
                     $.ajax({
@@ -782,8 +799,6 @@
                     var latitude = document.getElementById("latitude").value;
                     var longitude = document.getElementById("longitude").value;
 
-
-
                     $.ajax({
                         url: "/address?latitude=" + latitude + "&longitude=" + longitude,
                         type: "GET",
@@ -802,8 +817,6 @@
                         interval: 2000
                     });
                 });
-
-
 
                   document.getElementById('blockUserLink').addEventListener('click', function(event) {
                       event.preventDefault();
@@ -852,47 +865,77 @@
                        var buttonText = document.getElementById('interestButton').textContent;
                        if (buttonText == '관심') {
                            // ajax 요청 보내서 관심 등록 후 버튼을 관심 취소로 바꾸기
-                           // 요청 성공 시
+
                            $.ajax({
                                url: '/board/' + boardId.boardId + '/favorite',
                                type: 'POST',
                                success: function(response) {
+                                    var interestCntElement = document.getElementById('interestCnt');
+                                    interestCntElement.textContent = '관심 ' + response;
                                     var button = document.getElementById('interestButton');
                                     button.textContent = '관심 해제';
-
                                }
-
                            });
 
                        } else if (buttonText == '관심 해제') {
                            // ajax 요청 보내서 관심 취소 후 버튼을 관심으로 바꾸기
-
                            $.ajax({
                                url: '/board/' + boardId.boardId + '/favorite',
                                type: 'DELETE',
                                success: function(response) {
+                                    var interestCntElement = document.getElementById('interestCnt');
+                                    interestCntElement.textContent = '관심 ' + response;
                                     var button = document.getElementById('interestButton');
                                     button.textContent = '관심';
 
                                }
-
                            });
                        }
 
                    })
 
                    document.getElementById('auctionButton').addEventListener('click', function(event) {
+                       var buttonText = this.textContent.trim();
+                       if (buttonText !== '경매참여중') {
+                           var dataString = document.getElementById("postById").textContent;
+                           var boardIdMatch = dataString.match(/boardId=([^,]+)/);
 
-                       $.ajax({
-                           url: '/auction',
-                           type: 'POST',
-                           success: function(response) {
-                              alert('success');
-                           },
-                           error: function(xhr, status, error) {
-                           }
-                       });
+                           var boardId = {
+                               boardId: boardIdMatch ? boardIdMatch[1] : null,
+                           };
+
+                           $.ajax({
+                               url: '/auction/' + boardId.boardId,
+                               type: 'POST',
+                               success: function(response) {
+                                  document.getElementById('auctionButton').textContent = '경매참여중';
+                               },
+                               error: function(xhr, status, error) {
+                               }
+                           });
+                       } else {
+                           alert('경매 참여중');
+                       }
                    });
+
+
+
+                   $(document).on("click","#chat",function(){
+                      //alert("글 상세번호 : " + "${postById.boardId}");
+                      let boardId2 = ${postById.boardId};
+                      //alert(boardId2);
+                      $.ajax({
+                        url: "../chat/chat2",
+                        method: "GET",
+                        data : boardId2,
+                        success:function(data){
+                          alert("이게뭐지: "+data);
+                        }
+                      })
+                   })
+
+
+
             </script>
 
         </body>

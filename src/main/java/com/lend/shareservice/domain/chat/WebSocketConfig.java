@@ -1,25 +1,33 @@
 package com.lend.shareservice.domain.chat;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+// Stomp 엔드 포인트 → sub/pub 엔드 포인트 설정
+// 엔드 포인트: 통신의 도착 지점
 @Configuration
-@EnableWebSocket
-@RequiredArgsConstructor
-public class WebSocketConfig implements WebSocketConfigurer {
-    // WebSocketHandler 선언 - 웹소켓 통신을 처리해준다.
-    private final WebSocketHandler webSocketHandler;
+@EnableWebSocketMessageBroker //Stomp 사용을 위해 선언받고 아래에 상속받음
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        // endpoint 설정 : /ws/chat
-        // 이를 통해서 ws://localhost:9090/ws/chat 으로 요청이 들어오면 websocket 통신을 진행한다.
-        // 도메인이 다른 서버에서도 접속 가능하도록 setAllowedOrigins("*")을 해줘서
-        // 모든 Cors의 요청을 허용해준다.
-        registry.addHandler(webSocketHandler, "/ws/chat").setAllowedOrigins("*");
+    public void registerStompEndpoints(StompEndpointRegistry registry)
+    {
+        // 브라우저: ws: //localhost:9090/컨텍스트/chat → socketjs에서 접속할 때 사용(sockjs 연결 주소)
+        registry.addEndpoint("/chat")// 연결될 엔드 포인트
+                .setAllowedOrigins("http://localhost:8081")
+                .withSockJS(); // SocketJS를 연결한다는 설정
+    }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry)
+    {
+        // 메시지를 구독하는 요청 url(prefix) => 메시지 받을 때
+        registry.enableSimpleBroker("/topic", "/queue");
+
+        // 메시지를 발행하는 요청 url(prefix) => 메시지 보낼 때
+        registry.setApplicationDestinationPrefixes("/app");
     }
 }

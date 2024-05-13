@@ -6,4 +6,6 @@ public interface NotificationService {
     SseEmitter subscribe(String id);
 
     void noti(String id, Object data);
+
+    public void sendToClient(String id, Object data);
 }

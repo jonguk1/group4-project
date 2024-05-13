@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Future;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -87,11 +88,25 @@ public class AuctionController {
     }
 
     @PostMapping("/auction/{boardId}")
-    public String auction(@PathVariable("boardId") Integer boardId) {
+    public ResponseEntity<String> auction(@PathVariable("boardId") Integer boardId) {
         String id = "hong";
 
-        auctionService.paticipateAuction(id, boardId);
-        return "";
+        if (auctionService.paticipateAuction(id, boardId) > 0) {
+            return ResponseEntity.ok("ok");
+        }
+        return ResponseEntity.ok("no");
+    }
+
+    @GetMapping("/auction/is/{userId}")
+    public ResponseEntity<String> currentAuctionState(@PathVariable("userId") String userId) {
+
+        boolean isAuction = auctionService.findCurrentAuctionState(userId);
+
+        if (isAuction) {
+            return ResponseEntity.ok("ok");
+        } else {
+            return ResponseEntity.ok("no");
+        }
     }
 
 }

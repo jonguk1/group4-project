@@ -99,19 +99,17 @@ public class BoardController {
         return "jspp/itemDetail";
     }
 
-
     // 글의 사진을 클릭하면 나오는 글 상세
     @GetMapping("/{boardId}")
     public String boardDetail(@PathVariable("boardId") Integer boardId, Model model) {
+
+        // 조회수 1증가
+        boardService.incrementingViewCount(boardId);
 
         ItemDetailDTO postById = boardService.findPostById(boardId);
         postById.setAddress(addressService.getAddressFromLatLng(postById.getLatitude(), postById.getLongitude()));
         List<PostDTO> postsBySearchTerm = boardService.findPostsBySearchTerm(postById.getItemName());
         List<PostDTO> interestPosts = boardService.findInterestPosts();
-
-        // 조회수 1증가
-        boardService.incrementingViewCount(boardId);
-
 
         String userId = "hong";
         model.addAttribute("postById", postById);
@@ -140,12 +138,29 @@ public class BoardController {
     @PostMapping("/hits")
     @ResponseBody
     public ResponseEntity<String> postsByHits(@RequestBody List<PostDTO> postDTOS) {
-        log.info("haha = {}", postDTOS);
+
         List<PostDTO> hitPosts = boardService.sortForHits(postDTOS);
 
         String allPostsByCategorysJson = null;
         try {
             allPostsByCategorysJson = objectMapper.writeValueAsString(hitPosts);
+
+        } catch (JsonProcessingException e) {
+
+        }
+        return ResponseEntity.ok(allPostsByCategorysJson);
+    }
+
+
+    @PostMapping("/recent")
+    @ResponseBody
+    public ResponseEntity<String> postsByRecent(@RequestBody List<PostDTO> postDTOS) {
+
+        List<PostDTO> recentPosts = boardService.sortForRecent(postDTOS);
+
+        String allPostsByCategorysJson = null;
+        try {
+            allPostsByCategorysJson = objectMapper.writeValueAsString(recentPosts);
         } catch (JsonProcessingException e) {
 
         }
@@ -156,7 +171,7 @@ public class BoardController {
     @PostMapping("/interest")
     @ResponseBody
     public ResponseEntity<String> postsByInterest(@RequestBody List<PostDTO> postDTOS) {
-        log.info("haha = {}", postDTOS);
+
         List<PostDTO> interestPosts = boardService.sortForInterest(postDTOS);
 
         String allPostsByCategorysJson = null;
@@ -185,13 +200,30 @@ public class BoardController {
         return ResponseEntity.ok(allPostsByCategorysJson);
     }
 
+    // 제목 + 내용으로 검색하는 요청
+    @PostMapping("/titleAndContent")
+    public ResponseEntity<String> postsByTitleAndContent(@RequestBody SearchByTitleAndContentDTO searchByTitleAndContentDTO) throws ParseException {
+        log.info("searchByTitleAndContentDTO = {}", searchByTitleAndContentDTO);
+        List<PostDTO> posts = boardService.findAllPostsByCategorys(new ItemAndBoardCategoryDTO(searchByTitleAndContentDTO.getBoardCategoryId(), searchByTitleAndContentDTO.getItemCategoryId()));
+        List<PostDTO> postsByTitleAndContent = boardService.getPostsByTitleAndContent(posts, searchByTitleAndContentDTO.getSearchTermDetail());
+        String allPostsByCategorysJson = null;
+        try {
+            allPostsByCategorysJson = objectMapper.writeValueAsString(postsByTitleAndContent);
+        } catch (JsonProcessingException e) {
+
+        }
+
+        return ResponseEntity.ok(allPostsByCategorysJson);
+    }
+
 
     // 관심글 등록
     @PostMapping("/{boardId}/favorite")
     public ResponseEntity<String> registerInterestPost(@PathVariable("boardId") Integer boardId) {
         String userId = "hong";
-        if (boardService.registerInterestPost(userId, boardId)) {
-            return ResponseEntity.ok("ok");
+        int interestCnt = boardService.registerInterestPost(userId, boardId);
+        if (interestCnt > 0) {
+            return ResponseEntity.ok(String.valueOf(interestCnt));
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register interest.");
         }
@@ -201,10 +233,13 @@ public class BoardController {
     @DeleteMapping("/{boardId}/favorite")
     public ResponseEntity<String> deleteInterestPost(@PathVariable("boardId") Integer boardId) {
         String userId = "hong";
-        if (boardService.deleteInterestPost(userId, boardId)) {
-            return ResponseEntity.ok("ok");
+        int interestCnt = boardService.deleteInterestPost(userId, boardId);
+        if (interestCnt >= 0) {
+            return ResponseEntity.ok(String.valueOf(interestCnt));
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register interest.");
         }
     }
+
+
 }

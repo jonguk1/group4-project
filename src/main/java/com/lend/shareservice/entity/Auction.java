@@ -29,6 +29,7 @@ public class Auction {
     @NotNull
     private Integer boardId;
 
+    // 낙찰자
     private String userId;
 
 }

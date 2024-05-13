@@ -138,7 +138,12 @@ public class BoardServiceImpl implements BoardService{
         board.setBoardCategoryId(postRegistrationDTO.getBoardCategoryId());
         board.setTitle(postRegistrationDTO.getTitle());
         board.setPrice(Integer.valueOf(NumberFormat.getInstance(Locale.KOREA).parse(postRegistrationDTO.getPrice()).intValue()));
-        board.setMaxPrice(Integer.valueOf(NumberFormat.getInstance(Locale.KOREA).parse(postRegistrationDTO.getMaxPrice()).intValue()));
+
+        if (!postRegistrationDTO.getMaxPrice().isEmpty()) {
+            board.setMaxPrice(Integer.valueOf(NumberFormat.getInstance(Locale.KOREA).parse(postRegistrationDTO.getMaxPrice()).intValue()));
+        } else {
+            board.setMaxPrice(null);
+        }
 
         if (postRegistrationDTO.getDeadline() == null) {
             board.setDeadline(null);
@@ -216,6 +221,8 @@ public class BoardServiceImpl implements BoardService{
         itemDetailDTO.setItemCategoryId(board.getItemCategoryId());
         itemDetailDTO.setLatitude(board.getLatitude());
         itemDetailDTO.setLongitude(board.getLongitude());
+
+
         itemDetailDTO.setIsMegaphone(board.IsMegaphone(board.getIsMegaphone()));
 
         return itemDetailDTO;
@@ -268,29 +275,51 @@ public class BoardServiceImpl implements BoardService{
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<PostDTO> sortForRecent(List<PostDTO> postDTOS) {
+        Collections.sort(postDTOS, Comparator.comparing(PostDTO::getRegDate).reversed());
+        return postDTOS;
+    }
+
+    // 제목 + 내용으로 검색
+    @Override
+    public List<PostDTO> getPostsByTitleAndContent(List<PostDTO> postDTOS, String searchTermDetail) {
+
+        List<PostDTO> postsToRemove = new ArrayList<>(); // 삭제할 요소를 저장할 리스트
+
+        for (PostDTO postDTO : postDTOS) {
+            if (!postDTO.getTitle().contains(searchTermDetail) && !postDTO.getContent().contains(searchTermDetail)) {
+                postsToRemove.add(postDTO);
+            }
+        }
+        postDTOS.removeAll(postsToRemove);
+
+        return postDTOS;
+    }
+
     // 관심글 등록
     @Override
-    public boolean registerInterestPost(String userId, Integer boardId) {
+    public int registerInterestPost(String userId, Integer boardId) {
         Favorite favorite = new Favorite();
         favorite.setBoardId(boardId);
         favorite.setUserId(userId);
-        log.info("haha");
+
         if (boardMapper.insertFavorite(favorite) > 0 && boardMapper.incrementInterest(favorite) > 0) {
-            return true;
+            return boardMapper.getInterestCnt(favorite);
         }
-        return false;
+        return 0;
     }
 
     @Override
-    public boolean deleteInterestPost(String userId, Integer boardId) {
+    public int deleteInterestPost(String userId, Integer boardId) {
         Favorite favorite = new Favorite();
         favorite.setBoardId(boardId);
         favorite.setUserId(userId);
         if (boardMapper.deleteFavorite(favorite) > 0 && boardMapper.decreaseInterest(favorite) > 0) {
-            return true;
+            return boardMapper.getInterestCnt(favorite);
         }
 
-        return false;
+        return -1;
     }
 
 

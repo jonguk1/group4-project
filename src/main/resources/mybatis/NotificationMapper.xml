@@ -2,6 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lend.shareservice.domain.notification.NotificationMapper">
 
-
+    <insert id="insertNotification" parameterType="com.lend.shareservice.entity.Notification">
+        <selectKey keyProperty="notiId" resultType="java.lang.Integer" order="AFTER" keyColumn="notiId">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO NOTIFICATION (userId, content, isRead, notiRegDate)
+        VALUES(#{userId}, #{content}, #{isRead}, NOW())
+    </insert>
 
 </mapper>
