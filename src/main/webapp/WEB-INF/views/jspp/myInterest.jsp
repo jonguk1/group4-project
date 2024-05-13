@@ -104,7 +104,7 @@
            		</div>
            		<div class="col-md-8 text-center">
            			<h3>
-           				<c:out value="${userId}"/>님의 빌려준 목록
+           				<c:out value="${userId}"/>님의 관심목록
            			</h3>
            		</div>
            		<div class="col-md-2">
@@ -135,7 +135,7 @@
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
-                                                <img src="/images/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                <img src="/images/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
                                             </p>
                                         </div>
                                         <div class="card-footer">
@@ -193,7 +193,7 @@
                                 </h5>
                                 <div class="card-body">
                                     <p class="card-text">
-                                        <img src="/images/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                        <img src="/images/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
                                     </p>
                                 </div>
                                 <div class="card-footer">

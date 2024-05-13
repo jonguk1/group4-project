@@ -9,13 +9,20 @@ import com.lend.shareservice.web.paging.dto.PagingDTO;
 import jakarta.validation.constraints.Future;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import java.time.format.DateTimeFormatter;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,8 +32,30 @@ import java.util.List;
 public class AuctionController {
 
     private final AuctionService auctionService;
-
     private final UserService userService;
+
+
+    @GetMapping(value = "/time/{user_id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @ResponseBody
+    public SseEmitter serverTime() {
+        SseEmitter emitter = new SseEmitter();
+
+        // 시간 데이터를 비동기적으로 보내기 위한 쓰레드 생성
+        Thread thread = new Thread(() -> {
+            try {
+                while (true) {
+                    String isoTimeString = Instant.now().toString(); // 현재 시간을 ISO 8601 형식의 문자열로 변환
+                    emitter.send(isoTimeString);
+                    Thread.sleep(1000); // 1초마다 보냄
+                }
+            } catch (Exception e) {
+                emitter.completeWithError(e); // 에러가 발생하면 에러를 보냄
+            }
+        });
+        thread.start();
+
+        return emitter;
+    }
 
     @GetMapping("/auction/{user_id}")
     public String myAuctionList(Model model,
@@ -43,19 +72,7 @@ public class AuctionController {
 
         page.init();
 
-        log.info("limit: "+page.getLimit());
-        log.info("offset: "+page.getOffset());
-
         List<AuctionDTO> auctions = auctionService.auctions(page,userId);
-
-        for (AuctionDTO auction : auctions) {
-            List<AuctionBoardDTO> boards = auction.getBoards();
-            for (AuctionBoardDTO board : boards) {
-                Date deadline = board.getDeadline();
-                long daysUntilDeadline= auctionService.calculateDaysUntilDeadline(deadline);
-                auction.setDateDifference((int) daysUntilDeadline);
-            }
-        }
 
         String loc ="/auction/"+userId;
 
@@ -69,5 +86,12 @@ public class AuctionController {
         return "jspp/myAuction";
     }
 
+    @PostMapping("/auction/{boardId}")
+    public String auction(@PathVariable("boardId") Integer boardId) {
+        String id = "hong";
+
+        auctionService.paticipateAuction(id, boardId);
+        return "";
+    }
 
 }

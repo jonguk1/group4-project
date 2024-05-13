@@ -49,4 +49,14 @@
             userId=#{values}
         </where>
     </select>
+
+    <select id="selectAuctionByBoardId" parameterType="string" resultType="com.lend.shareservice.entity.Auction">
+        SELECT * FROM AUCTION
+        WHERE boardId = #{boardId}
+    </select>
+
+    <insert id="insertAuction" >
+
+
+    </insert>
 </mapper>

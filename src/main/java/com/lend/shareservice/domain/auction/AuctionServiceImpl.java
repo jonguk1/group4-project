@@ -1,11 +1,15 @@
 package com.lend.shareservice.domain.auction;
 
 
+import com.lend.shareservice.domain.notification.EmitterRepository;
 import com.lend.shareservice.web.auction.dto.AuctionDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
+import com.lend.shareservice.entity.Auction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -22,17 +26,6 @@ public class AuctionServiceImpl implements AuctionService{
     private final AuctionMapper auctionMapper;
 
     @Override
-    public long calculateDaysUntilDeadline(Date deadline) {
-        LocalDate currentDate = LocalDate.now();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate deadlineDate = deadline.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        // 두 날짜 간의 일수 차이 계산
-        return ChronoUnit.DAYS.between(currentDate, deadlineDate);
-    }
-
-    @Override
     public int getAuctionCount(String userId) {
         return auctionMapper.getAuctionCount(userId);
     }
@@ -46,5 +39,21 @@ public class AuctionServiceImpl implements AuctionService{
         return auctionMapper.auctions(map);
     }
 
+
+    @Override
+    public void paticipateAuction(String id, Integer boardId) {
+
+        Auction findAuction = auctionMapper.selectAuctionByBoardId(boardId);
+
+        // 아직 생성된 적 없음 -> 생성
+        if (findAuction == null) {
+            Auction auction = new Auction();
+            auction.setBoardId(boardId);
+            auction.setCurrentPrice(0);
+            auctionMapper.insertAuction(auction);
+        } else {
+
+        }
+    }
 
 }

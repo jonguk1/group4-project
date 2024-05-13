@@ -4,6 +4,7 @@ package com.lend.shareservice.domain.auction;
 import com.lend.shareservice.web.auction.dto.AuctionDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,6 @@ public interface AuctionService {
 
     List<AuctionDTO> auctions(PagingDTO page,String userId);
 
-    // 경매 마감일로부터 현재 날짜까지의 일수 차이 계산
-    long calculateDaysUntilDeadline(Date deadline);
+    void paticipateAuction(String id, Integer boardId);
 
 }

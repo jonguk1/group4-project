@@ -20,11 +20,17 @@ public interface BoardService {
 
     void incrementingViewCount(Integer boarId);
 
-     List<PostDTO> findHitPosts();
+     List<PostDTO> findInterestPosts();
 
     List<PostDTO> sortForHits(List<PostDTO> postDTOS);
 
     List<PostDTO> sortForInterest(List<PostDTO> postDTOS);
 
     List<PostDTO> sortForLowPrice(List<PostDTO> postDTOS) throws ParseException;
+
+    boolean registerInterestPost(String userId, Integer boardId);
+
+    boolean deleteInterestPost(String userId, Integer boardId);
+
+
 }

@@ -1,5 +1,6 @@
 package com.lend.shareservice.domain.favorite;
 
+import com.lend.shareservice.entity.Favorite;
 import com.lend.shareservice.web.favorite.dto.FavoriteDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import lombok.RequiredArgsConstructor;
@@ -30,4 +31,17 @@ public class FavoriteServiceImpl implements FavoriteService{
         return favoriteMapper.getFavoriteTotalCount(page);
     }
 
+    @Override
+    public boolean findFavoriteByBoardIdAndUserId(String userId, Integer boardId) {
+        Favorite favorite = new Favorite();
+        favorite.setUserId(userId);
+        favorite.setBoardId(boardId);
+        Favorite findFavorite = favoriteMapper.selectByBoardIdAndUserId(favorite);
+
+        if (findFavorite == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

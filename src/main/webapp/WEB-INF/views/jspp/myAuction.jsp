@@ -11,8 +11,71 @@
      <link rel="stylesheet" href="/css/bootstrap.min.css">
     <meta charset="UTF-8">
     <title>Title</title>
-</head>
+    <script>
+        function displayServerTime() {
+            const eventSource = new EventSource('/time/${userId}');
 
+            eventSource.onmessage = function(event) {
+                const serverTime = new Date(event.data);
+                const deadlineElements = document.querySelectorAll('.deadline');
+
+                deadlineElements.forEach(deadlineElement => {
+                     const deadline = new Date(deadlineElement.dataset.deadline);
+                     const timeDifference = deadline.getTime() - serverTime.getTime();
+
+                     if(timeDifference<=0){
+                        return deadlineElement.innerText = "경매시간이 종료되었습니다";
+                     }
+                     const formattedDifference = formatTimeDifference(timeDifference);
+                     deadlineElement.innerText = formattedDifference;
+
+                });
+            };
+        }
+
+        function formatTimeDifference(timeDifference) {
+            const millisecondsInDay = 1000 * 60 * 60 * 24;
+
+            if (timeDifference < millisecondsInDay) {
+                const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+                const formattedHours = hours < 10 ? '0' + hours : hours;
+                const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+                const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+
+                return formattedHours + '시간 ' + formattedMinutes + '분 ' + formattedSeconds + '초';
+            } else {
+                const days = Math.floor(timeDifference / millisecondsInDay);
+                return days + '일';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.auction-details').forEach(function(details) {
+                details.style.display = 'none';
+            });
+
+            // 모든 스위치에 대한 이벤트 처리
+            document.querySelectorAll('.form-check-input').forEach(function(input) {
+                input.addEventListener('change', function() {
+                    // 현재 스위치의 부모 요소인 .card를 찾음
+                    var card = this.closest('.card');
+                    // 해당 .card 내의 .auction-details를 찾음
+                    var details = card.querySelector('.auction-details');
+
+                    // 현재 스위치와 연관된 .auction-details를 표시
+                    details.style.display = this.checked ? 'block' : 'none';
+                });
+            });
+
+            displayServerTime();
+        });
+
+
+    </script>
+</head>
 <body>
 
 <div class="container bg-green text-center">
@@ -99,29 +162,27 @@
    <br><br>
 
    <div class="row">
-       		<div class="col-md-2">
-       		</div>
-       		<div class="col-md-8 text-center">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8 text-center">
 
-       		<span>
-       				<h3><c:out value="${userId}"/>님의 경매</h3>
-       		</span>
+        <span>
+                <h3><c:out value="${userId}"/>님의 경매</h3>
+                <div id="serverTime"></div>
+        </span>
 
-       		</div>
-       		<div class="col-md-2">
-       		</div>
-       	</div>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
 
        	<br><br>
-
    <div class="row">
         <div class="col-md-2" style="margin-left:25px">
             <%@ include file="/WEB-INF/views/jspp/include/mypage.jsp"%>
         </div>
         <div class="col-md-8">
-            <div class="row">
-                <div class="col-md-1">
-                </div>
+            <div class="row auction-list">
                 <c:choose>
                     <c:when test="${auctions eq null or empty auctions}">
                         <div class="col-md-8">
@@ -129,11 +190,15 @@
                         </div>
                     </c:when>
                     <c:otherwise>
-                        <c:forEach var="auction" items="${auctions}">
-                            <div class="col-md-3" style="margin-left:25px">
+                       <c:forEach var="auction" items="${auctions}">
+                            <div class="col-md-4">
                                 <div class="card">
                                     <h5 class="card-header">
                                         <c:out value="${auction.boards[0].title}"/>
+                                        <div class="form-check form-switch">
+                                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                                          <label class="form-check-label" for="flexSwitchCheckDefault">가격 올리기</label>
+                                        </div>
                                     </h5>
                                     <div class="card-body">
                                         <p class="card-text">
@@ -163,33 +228,35 @@
                                                 <span class="badge bg-success">대여후</span>
                                             </c:when>
                                         </c:choose>
-                                        <p><c:out value="${auction.boards[0].itemName}"/></p>
-                                        <p><fmt:formatNumber value="${auction.boards[0].price}" pattern="#,###"/>원</p>
+                                        <br>
+                                        <span><c:out value="${auction.boards[0].itemName}"/></span>
+                                        <span><fmt:formatNumber value="${auction.boards[0].price}" pattern="#,###"/>원</span>
                                         <p>강원도 영월군 구포읍</p>
                                         <span>관심 <c:out value="${auction.boards[0].interestCnt}"/></span>
                                         <span>조회 <c:out value="${auction.boards[0].hits}"/></span>
+                                        <br><br>
+                                        <div class="auction-details">
+                                            <h6>경매 마감 : <span class="deadline" data-deadline="${auction.boards[0].deadline}">
+                                            </span></h6>
+                                            <h6>현재 가격 : <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원</h6>
+                                            <h6>상한가 : <fmt:formatNumber value="${auction.maxPrice}" pattern="#,###"/>원</h6>
+                                            <form class="d-flex" method="get" action="/auction/${auction.auctionId}/current-price">
+                                                <input type="text" name="currentPrice" style="margin-top:10px" placeholder="가격을 올려주세요"/>
+                                                <button type="submit" class="btn btn-primary" style="margin-top:10px">가격 올리기</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <!--<div class="col-md-5" style="margin-left:25px">
-                                <h4>경매 마감 : <c:out value="${auction.dateDifference}"/>일전</h4>
-                                <h4>현재 가격 : <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원</h4>
-                                <h4>상한가 : <fmt:formatNumber value="${auction.maxPrice}" pattern="#,###"/>원</h4>
-                                <br>
-                                <input type="text" placeholder="가격을 올려주세요"/ >
-                                <button type="button" class="btn btn-primary">가격 올리기</button>
-                            </div>-->
                         </c:forEach>
                     </c:otherwise>
                 </c:choose>
-                <div class="col-md-2">
-                </div>
             </div>
         </div>
+        <div class="col-md-2">
+        </div>
+   </div>
 
-   		<div class="col-md-2">
-   		</div>
-   	</div>
    	<br>
     <div class="row">
         <div class="col-md-2">

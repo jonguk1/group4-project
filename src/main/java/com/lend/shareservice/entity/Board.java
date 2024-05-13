@@ -40,6 +40,10 @@ public class Board {
     @NotNull
     private Integer price;
 
+    // 경매 최대 금액
+    @PositiveOrZero
+    private Integer maxPrice;
+
     // 경매 마감 시간 (경매 가능인 글에서만 설정)
     @Future
     private Date deadline;
