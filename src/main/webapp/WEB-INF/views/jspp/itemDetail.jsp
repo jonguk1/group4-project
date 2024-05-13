@@ -905,7 +905,7 @@
                     var hiddenField = document.createElement("input");
                     hiddenField.setAttribute("type", "hidden");
                     hiddenField.setAttribute("name", "boardId2");
-                     hiddenField.setAttribute("value", boardId2);
+                    hiddenField.setAttribute("value", boardId2);
                     form.appendChild(hiddenField);
 
                     document.body.appendChild(form);

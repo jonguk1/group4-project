@@ -11,4 +11,6 @@
             boardId = #{value}
         </where>
     </select>
+
+
 </mapper>
