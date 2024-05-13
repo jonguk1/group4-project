@@ -6,9 +6,9 @@
 <html lang="en">
 <head>
 
+
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
      <link rel="stylesheet" href="/css/bootstrap.min.css">
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
@@ -16,7 +16,7 @@
 <body>
 
 <div class="container bg-green text-center">
-    <div class="row">
+        <div class="row">
             <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
                 <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
                     <a class="navbar-brand" href="#" style="color: black;">썸띵랜드</a>
@@ -24,7 +24,7 @@
             </div>
             <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
                 <form class="d-flex">
-                    <div class="input-group mt-3">
+                    <div class="input-group mt-3"> <!-- 여기에 mt-3 클래스 추가 -->
                         <input class="form-control me-2" type="search" placeholder="빌리고 싶은 물건을 입력하세요">
                         <button class="btn btn-secondary" type="submit">Search</button>
                     </div>
@@ -98,102 +98,80 @@
 
    <br><br>
 
+   <div class="row">
+       		<div class="col-md-2">
+       		</div>
+       		<div class="col-md-8 text-center">
 
-    <div class="row">
-        <div class="col-md-2">
-        </div>
-        <div class="col-md-8 text-center">
-           	<h3>
-           	    <c:out value="${userId}"/>님이 받은 리뷰목록
-           	</h3>
-        </div>
-        <div class="col-md-2">
-        </div>
-    </div>
+       		<span>
+       				<h3><c:out value="${userId}"/>님의 차단 목록</h3>
+       		</span>
+       		</div>
+       		<div class="col-md-2">
+       		</div>
+       	</div>
 
-    <br><br>
+       	<br><br>
 
-     <div class="container-fluid" style="margin-left:80px;height:300px">
-    	<div class="row">
-    		<div class="col-md-2" style="margin-right:30px">
-    		    <%@ include file="/WEB-INF/views/jspp/include/mypage.jsp"%>
-    		</div>
-    		<c:choose>
-    		    <c:when test="${receiveds eq null or empty receiveds}">
+   <div class="container-fluid">
+       	<div class="row">
+       		<div class="col-md-2">
+       		    <%@ include file="/WEB-INF/views/jspp/include/mypage.jsp"%>
+       		</div>
+       		<c:choose>
+       		    <c:when test="${blocks eq null or empty blocks}">
+       		        <div class="col-md-8">
+       		            등록된 차단 유저가 없습니다
+       		        </div>
+       		    </c:when>
+       		    <c:otherwise>
                     <div class="col-md-8">
-                        <h2>받은 리뷰 내역이 없습니다<h2>
-                    </div>
-    		    </c:when>
-    		    <c:otherwise>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <c:forEach var="received" items="${receiveds}" varStatus="status" begin="0" end="${page.oneRecordPage-4}">
-                                <div class="col-md-4">
-                                    <div class="card bg-light mb-3" style="max-width: 30rem;">
-                                      <div class="card-header">아이디:&nbsp&nbsp<c:out value="${received.reviewer}"/>님</div>
-                                      <div class="card-body">
-                                        <h4 class="card-title"><c:out value="${received.content}"/></h4>
-                                        <p class="card-text">
-                                            <c:forEach var="k" begin="0" end="${received.star-1}">
-                                                <i class="bi bi-star-fill" style="font-size:24px;"></i>
-                                            </c:forEach>
-                                            <c:forEach var="k" begin="${received.star}" end="4">
-                                                <i class="bi bi-star" style="font-size:24px;"></i>
-                                            </c:forEach>
-                                        </p>
-                                      </div>
-                                    </div>
-                                </div>
+                        <table class="table">
+                            <tr>
+                              <th scope="col">차단 유저</th>
+                              <th scope="col">삭제</th>
+                            </tr>
+                            <c:forEach var="block" items="${blocks}">
+                                <form class="d-flex" method="get" action="/user/${block.blockedUserId}">
+                                    <tr style="font-size:1.25rem">
+                                        <td>
+                                            <c:out value="${block.blockedUserId}"/>
+                                        </td>
+                                        <td>
+                                            <button type="submit" class="btn btn-primary">삭제</button>
+                                        </td>
+                                    </tr>
+                                </form>
                             </c:forEach>
-                        </div>
-                        <div class="row">
-                            <c:forEach var="received" items="${receiveds}" varStatus="status" begin="${page.oneRecordPage-3}" end="${page.oneRecordPage}">
-                                <div class="col-md-4">
-                                    <div class="card bg-light mb-3" style="max-width: 30rem;">
-                                      <div class="card-header">아이디:&nbsp&nbsp<c:out value="${received.reviewer}"/>님</div>
-                                      <div class="card-body">
-                                        <h4 class="card-title"><c:out value="${received.content}"/></h4>
-                                        <p class="card-text">
-                                            <c:forEach var="k" begin="0" end="${received.star-1}">
-                                                <i class="bi bi-star-fill" style="font-size:24px;"></i>
-                                            </c:forEach>
-                                            <c:forEach var="k" begin="${received.star}" end="4">
-                                                <i class="bi bi-star" style="font-size:24px;"></i>
-                                            </c:forEach>
-                                        </p>
-                                      </div>
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </div>
+                        </table>
                     </div>
+                </c:otherwise>
+            </c:choose>
+       		<div class="col-md-2">
+       		</div>
+       	</div>
 
-    		<div class="col-md-2">
-    		</div>
-    	</div>
+       	<br>
 
-        <br>
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                        <nav>
+                            <c:out value="${pageNavi}" escapeXml="false"/>
+                        </nav>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
 
-            <div class="row">
-            		<div class="col-md-2">
-            		</div>
-            		<div class="col-md-8">
-            			<div class="row">
-            				<div class="col-md-4">
-            				</div>
-            				<div class="col-md-4">
-            					<nav>
-            						<c:out value="${pageNavi}" escapeXml="false"/>
-            					</nav>
-            				</div>
-            				<div class="col-md-4">
-            				</div>
-            			</div>
-            		</div>
-            		<div class="col-md-2">
-            		</div>
-            	</div>
-            </c:otherwise>
-        </c:choose>
-    </div>
+
 </body>

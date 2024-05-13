@@ -24,7 +24,21 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
+    public List<ReportDTO> reportWriters(String writer, PagingDTO page) {
+        Map<String,Object> map=new HashMap<>();
+        map.put("writer",writer);
+        map.put("limit", page.getLimit());
+        map.put("offset", page.getOffset());
+        return reportMapper.reportWriters(map);
+    }
+
+    @Override
     public int getReportCount() {
         return reportMapper.getReportCount();
+    }
+
+    @Override
+    public int getReportWriterCount(String writer) {
+        return reportMapper.getReportWriterCount(writer);
     }
 }

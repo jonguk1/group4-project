@@ -35,6 +35,10 @@ public class PagingDTO {
         offset=(pageNum-1) * oneRecordPage;
         limit= oneRecordPage;
 
+        if(offset<0){
+            offset=0;
+        }
+
         prevBlock=(pageNum-1)/pagingBlock*pagingBlock;
         nextBlock=prevBlock+(pagingBlock+1);
 

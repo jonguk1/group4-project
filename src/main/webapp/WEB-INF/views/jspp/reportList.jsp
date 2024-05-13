@@ -12,13 +12,201 @@
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        a {
+          text-decoration-line: none;
+        }
+    </style>
     <script>
-        $(function(){
-            $('.test').click(function(e){
-                var index=$('.index').val();
-                alert(index);
+        $(document).ready(function() {
+            $('.test').click(function(event) {
+                event.preventDefault();
+                var writer = this.getAttribute('data-writer');
+                fetchReportsWriter(writer);
+            });
+
+            $(document).on('click', '.page2 .pagination .page-link', function(event) {
+                event.preventDefault();
+
+                var pageNum = $(this).attr('href').split('=')[1];
+
+                console.log("pageNum:" + pageNum);
+
+                var href = $(this).attr('href');
+                var parts = href.split('/');
+                var writer = parts[parts.length - 1];
+                writer = writer.split('?')[0];
+
+                console.log("writer:" + writer);
+
+                fetchReportsWriterPage(writer, pageNum);
+            });
+        });
+
+        function fetchReportsWriter(writer) {
+            $.ajax({
+                url: '/report/' + writer,
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    let str='';
+                    str +=`
+                        <div class="row">
+                            <div class="col-md-2">
+                            </div>
+                            <div class="col-md-8 text-left">
+                                <h3>
+                                    \${writer}님의 신고목록
+                                </h3>
+                            </div>
+                            <div class="col-md-2">
+                            </div>
+                        </div>
+
+                        <br>
+                    `;
+                    str+=`
+                    <div class="container-fluid" style="margin-left:50px;">
+                        <div class="row">
+                            <div class="col-md-2" style="margin-right:30px" >
+                            </div>
+                            <div class="col-md-8">
+                                <table class="table">
+                                    <tr>
+                                      <th scope="col">신고자</th>
+                                      <th scope="col">제목</th>
+                                      <th scope="col">내용</th>
+                                      <th scope="col">작성일</th>
+                                    </tr>
+                        `;
+                    $(data.reportsWriter).each(function(i, item){
+                        str+=`
+                            <tr style="font-size:1.25rem">
+                              <td>\${item.userId}</td>
+                              <td>\${item.title}</td>
+                              <td>\${item.content}</td>
+                              <td>\${formatDate(item.regDate)}</td>
+                            </tr>
+                        `;
+                    })
+                    str+=`
+                                </table>
+                            </div>
+
+                            <div class="col-md-2">
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-left:300px">
+                            <div class="col-md-2">
+                            </div>
+                            <div class="col-md-8">
+                                <nav class="page2">
+                                    \${data.pageNavi}
+                                </nav>
+                            </div>
+                            <div class="col-md-2">
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                    $('#result').html(str);
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX 요청 실패:', error);
+                }
+            });
+        }
+        function fetchReportsWriterPage(writer, pageNum) {
+            $.ajax({
+                url: '/report/' + writer + '?pageNum=' + pageNum,
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data)
+                    updatePage(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX 요청 실패:', error);
+                }
+            });
+        }
+
+        function updatePage(data) {
+            let str='';
+            str +=`
+                <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8 text-left">
+                        <h3>
+                            \${data.writer}님의 신고목록
+                        </h3>
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                </div>
+                <br>
+            `;
+            str+=`
+            <div class="container-fluid" style="margin-left:50px;">
+                <div class="row">
+                    <div class="col-md-2" style="margin-right:30px" >
+                    </div>
+                    <div class="col-md-8">
+                        <table class="table">
+                            <tr>
+                              <th scope="col">신고자</th>
+                              <th scope="col">제목</th>
+                              <th scope="col">내용</th>
+                              <th scope="col">작성일</th>
+                            </tr>
+                `;
+            $(data.reportsWriter).each(function(i, item){
+                str+=`
+                    <tr style="font-size:1.25rem">
+                      <td>\${item.userId}</td>
+                      <td>\${item.title}</td>
+                      <td>\${item.content}</td>
+                      <td>\${formatDate(item.regDate)}</td>
+                    </tr>
+                `;
             })
-        })
+            str+=`
+                        </table>
+                    </div>
+
+                    <div class="col-md-2">
+                    </div>
+                </div>
+
+                <div class="row" style="margin-left:300px">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8">
+                        <nav class="page2">
+                            \${data.pageNavi}
+                        </nav>
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                </div>
+            </div>
+            `;
+            $('#result').html(str);
+        }
+
+        function formatDate(dateTimeString) {
+            var date = new Date(dateTimeString);
+            var year = date.getFullYear();
+            var month = (date.getMonth() + 1).toString().padStart(2, '0');
+            var day = date.getDate().toString().padStart(2, '0');
+            var hours = date.getHours().toString().padStart(2, '0');
+            var minutes = date.getMinutes().toString().padStart(2, '0');
+            var seconds = date.getSeconds().toString().padStart(2, '0');
+
+            return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+        }
     </script>
 </head>
 
@@ -121,136 +309,69 @@
     </div>
 
     <br>
+    <c:choose>
+        <c:when test="${reports eq null or empty reports}">
+            <div class="container-fluid" style="margin-left:50px;">
+                <div class="row">
+                    <div class="col-md-2" style="margin-right:30px" >
+                    </div>
+                    <div class="col-md-8">
+                        등록된 신고 목록이 없습니다
+                    </div>
+                    <div class="col-md-2" style="margin-right:30px" >
+                    </div>
+                </div>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="container-fluid" style="margin-left:50px;">
+                <div class="row">
+                    <div class="col-md-2" style="margin-right:30px" >
+                    </div>
+                    <div class="col-md-8">
+                        <table class="table">
+                            <tr>
+                              <th scope="col">악성 유저</th>
+                              <th scope="col">신고 횟수</th>
+                              <th scope="col">정지(5회 이상)</th>
+                            </tr>
+                            <c:forEach var="report" items="${reports}" varStatus="status">
+                                <tr style="font-size:1.25rem">
+                                    <td>
+                                    <a href="javascript:void(0);" class="test" data-writer="${report.boards[0].writer}">
+                                        <c:out value="${report.boards[0].writer}"/>
+                                    </a>
+                                    </td>
+                                    <td><c:out value="${report.writerCnt}"/>회</td>
+                                    <td>
+                                        <c:if test="${report.writerCnt >=5}">
+                                            <button type="button" class="btn btn-primary">정지</button>
+                                        </c:if>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </div>
 
-    <div class="container-fluid" style="margin-left:50px;">
-    	<div class="row">
-    		<div class="col-md-2" style="margin-right:30px" >
-    		</div>
-            <div class="col-md-8">
-                <table class="table">
-                    <tr>
-                      <th scope="col">악성 유저</th>
-                      <th scope="col">신고 횟수</th>
-                      <th scope="col">정지(5회 이상)</th>
-                    </tr>
-                    <c:forEach var="report" items="${reports}" varStatus="status">
-                        <tr style="font-size:1.25rem">
-                            <td>
-                            <a href="#" class="test">
-                                <c:out value="${report.boards[0].writer}"/>
-                                <input type="text" class="index" value="${status.index}"/>
-                            </a>
-                            </td>
-                            <td><c:out value="${report.writerCnt}"/>회</td>
-                            <td>
-                                <c:if test="${report.writerCnt >=6}">
-                                    <button type="button" class="btn btn-primary">정지</button>
-                                </c:if>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </div>
+                    <div class="col-md-2">
+                    </div>
+                </div>
 
-            <div class="col-md-2">
-            </div>
-        </div>
-
-        <div class="row" style="margin-left:300px">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-8">
-                <nav>
-                    <c:out value="${pageNavi}" escapeXml="false"/>
-                </nav>
-            </div>
-            <div class="col-md-2">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-        </div>
-        <div class="col-md-8 text-left">
-            <h3>
-                테스트님의 신고목록
-            </h3>
-        </div>
-        <div class="col-md-2">
-        </div>
-    </div>
-
-    <br>
-
-    <div class="container-fluid" style="margin-left:50px;">
-        <div class="row">
-            <div class="col-md-2" style="margin-right:30px" >
-            </div>
-            <div class="col-md-8">
-                <table class="table">
-                    <tr>
-                      <th scope="col">작성자</th>
-                      <th scope="col">제목</th>
-                      <th scope="col">내용</th>
-                      <th scope="col">등록일</th>
-                    </tr>
-                    <tr style="font-size:1.25rem">
-                        <td>작성자1</td>
-                        <td>신고합니다</td>
-                        <td>신고합니다</td>
-                        <td>2023/04/01 23:00:01</td>
-                    </tr>
-                    <tr style="font-size:1.25rem">
-                        <td>작성자1</td>
-                        <td>신고합니다</td>
-                        <td>신고합니다</td>
-                        <td>2023/04/01 23:00:01</td>
-                    </tr>
-                     <tr style="font-size:1.25rem">
-                         <td>작성자1</td>
-                         <td>신고합니다</td>
-                         <td>신고합니다</td>
-                         <td>2023/04/01 23:00:01</td>
-                     </tr>
-                </table>
+                <div class="row" style="margin-left:300px">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8">
+                        <nav>
+                            <c:out value="${pageNavi}" escapeXml="false"/>
+                        </nav>
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-2">
+            <div id="result"></div>
             </div>
-        </div>
-
-        <div class="row" style="margin-left:300px">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-8">
-                <nav>
-                    <ul class="pagination">
-                        <li class="page-item disabled">
-                          <a class="page-link" href="#">&laquo;</a>
-                        </li>
-                        <li class="page-item active">
-                          <a class="page-link" href="#">1</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">2</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">3</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">4</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">5</a>
-                        </li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">&raquo;</a>
-                        </li>
-                      </ul>
-                </nav>
-            </div>
-            <div class="col-md-2">
-            </div>
-        </div>
-    </div>
+        </c:otherwise>
+    </c:choose>
 </body>

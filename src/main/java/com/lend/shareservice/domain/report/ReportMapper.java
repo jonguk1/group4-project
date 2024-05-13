@@ -11,6 +11,10 @@ public interface ReportMapper {
 
     List<ReportDTO> reports(Map<String, Object> map);
 
+    List<ReportDTO> reportWriters(Map<String, Object> map);
+
     int getReportCount();
+
+    int getReportWriterCount(String writer);
 
 }
