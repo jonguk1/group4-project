@@ -116,6 +116,7 @@ public class BoardController {
         model.addAttribute("postsBySearchTerm", postsBySearchTerm);
         model.addAttribute("interestPosts", interestPosts);
         model.addAttribute("userId", userId);
+        log.info("postById = {}", postById);
         return "jspp/itemDetail";
     }
 
@@ -241,5 +242,11 @@ public class BoardController {
         }
     }
 
+    @GetMapping("/editForm")
+    public String editForm(@RequestParam("boardId") Integer boardId, Model model) {
 
+        ItemDetailDTO postById = boardService.findPostById(boardId);
+        model.addAttribute("postById", postById);
+        return "jspp/writingEditForm";
+    }
 }

@@ -1,11 +1,8 @@
-
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -123,11 +120,11 @@
                             <fieldset>
                                 <p>거래 방식</p>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="boardCategoryId" id="boardCategoryId" value="1" checked="">
+                                    <input class="form-check-input" type="radio" name="boardCategoryId" id="boardCategoryId1" value="1" >
                                     <label class="form-check-label" for="optionsRadios1">빌려드려요</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="boardCategoryId" id="boardCategoryId" value="2">
+                                    <input class="form-check-input" type="radio" name="boardCategoryId" id="boardCategoryId2" value="2">
                                     <label class="form-check-label" for="optionsRadios2">빌려주세요</label>
                                 </div>
                             </fieldset>
@@ -139,8 +136,7 @@
                                         <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('title').defaultMessage}</span>
                                     </div>
                             </c:if>
-                                <input type="input" class="form-control" id="title" name="title" placeholder="글 제목" autocomplete="off">
-
+                                <input type="input" class="form-control" id="title" name="title" value="${postById.title}" placeholder="글 제목" autocomplete="off">
 
                             </div>
                             <div>
@@ -150,7 +146,7 @@
                                         <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('itemName').defaultMessage}</span>
                                     </div>
                                 </c:if>
-                                <input type="text" class="form-control" id="itemName" name="itemName"  placeholder="상품명" autocomplete="off">
+                                <input type="text" class="form-control" id="itemName" name="itemName" value="${postById.itemName}" placeholder="상품명" autocomplete="off">
                                 <small id="itemNameHelp" class="form-text text-muted">상품명을 정확하게 입력해주세요 (예시 : 선풍기)</small>
 
                             </div>
@@ -161,12 +157,9 @@
                                     <div><span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('price').defaultMessage}</span></div>
                                 </c:if>
                                 <div class="input-group mb-3">
-
                                 <span class="input-group-text">₩</span>
-                                <input type="input" class="form-control" id="price" name="price" aria-label="Amount (to the nearest dollar)" oninput="formatPrice()" placeholder="희망 가격" autocomplete="off">
+                                <input type="input" class="form-control" id="price" name="price" value="${postById.price}" aria-label="Amount (to the nearest dollar)" oninput="formatPrice()" placeholder="희망 가격" autocomplete="off">
                                 </div>
-
-
                             </div>
 
                             <div>
@@ -201,7 +194,7 @@
                                 <c:if test="${postRegistrationBindingResult.hasFieldErrors('content')}">
                                     <div><span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('content').defaultMessage}</span></div>
                                 </c:if>
-                                <textarea class="form-control" id="content" name="content" rows="10"></textarea>
+                                <textarea class="form-control" id="content" name="content"  rows="10">${postById.content}</textarea>
                             </div>
 
                             <br>
@@ -216,64 +209,25 @@
                             <input type="hidden" id="longitude" name="writer" value="hong">
                             <br>
 
-                            <fieldset class="row">
-                                <div class="col">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="isMegaphone" name="isMegaphone">
-                                        <label class="form-check-label" for="isMegaphone">확성기 사용</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="isAuction" name="isAuction">
-                                        <label class="form-check-label" for="isAuction">경매(경매 참여 인원이 2명 이상이 되면 경매가 자동 시작 됩니다)</label>
-                                    </div>
-
-
-                                </div>
-                            </fieldset>
-
-                            <div class="row">
-                                <div class="col">
-                                </div>
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="col">
-                                            <c:if test="${postRegistrationBindingResult.hasFieldErrors('maxPriceSetForAuctions')}">
-                                                <div>
-                                                    <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('maxPriceSetForAuctions').defaultMessage}</span>
-                                                </div>
-                                            </c:if>
-                                            <div id="auctionInput" style="display: none;">
-
-                                                <input type="input" class="form-control" id="maxPrice" name="maxPrice" aria-label="Amount (to the nearest dollar)" oninput="formatPrice()" placeholder="경매 최고가" autocomplete="off">
-                                            </div>
-                                        </div>
-                                    </div>
-                               </div>
-                            </div>
-
-                            <br>
-
                             <div class="row">
                                 <div class="col">
                                     <label for="returnDate">반납 날짜</label>
-                                    <input type="date" class="form-control" id="returnDate" name="returnDate">
+                                    <input type="date" class="form-control" id="returnDate" name="returnDate" value="${postById.returnDate}">
                                 </div>
                                 <div class="col">
-                                    <label for="deadline">경매 마감 날짜</label>
+
                                     <c:if test="${postRegistrationBindingResult.hasFieldErrors('deadlineSetForAuctions')}">
                                         <div>
                                             <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('deadlineSetForAuctions').defaultMessage}</span>
                                         </div>
                                     </c:if>
-                                    <input type="date" class="form-control" id="deadline" name="deadline">
+
                                 </div>
                             </div>
 
                             <br>
 
-                            <button type="submit" class="btn btn-primary">글 등록</button>
+                            <button type="submit" class="btn btn-primary">글 수정</button>
 
                             <br><br><br>
                         </fieldset>
@@ -286,78 +240,49 @@
     </div>
 </div>
 
-
     <script>
-
         $(document).ready(function() {
-
-
-            var auctionCheckbox = document.getElementById('isAuction');
-
-
-            auctionCheckbox.addEventListener('change', function () {
-
-                if (auctionCheckbox.checked) {
-                    document.getElementById('auctionInput').style.display = 'block';
-                    document.getElementById('maxPriceButton').style.display = 'block';
-
-                } else {
-
-                    document.getElementById('auctionInput').style.display = 'none';
-                    document.getElementById('maxPriceButton').style.display = 'none';
-                }
-            });
-
                     $.ajax({
                         url: "/board/board-category",
                         type: "GET",
-                        dataType: "json", // 응답 데이터 타입 (JSON, XML, HTML 등)
+                        dataType: "json",
                         success: function(response) {
                             console.log(response);
 
                             $.each(response, function(index, value) {
-                                    $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                                    $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                                    $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>")
-                                });
+                                $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                                $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                                if (value.itemCategoryId === ${postById.itemCategoryId}) {
+                                    $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "' selected>" + value.itemCategoryName + "</option>");
+                                } else {
+                                    $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
+                                }
+                            });
                         },
                         error: function(xhr, status, error) {
-
                            console.error("요청 실패:", status, error);
                         }
                     });
                 });
 
-        // 경매 마감 날짜 입력란 비활성화
-        document.getElementById('deadline').disabled = true;
+         var boardCategoryId = "${postById.boardCategoryId}";
 
-        // 경매 스위치 체크 이벤트
-        document.getElementById('isAuction').addEventListener('change', function() {
-            // 경매 스위치가 활성화되었을 때
-            if (this.checked) {
-                // 경매 마감 날짜 입력란 활성화
-                document.getElementById('deadline').disabled = false;
-            } else {
-                // 경매 스위치가 비활성화되었을 때
-                // 경매 마감 날짜 입력란 비활성화 및 값 초기화
-                document.getElementById('deadline').disabled = true;
-                document.getElementById('deadline').value = '';
-            }
-        });
+         if (boardCategoryId === "1") {
+             document.getElementById("boardCategoryId1").checked = true;
+         } else if (boardCategoryId === "2") {
+             document.getElementById("boardCategoryId2").checked = true;
+         }
 
         function formatPrice() {
             // 입력 필드에서 값을 가져옴
             let input = document.getElementById('price').value;
-            let input2 = document.getElementById('maxPrice').value;
+
             // 쉼표를 추가하여 형식 변환
             let formattedPrice = input.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            let formattedPrice2 = input2.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
             // 변환된 값을 다시 입력 필드에 설정
             document.getElementById('price').value = formattedPrice;
-            document.getElementById('maxPrice').value = formattedPrice2;
         }
-
-
 
         // 지도를 표시할 영역을 설정
         // 클릭한 위치의 위도와 경도를 저장할 변수
@@ -376,13 +301,13 @@
         var marker2 = null;
 
         marker2 = new naver.maps.Marker({
-            position: new naver.maps.LatLng(37.5665, 126.9780),
+            position: new naver.maps.LatLng(${postById.latitude}, ${postById.longitude}),
             map: map
         });
 
         // 정보 창 생성
         var infowindow2 = new naver.maps.InfoWindow({
-            content: '<div style="padding:10px;">현재 위치</div>',
+            content: '<div style="padding:10px;">거래 위치</div>',
             backgroundColor: '#fff',
             borderColor: '#000',
             anchorSize: new naver.maps.Size(0, 0),
@@ -413,7 +338,7 @@
 
             // 정보 창 생성
             var infowindow = new naver.maps.InfoWindow({
-                content: '<div style="padding:10px;">거래 희망 위치</div>',
+                content: '<div style="padding:10px;">거래 희망 위치 수정</div>',
                 backgroundColor: '#fff',
                 borderColor: '#000',
                 anchorSize: new naver.maps.Size(0, 0),
@@ -445,14 +370,6 @@
                 infowindow2.close();
             }
         });
-
-
-
-
     </script>
 </body>
-
-
-
-
 </html>

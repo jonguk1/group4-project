@@ -179,6 +179,7 @@ public class BoardServiceImpl implements BoardService{
         }
         board.setWriter(postRegistrationDTO.getWriter());
         board.setLendDate(null);
+        log.info("save!!! = {}", board);
         boardMapper.insertBoard(board);
     }
 
