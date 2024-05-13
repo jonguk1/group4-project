@@ -48,7 +48,7 @@ public class ChatRoomController {
 
     @PostMapping("/reserv")
     public void reservation(@RequestParam("chatId") String chatId,
-                            @RequestParam(value = "datetimeInput")LocalDateTime reservDate) {
+                            @RequestParam(value = "datetimeInput") LocalDateTime reservDate) {
         log.info(String.valueOf(reservDate));
         log.info(chatId);
 
