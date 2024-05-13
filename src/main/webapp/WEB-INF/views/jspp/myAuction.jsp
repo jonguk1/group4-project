@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -52,25 +53,50 @@
             }
         }
 
-        window.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.auction-details').forEach(function(details) {
-                details.style.display = 'none';
-            });
+        $(document).ready(function() {
+            $('.auction-details').hide();
 
-            // 모든 스위치에 대한 이벤트 처리
-            document.querySelectorAll('.form-check-input').forEach(function(input) {
-                input.addEventListener('change', function() {
-                    // 현재 스위치의 부모 요소인 .card를 찾음
-                    var card = this.closest('.card');
-                    // 해당 .card 내의 .auction-details를 찾음
-                    var details = card.querySelector('.auction-details');
+            $('.form-check-input').change(function() {
+                // 현재 스위치의 부모 요소인 .card를 찾음
+                var card = $(this).closest('.card');
+                // 해당 .card 내의 .auction-details를 찾음
+                var details = card.find('.auction-details');
 
-                    // 현재 스위치와 연관된 .auction-details를 표시
-                    details.style.display = this.checked ? 'block' : 'none';
-                });
+                // 현재 스위치와 연관된 .auction-details를 표시 또는 숨김
+                details.toggle($(this).prop('checked'));
             });
 
             displayServerTime();
+
+            $('.auction-form').submit(function(event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response === 'emptyCurrentPrice') {
+                            alert('금액을 입력하세요.');
+                        }else if(response === 'maxCurrentPrice'){
+                            alert('상한가를 넘게 입력하셧습니다. 다시 입력하세요');
+                        }else if (response === 'ok') {
+                            alert('경매 등록 성공!');
+                            location.reload();
+                        } else if (response === 'no') {
+                            alert('경매 등록 실패!');
+                        } else {
+                            alert('알 수 없는 응답: ' + response);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // 요청이 실패했을 때 처리
+                        console.error('Failed to update auction price:', error);
+                        alert('서버와의 통신에 문제가 발생했습니다. 나중에 다시 시도해주세요.');
+                    }
+                });
+            });
         });
 
 
@@ -240,9 +266,10 @@
                                             </span></h6>
                                             <h6>현재 가격 : <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원</h6>
                                             <h6>상한가 : <fmt:formatNumber value="${auction.maxPrice}" pattern="#,###"/>원</h6>
-                                            <form class="d-flex" method="get" action="/auction/${auction.auctionId}/current-price">
+                                            <form class="d-flex auction-form" method="post" action="/auction/${auction.auctionId}/current-price">
+                                                <input type="hidden" name="_method" value="put">
                                                 <input type="text" name="currentPrice" style="margin-top:10px" placeholder="가격을 올려주세요"/>
-                                                <button type="submit" class="btn btn-primary" style="margin-top:10px">가격 올리기</button>
+                                                <button type="submit" class="btn btn-primary btn-sm" style="margin-top:10px">가격 올리기</button>
                                             </form>
                                         </div>
                                     </div>

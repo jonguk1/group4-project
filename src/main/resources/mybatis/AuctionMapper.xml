@@ -27,7 +27,7 @@
 
     <select id="auctions" parameterType="map" resultMap="auctionMap">
         select
-        b.deadline,b.title,b.itemImage1,b.isAuction,b.isLend
+        a.auctionId,b.deadline,b.title,b.itemImage1,b.isAuction,b.isLend
         ,b.price,b.itemName,b.latitude,b.longitude
         ,b.hits,b.interestCnt
         ,a.currentPrice,a.maxPrice
@@ -47,6 +47,21 @@
         select count(*) from participant_Auction
         <where>
             userId=#{values}
+        </where>
+    </select>
+
+    <update id="updateCurrentPrice" parameterType="map">
+        update auction
+        set currentPrice=#{currentPrice}
+        <where>
+            auctionId=#{auctionId}
+        </where>
+    </update>
+
+    <select id="getMaxPrice" parameterType="_int">
+        select maxPrice from auction
+        <where>
+            auctionId=#{values}
         </where>
     </select>
 

@@ -49,6 +49,20 @@ public class AuctionServiceImpl implements AuctionService{
         return auctionMapper.auctions(map);
     }
 
+    @Override
+    public int getMaxPrice(int auctionId) {
+        return auctionMapper.getMaxPrice(auctionId);
+    }
+
+
+    @Override
+    public int updateCurrentPrice(int auctionId, int currentPrice) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("currentPrice",currentPrice);
+        map.put("auctionId",auctionId);
+        return auctionMapper.updateCurrentPrice(map);
+    }
+
     private final NotificationMapper notificationMapper;
     private final NotificationService notificationService;
     private final BoardService boardService;

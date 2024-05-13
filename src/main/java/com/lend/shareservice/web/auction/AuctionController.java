@@ -13,12 +13,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.format.DateTimeFormatter;
 
 import java.time.Instant;
@@ -85,6 +84,36 @@ public class AuctionController {
         model.addAttribute("pageNavi",pageNavi);
 
         return "jspp/myAuction";
+    }
+
+    @PostMapping("/auction/{auction_id}/current-price")
+    public ResponseEntity<String> updateCurrentPrice(@PathVariable("auction_id") int auctionId,
+                                                     @RequestParam(value = "currentPrice", defaultValue = "0") int currentPrice) {
+        String loginUser = "테스트1";
+
+        try {
+            loginUser = URLEncoder.encode(loginUser, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        if (currentPrice == 0) {
+            return ResponseEntity.ok("emptyCurrentPrice");
+        }
+
+        int maxPrice= auctionService.getMaxPrice(auctionId);
+
+        if(currentPrice>maxPrice){
+            return ResponseEntity.ok("maxCurrentPrice");
+        }
+
+        int n = auctionService.updateCurrentPrice(auctionId, currentPrice);
+
+        if (n > 0) {
+            return ResponseEntity.ok("ok");
+        } else {
+            return ResponseEntity.ok("no");
+        }
     }
 
     @PostMapping("/auction/{boardId}")

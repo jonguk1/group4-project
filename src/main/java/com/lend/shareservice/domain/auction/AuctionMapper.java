@@ -8,10 +8,7 @@ import com.lend.shareservice.entity.Participant_Auction;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
-<<<<<<< HEAD
 import java.util.Map;
-=======
->>>>>>> develop
 
 @Mapper
 public interface AuctionMapper {
@@ -35,4 +32,8 @@ public interface AuctionMapper {
     int selectParticipantCnt(Auction findAuctionId);
 
     List<String> selectIdsByAuctionId(Integer auctionId);
+
+    int updateCurrentPrice(Map<String, Integer> map);
+
+    int getMaxPrice(int auctionId);
 }

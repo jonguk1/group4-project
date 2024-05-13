@@ -16,6 +16,10 @@ public interface AuctionService {
 
     List<AuctionDTO> auctions(PagingDTO page,String userId);
 
+    int getMaxPrice(int auctionId);
+
+    int updateCurrentPrice(int auctionId,int currentPrice);
+
     int paticipateAuction(String id, Integer boardId);
 
     boolean findCurrentAuctionState(String userId);
