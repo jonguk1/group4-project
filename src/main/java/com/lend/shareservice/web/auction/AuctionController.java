@@ -86,9 +86,39 @@ public class AuctionController {
         return "jspp/myAuction";
     }
 
-    @PostMapping("/auction/{auction_id}/current-price")
+    @GetMapping("/auction/{user_id}/complete")
+    public String myAuctionCompleteList(Model model,
+                               PagingDTO page,
+                               @PathVariable("user_id") String userId,
+                               @RequestParam(defaultValue = "1") int pageNum){
+
+        userId=userService.getUserId(userId);
+
+        int totalCount = auctionService.getCompleteAuctionCount(userId);
+        page.setTotalCount(totalCount);
+        page.setOneRecordPage(3);
+        page.setPagingBlock(5);
+
+        page.init();
+
+        List<AuctionDTO> auctions = auctionService.completeAuctions(page,userId);
+
+        String loc ="/auction/"+userId+"/complete";
+
+        String pageNavi=page.getPageNavi(loc);
+
+        model.addAttribute("auctions",auctions);
+        model.addAttribute("userId",userId);
+        model.addAttribute("page",page);
+        model.addAttribute("pageNavi",pageNavi);
+
+        return "jspp/myAuction";
+    }
+
+    @PutMapping("/auction/{auction_id}/current-price")
     public ResponseEntity<String> updateCurrentPrice(@PathVariable("auction_id") int auctionId,
-                                                     @RequestParam(value = "currentPrice", defaultValue = "0") int currentPrice) {
+                                                     @RequestParam(value = "currentPrice", defaultValue = "0") int currentPrice,
+                                                     @RequestParam(value="userId") String userId) {
         String loginUser = "테스트1";
 
         try {
@@ -107,13 +137,27 @@ public class AuctionController {
             return ResponseEntity.ok("maxCurrentPrice");
         }
 
-        int n = auctionService.updateCurrentPrice(auctionId, currentPrice);
+        int getCurrentPrice =auctionService.getCurrentPrice(auctionId);
+
+        if(currentPrice<=getCurrentPrice){
+            return ResponseEntity.ok("lowCurrentPrice");
+        }
+
+        int n = auctionService.updateCurrentPrice(auctionId, currentPrice,userId);
 
         if (n > 0) {
             return ResponseEntity.ok("ok");
         } else {
             return ResponseEntity.ok("no");
         }
+    }
+
+    @PatchMapping("/auction/{auction_id}/isAuction")
+    public ResponseEntity<String> updateIsAuction(@PathVariable("auction_id") int auctionId){
+        if(auctionService.updateIsAuction(auctionId)>0){
+            return ResponseEntity.ok("ok");
+        }
+        return ResponseEntity.ok("no");
     }
 
     @PostMapping("/auction/{boardId}")

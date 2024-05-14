@@ -41,6 +41,11 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
+    public int getCompleteAuctionCount(String userId) {
+        return auctionMapper.getAuctionCount(userId);
+    }
+
+    @Override
     public List<AuctionDTO> auctions(PagingDTO page, String userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("userId",userId);
@@ -50,16 +55,26 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
+    public List<AuctionDTO> completeAuctions(PagingDTO page, String userId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId",userId);
+        map.put("limit", page.getLimit());
+        map.put("offset", page.getOffset());
+        return auctionMapper.completeAuctions(map);
+    }
+
+    @Override
     public int getMaxPrice(int auctionId) {
         return auctionMapper.getMaxPrice(auctionId);
     }
 
 
     @Override
-    public int updateCurrentPrice(int auctionId, int currentPrice) {
-        Map<String, Integer> map = new HashMap<>();
+    public int updateCurrentPrice(int auctionId, int currentPrice,String userId) {
+        Map<String, Object> map = new HashMap<>();
         map.put("currentPrice",currentPrice);
         map.put("auctionId",auctionId);
+        map.put("userId",userId);
         return auctionMapper.updateCurrentPrice(map);
     }
 
@@ -150,5 +165,16 @@ public class AuctionServiceImpl implements AuctionService{
 
         return false;
     }
+
+    @Override
+    public int updateIsAuction(int auctionId) {
+        return auctionMapper.updateIsAuction(auctionId);
+    }
+
+    @Override
+    public int getCurrentPrice(int auctionId) {
+        return auctionMapper.getCurrentPrice(auctionId);
+    }
+
 
 }

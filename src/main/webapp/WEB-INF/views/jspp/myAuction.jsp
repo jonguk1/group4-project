@@ -12,25 +12,49 @@
      <link rel="stylesheet" href="/css/bootstrap.min.css">
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .auction-details-content {
+            border: 2px solid #000;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
     <script>
+
+    let currentServerTime = null;
+
         function displayServerTime() {
             const eventSource = new EventSource('/time/${userId}');
 
             eventSource.onmessage = function(event) {
-                const serverTime = new Date(event.data);
+                currentServerTime = new Date(event.data);
                 const deadlineElements = document.querySelectorAll('.deadline');
 
-                deadlineElements.forEach(deadlineElement => {
-                     const deadline = new Date(deadlineElement.dataset.deadline);
-                     const timeDifference = deadline.getTime() - serverTime.getTime();
+                for (const deadlineElement of deadlineElements) {
+                    const deadline = new Date(deadlineElement.dataset.deadline);
+                    console.log(deadline);
+                    const timeDifference = deadline.getTime() - currentServerTime.getTime();
 
-                     if(timeDifference<=0){
-                        return deadlineElement.innerText = "경매시간이 종료되었습니다";
-                     }
-                     const formattedDifference = formatTimeDifference(timeDifference);
-                     deadlineElement.innerText = formattedDifference;
-
-                });
+                    if (timeDifference <= 0) {
+                        deadlineElement.innerText = "경매시간이 종료되었습니다";
+                        const auctionId = deadlineElement.closest('.auction-details').querySelector('input[name="auctionId"]').value;
+                        updateAuctionStatus(auctionId);
+                        const auctionDetails = deadlineElement.closest('.auction-details');
+                        const inputElement = auctionDetails.querySelector('input[name="currentPrice"]');
+                        const buttonElement = auctionDetails.querySelector('button[type="submit"]');
+                        if (inputElement) {
+                            inputElement.disabled = true;
+                        }
+                        if (buttonElement) {
+                            buttonElement.disabled = true;
+                        }
+                        eventSource.close();
+                        break;
+                    }
+                    const formattedDifference = formatTimeDifference(timeDifference);
+                    deadlineElement.innerText = formattedDifference;
+                }
             };
         }
 
@@ -38,7 +62,7 @@
             const millisecondsInDay = 1000 * 60 * 60 * 24;
 
             if (timeDifference < millisecondsInDay) {
-                const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+                const hours = Math.floor(timeDifference / (1000 * 60 * 60)) % 24;
                 const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
 
@@ -53,47 +77,74 @@
             }
         }
 
+        function updateAuctionStatus(auctionId) {
+            $.ajax({
+                url: '/auction/' + auctionId + '/isAuction',
+                type: 'PATCH',
+                success: function(response) {
+                    if (response === "ok") {
+                        $('#badge-' + auctionId).text("경매완료");
+                    } else {
+                        alert("상태 업데이트 실패");
+                    }
+                },
+                error: function() {
+                    alert("오류 발생");
+                }
+            });
+        }
+
         $(document).ready(function() {
             $('.auction-details').hide();
 
             $('.form-check-input').change(function() {
-                // 현재 스위치의 부모 요소인 .card를 찾음
                 var card = $(this).closest('.card');
-                // 해당 .card 내의 .auction-details를 찾음
                 var details = card.find('.auction-details');
-
-                // 현재 스위치와 연관된 .auction-details를 표시 또는 숨김
                 details.toggle($(this).prop('checked'));
+                displayServerTime();
             });
 
-            displayServerTime();
 
             $('.auction-form').submit(function(event) {
                 event.preventDefault();
+                const auctionDetails = $(this).closest('.auction-details');
+                const deadlineElement = auctionDetails.find('.deadline');
+                const deadline = new Date(deadlineElement.data('deadline'));
+
+                if (currentServerTime && currentServerTime.getTime() >= deadline.getTime()) {
+                    alert('경매 시간이 종료되어 등록할 수 없습니다.');
+                    return;
+                }
                 var formData = $(this).serialize();
 
                 $.ajax({
                     url: $(this).attr('action'),
-                    method: 'POST',
+                    method: 'PUT',
                     data: formData,
                     success: function(response) {
                         if (response === 'emptyCurrentPrice') {
                             alert('금액을 입력하세요.');
+                            return;
                         }else if(response === 'maxCurrentPrice'){
                             alert('상한가를 넘게 입력하셧습니다. 다시 입력하세요');
+                            return;
+                        }else if(response =='lowCurrentPrice'){
+                            alert('현재 등록된 금액보다 낮게 입력하셧습니다. 다시 입력하세요');
+                            return;
                         }else if (response === 'ok') {
                             alert('경매 등록 성공!');
                             location.reload();
                         } else if (response === 'no') {
                             alert('경매 등록 실패!');
+                            return;
                         } else {
                             alert('알 수 없는 응답: ' + response);
+                            return;
                         }
                     },
                     error: function(xhr, status, error) {
-                        // 요청이 실패했을 때 처리
-                        console.error('Failed to update auction price:', error);
-                        alert('서버와의 통신에 문제가 발생했습니다. 나중에 다시 시도해주세요.');
+                        console.error('경매 등록에 실패하였습니다:', error);
+                       alert("오류 발생");
                     }
                 });
             });
@@ -193,8 +244,7 @@
         <div class="col-md-8 text-center">
 
         <span>
-                <h3><c:out value="${userId}"/>님의 경매</h3>
-                <div id="serverTime"></div>
+                <h3><c:out value="${userId}"/>님의 경매 목록</h3>
         </span>
 
         </div>
@@ -209,6 +259,15 @@
         </div>
         <div class="col-md-8">
             <div class="row auction-list">
+                <ul class="nav nav-pills">
+                   <li class="nav-item dropdown">
+                       <a class="nav-link dropdown-toggle" id="statusLink" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">상태</a>
+                       <div class="dropdown-menu" style="">
+                           <a class="dropdown-item" href="/auction/${userId}" id="auctionStatus">경매중</a>
+                           <a class="dropdown-item" href="/auction/${userId}/complete" id="auctionComplete">경매완료</a>
+                       </div>
+                   </li>
+                </ul>
                 <c:choose>
                     <c:when test="${auctions eq null or empty auctions}">
                         <div class="col-md-8">
@@ -221,10 +280,6 @@
                                 <div class="card">
                                     <h5 class="card-header">
                                         <c:out value="${auction.boards[0].title}"/>
-                                        <div class="form-check form-switch">
-                                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                                          <label class="form-check-label" for="flexSwitchCheckDefault">가격 올리기</label>
-                                        </div>
                                     </h5>
                                     <div class="card-body">
                                         <p class="card-text">
@@ -240,7 +295,7 @@
                                                 <p><span class="badge bg-danger">경매중</span>
                                             </c:when>
                                             <c:when test="${auction.boards[0].isAuction eq 2}">
-                                                <p><span class="badge bg-danger">경매후</span>
+                                                <p><span class="badge bg-danger">경매완료</span>
                                             </c:when>
                                         </c:choose>
                                         <c:choose>
@@ -251,26 +306,61 @@
                                                 <span class="badge bg-success">대여중</span>
                                             </c:when>
                                             <c:when test="${auction.boards[0].isLend eq 2}">
-                                                <span class="badge bg-success">대여후</span>
+                                                <span class="badge bg-success">대여완료</span>
                                             </c:when>
                                         </c:choose>
                                         <br>
                                         <span><c:out value="${auction.boards[0].itemName}"/></span>
-                                        <span><fmt:formatNumber value="${auction.boards[0].price}" pattern="#,###"/>원</span>
-                                        <p>강원도 영월군 구포읍</p>
+                                        <c:if test="${auction.boards[0].isAuction eq 1}">
+                                            <p>현재 경매 가격: <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원 </p>
+                                        </c:if>
+                                        <c:choose>
+                                            <c:when test="${auction.boards[0].isAuction eq 1}">
+                                                <p>최근 내가 올린 가격: <fmt:formatNumber value="${auction.participantAuctions[0].currentPrice}" pattern="#,###"/>원</p>
+                                            </c:when>
+                                            <c:when test="${auction.boards[0].isAuction eq 2}">
+                                                <p>낙찰 가격: <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원</p>
+                                            </c:when>
+                                        </c:choose>
+                                        <c:choose>
+                                            <c:when test="${auction.boards[0].isAuction eq 1}">
+                                                <p>현재 최고가를 올린사람:
+                                            </c:when>
+                                            <c:when test="${auction.boards[0].isAuction eq 2}">
+                                                <p>낙찰자:
+                                            </c:when>
+                                        </c:choose>
+                                        <c:choose>
+                                            <c:when test="${auction.userId eq null}">
+                                                아직 없습니다
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:out value="${auction.userId}"/>님
+                                            </c:otherwise>
+                                        </c:choose>
+                                        </p>
                                         <span>관심 <c:out value="${auction.boards[0].interestCnt}"/></span>
                                         <span>조회 <c:out value="${auction.boards[0].hits}"/></span>
-                                        <br><br>
+                                        <div class="form-check form-switch">
+                                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                                          <label class="form-check-label" for="flexSwitchCheckDefault">가격 올리기</label>
+                                        </div>
                                         <div class="auction-details">
-                                            <h6>경매 마감 : <span class="deadline" data-deadline="${auction.boards[0].deadline}">
-                                            </span></h6>
-                                            <h6>현재 가격 : <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원</h6>
-                                            <h6>상한가 : <fmt:formatNumber value="${auction.maxPrice}" pattern="#,###"/>원</h6>
+                                            <div class="auction-details-content">
+                                                <h6>경매 마감 : <span class="deadline" data-deadline="${auction.boards[0].deadline}">
+                                                </span></h6>
+                                                <c:if test="${auction.boards[0].isAuction eq 1}">
+                                                    <h6>현재 경매 가격 : <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원</h6>
+                                                    <h6>상한가 : <fmt:formatNumber value="${auction.maxPrice}" pattern="#,###"/>원</h6>
+                                                </c:if>
+                                            </div>
                                             <form class="d-flex auction-form" method="post" action="/auction/${auction.auctionId}/current-price">
                                                 <input type="hidden" name="_method" value="put">
-                                                <input type="text" name="currentPrice" style="margin-top:10px" placeholder="가격을 올려주세요"/>
+                                                <input type="hidden" name="userId" value="${userId}">
+                                                <input type="text" name="currentPrice" style="margin-top:10px" placeholder="가격을 올려주세요" autocomplete='off'/>
                                                 <button type="submit" class="btn btn-primary btn-sm" style="margin-top:10px">가격 올리기</button>
                                             </form>
+                                            <input type="hidden" name="auctionId" value="${auction.auctionId}">
                                         </div>
                                     </div>
                                 </div>
@@ -285,23 +375,25 @@
    </div>
 
    	<br>
-    <div class="row">
-        <div class="col-md-2">
-        </div>
-        <div class="col-md-8">
-            <div class="row">
-                <div class="col-md-4">
-                </div>
-                <div class="col-md-4">
-                    <nav>
-                        <c:out value="${pageNavi}" escapeXml="false"/>
-                    </nav>
-                </div>
-                <div class="col-md-4">
+   	<c:if test="${not (auctions eq null or empty auctions)}">
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                        <nav>
+                            <c:out value="${pageNavi}" escapeXml="false"/>
+                        </nav>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
                 </div>
             </div>
+            <div class="col-md-2">
+            </div>
         </div>
-        <div class="col-md-2">
-        </div>
-    </div>
+    </c:if>
 </body>
