@@ -10,9 +10,9 @@ public class Participant_Auction {
 
     // 경매번호 (FK)
     @NotNull
-    private Integer auction_id;
+    private Integer auctionId;
 
     // 아이디 (FK)
     @NotNull
-    private String user_id;
+    private String userId;
 }

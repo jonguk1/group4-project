@@ -11,13 +11,13 @@
         <where>
             reviewee=#{userId}
         </where>
-        order by review_id desc limit #{limit} offset #{offset}
+        order by reviewId desc limit #{limit} offset #{offset}
     </select>
 
     <select id="receivedGetTotalCount" resultType="_int" parameterType="String">
         select count(*) from review
         <where>
-            reviewee=#{userId}
+            reviewee=#{values}
         </where>
     </select>
 
@@ -27,13 +27,13 @@
         <where>
             reviewer=#{userId}
         </where>
-        order by review_id desc limit #{limit} offset #{offset}
+        order by reviewId desc limit #{limit} offset #{offset}
     </select>
 
     <select id="sentGetTotalCount" resultType="_int" parameterType="String">
         select count(*) from review
         <where>
-            reviewer=#{userId}
+            reviewer=#{values}
         </where>
     </select>
 

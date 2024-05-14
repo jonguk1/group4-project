@@ -1,6 +1,8 @@
 package com.lend.shareservice.domain.favorite;
 
 import com.lend.shareservice.entity.Favorite;
+import com.lend.shareservice.web.favorite.dto.FavoriteDTO;
+import com.lend.shareservice.web.paging.dto.PagingDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +18,30 @@ public class FavoriteServiceImpl implements FavoriteService{
 
 
     @Override
-    public List<Favorite> favorites(int limit,int offset,String userId) {
+    public List<FavoriteDTO> favorites(PagingDTO page, String userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("userId",userId);
-        map.put("limit", limit);
-        map.put("offset", offset);
+        map.put("limit", page.getLimit());
+        map.put("offset", page.getOffset());
         return favoriteMapper.favorites(map);
     }
 
     @Override
-    public int getFavoriteTotalCount() {
-        return favoriteMapper.getFavoriteTotalCount();
+    public int getFavoriteTotalCount(PagingDTO page) {
+        return favoriteMapper.getFavoriteTotalCount(page);
     }
 
+    @Override
+    public boolean findFavoriteByBoardIdAndUserId(String userId, Integer boardId) {
+        Favorite favorite = new Favorite();
+        favorite.setUserId(userId);
+        favorite.setBoardId(boardId);
+        Favorite findFavorite = favoriteMapper.selectByBoardIdAndUserId(favorite);
+
+        if (findFavorite == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

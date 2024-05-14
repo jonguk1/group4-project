@@ -2,6 +2,13 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.0.0/dist/minty/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- websocket 라이브러리 추가 -->
+  <!--  https://cdnjs.com/libraries/sockjs-client  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+  <!--  https://cdnjs.com/libraries/stomp.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 <!-- header -->
 <div class="container bg-green text-center">
     <div class="row">
@@ -75,7 +82,7 @@
 </div>
 <!-- header -->
 
-<!-- chat -->
+<!-- 상세글 -->
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-2">
@@ -92,11 +99,11 @@
 					<p>
 						혈육 군대간 사이에 처분합니다
 					</p>
-					<p>
-						<a class="btn" href="#">View details »</a>
-					</p>
+					<div class="chatIcon">
+					    <button type="button" class="btn btn-primary">채팅</button>
+					</div>
 				</div>
-				<div class="col-md-6">
+				<div class="chatContainer">
 					<div class="row">
 						<div class="col-md-1">
                         	<img src="/images/back.png" width="100%" height="100%" />
@@ -136,11 +143,26 @@
                             </button>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-12">
-						    <textarea id="w3review" name="w3review" rows="10" cols="40">채팅창 표현하기</textarea>
-						</div>
+					<div class="chatMiddle">
+						<ul>
+						    <!--동적생성-->
+						</ul>
 					</div>
+
+					<!-- 채팅창 표현 -->
+					<div class="chatMiddle format">
+					    <ul>
+					        <li>
+					            <div class="sender">
+					            <span></span>
+					            <div>
+					            <div class="message">
+					            <span></span>
+					            </div>
+					        </li>
+					    </ul>
+					</div>
+
 					<div class="row">
 						<div class="input-group mb-3">
 						    <li class="nav-item dropdown" style="list-style: none;">
@@ -154,7 +176,7 @@
                                 </div>
                               </li>
                             <input type="text" class="form-control" placeholder="채팅을 입력해주세요" aria-label="Recipient's username" aria-describedby="button-addon2">
-                            <button class="btn btn-primary" type="submit" id="button-addon2">전 송</button>
+                            <button class="btn btn-primary chatButton" type="submit" id="button-addon2">전 송</button>
                         </div>
 					</div>
 				</div>
@@ -164,3 +186,12 @@
 		</div>
 	</div>
 </div>
+<!--채팅방 관련-->
+<script>
+   var sock = new sockjs("${pageContext.request.contextPath}/chat");
+   var ws = Stomp.over(sock);
+   var reconnect = 0;
+
+
+
+</script>

@@ -15,19 +15,11 @@ public class Board {
 
     // 글 번호 (ID)
     @NotNull
-    private Integer board_id;
-
-    // 판매자 아이디 (FK)
-    @NotNull
-    private String lender_id;
+    private Integer boardId;
 
     // 글 카테고리 (FK)
     @NotNull
-    private Integer board_category_id;
-
-    // 구매자 아이디 (FK)
-    @NotNull
-    private String lendy_id;
+    private Integer boardCategoryId;
 
     // 글 제목
     @NotEmpty
@@ -41,12 +33,16 @@ public class Board {
 
     // 작성일 (default = sysdate)
     @NotNull
-    private Date reg_date;
+    private Date regDate;
 
     // 판매 금액
     @PositiveOrZero
     @NotNull
     private Integer price;
+
+    // 경매 최대 금액
+    @PositiveOrZero
+    private Integer maxPrice;
 
     // 경매 마감 시간 (경매 가능인 글에서만 설정)
     @Future
@@ -70,6 +66,8 @@ public class Board {
     @NotNull
     private Integer hits;
 
+    private Date lendDate;
+
     // 반납날짜
     @Future
     private Date returnDate;
@@ -77,23 +75,23 @@ public class Board {
     // 상품명
     @NotBlank
     @Size(max = 30, message = "상품명 30자 초과")
-    private String item_name;
+    private String itemName;
 
     // 상품이미지1
     @Size(max = 50, message = "파일명 50자 초과")
-    private String item_image1;
+    private String itemImage1;
 
     // 상품이미지2
     @Size(max = 50, message = "파일명 50자 초과")
-    private String item_image2;
+    private String itemImage2;
 
     // 상품이미지3
     @Size(max = 50, message = "파일명 50자 초과")
-    private String item_image3;
+    private String itemImage3;
 
     // 물건카테고리 번호 (FK)
     @NotNull
-    private Integer item_category_id;
+    private Integer itemCategoryId;
 
     // 위도
     @NotNull
@@ -108,6 +106,37 @@ public class Board {
     private Boolean isMegaphone;
 
 
+    public String IsAuction(String isAuction) {
+
+        if (isAuction == null) {
+            return "경매 불가";
+        }
+
+        if (isAuction.equals("0")) {
+            return "경매전";
+        } else if (isAuction.equals("1")) {
+            return "경매중";
+        } else {
+            return "경매 불가";
+        }
+    }
+
+    public String IsLend(String isLend) {
+        if (isLend.equals("0")) {
+            return "대여전";
+        } else if (isLend.equals("1")) {
+            return "대여중";
+        }
+
+        return "대여 완료";
+    }
+
+    public String IsMegaphone(Boolean isMegaphone) {
+        if (isMegaphone) {
+            return "급구";
+        }
+        return "";
+    }
 
 
 }

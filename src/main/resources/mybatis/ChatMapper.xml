@@ -5,6 +5,12 @@
         insert into test
         values(1,#{test})
     </insert>
+    <select id="selectItem" resultType="com.lend.shareservice.entity.Board" parameterType="Integer">
+        select title,writer,itemImage1 from board
+        <where>
+            boardId = #{value}
+        </where>
+    </select>
 
 
 </mapper>

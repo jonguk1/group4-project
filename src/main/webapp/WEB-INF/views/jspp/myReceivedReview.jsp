@@ -116,127 +116,84 @@
      <div class="container-fluid" style="margin-left:80px;height:300px">
     	<div class="row">
     		<div class="col-md-2" style="margin-right:30px">
-    		    <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                마이페이지
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
-                            <div class="accordion-body">
-                                <div class="list-group">
-                                    <a href="#" class="list-group-item list-group-item-action">내 정보</a>
-                                    <a href="#" class="list-group-item list-group-item-action">관심 목록</a>
-                                    <a href="#" class="list-group-item list-group-item-action">빌려준 목록</a>
-                                    <a href="#" class="list-group-item list-group-item-action">빌린 목록</a>
-                                    <a href="#" class="list-group-item list-group-item-action">차단 목록</a>
-                                    <a href="#" class="list-group-item list-group-item-action">보낸 리뷰 목록</a>
-                                    <a href="#" class="list-group-item list-group-item-action">받은 리뷰 목록</a>
-                                    <a href="#" class="list-group-item list-group-item-action">내 경매 목록</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    		    <%@ include file="/WEB-INF/views/jspp/include/mypage.jsp"%>
     		</div>
     		<c:choose>
     		    <c:when test="${receiveds eq null or empty receiveds}">
                     <div class="col-md-8">
-                        <h2>관심 등록한 내역이 없습니다<h2>
+                        <h2>받은 리뷰 내역이 없습니다<h2>
                     </div>
     		    </c:when>
     		    <c:otherwise>
-                    <div class="col-md-4">
-                        <c:forEach var="received" items="${receiveds}" varStatus="status">
-                            <c:if test="${status.index==0||status.index==2}">
-                                <div class="card bg-light mb-3" style="max-width: 30rem;">
-                                  <div class="card-header">아이디:&nbsp&nbsp<c:out value="${received.reviewee}"/>님</div>
-                                  <div class="card-body">
-                                    <h4 class="card-title"><c:out value="${received.content}"/></h4>
-                                    <p class="card-text">
-                                        <c:forEach var="k" begin="0" end="${received.star-1}">
-                                            <i class="bi bi-star-fill" style="font-size:24px;"></i>
-                                        </c:forEach>
-                                        <c:forEach var="k" begin="${received.star}" end="4">
-                                            <i class="bi bi-star" style="font-size:24px;"></i>
-                                        </c:forEach>
-                                    </p>
-                                  </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <c:forEach var="received" items="${receiveds}" varStatus="status" begin="0" end="${page.oneRecordPage-4}">
+                                <div class="col-md-4">
+                                    <div class="card bg-light mb-3" style="max-width: 30rem;">
+                                      <div class="card-header">아이디:&nbsp&nbsp<c:out value="${received.reviewer}"/>님</div>
+                                      <div class="card-body">
+                                        <h4 class="card-title"><c:out value="${received.content}"/></h4>
+                                        <p class="card-text">
+                                            <c:forEach var="k" begin="0" end="${received.star-1}">
+                                                <i class="bi bi-star-fill" style="font-size:24px;"></i>
+                                            </c:forEach>
+                                            <c:forEach var="k" begin="${received.star}" end="4">
+                                                <i class="bi bi-star" style="font-size:24px;"></i>
+                                            </c:forEach>
+                                        </p>
+                                      </div>
+                                    </div>
                                 </div>
-                            </c:if>
-                        </c:forEach>
-                    </div>
-                    <div class="col-md-4">
-                        <c:forEach var="received" items="${receiveds}" varStatus="status">
-                            <c:if test="${status.index==1||status.index==3}">
-                                <div class="card bg-light mb-3" style="max-width: 30rem;">
-                                  <div class="card-header">아이디:&nbsp&nbsp<c:out value="${received.reviewee}"/>님</div>
-                                  <div class="card-body">
-                                    <h4 class="card-title"><c:out value="${received.content}"/></h4>
-                                    <p class="card-text">
-                                        <c:forEach var="k" begin="0" end="${received.star-1}">
-                                            <i class="bi bi-star-fill" style="font-size:24px;"></i>
-                                        </c:forEach>
-                                        <c:forEach var="k" begin="${received.star}" end="4">
-                                            <i class="bi bi-star" style="font-size:24px;"></i>
-                                        </c:forEach>
-                                    </p>
-                                  </div>
-                                </div>
-                            </c:if>
-                        </c:forEach>
-                    </div>
-                <div class="col-md-2">
-                </div>
-                </c:otherwise>
-            </c:choose>
-    	</div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-md-4">
-        </div>
-        <br>
-        <div class="col-md-8">
-            <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-4">
-                    <nav>
-                        <ul class="pagination pagination-lg" style="margin-left:-50px;">
-                            <c:if test="${prevBlock>0}">
-                                <li class="page-item">
-                                    <a class="page-link" href="/review/${userId}/received?pageNum=${prevBlock}">Previous</a>
-                                </li>
-                            </c:if>
-                            <c:forEach var="i" begin="${prevBlock+1}" end="${nextBlock-1}">
-                                    <c:if test="${i<=pageCount}">
-                                        <c:choose>
-                                            <c:when test="${param.pageNum eq i}">
-                                                <li class="page-item">
-                                                    <a class="page-link" href="/review/${userId}/received?pageNum=${i}">${i}</a>
-                                                </li>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="/review/${userId}/received?pageNum=${i}">${i}</a>
-                                                </li>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:if>
                             </c:forEach>
-                            <c:if test="${nextBlock<=pageCount}">
-                                <li class="page-item">
-                                    <a class="page-link" href="/review/${userId}/received?pageNum=${nextBlock}">Next</a>
-                                </li>
-                            </c:if>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="col-md-2">
-                </div>
-            </div>
-        </div>
+                        </div>
+                        <div class="row">
+                            <c:forEach var="received" items="${receiveds}" varStatus="status" begin="${page.oneRecordPage-3}" end="${page.oneRecordPage}">
+                                <div class="col-md-4">
+                                    <div class="card bg-light mb-3" style="max-width: 30rem;">
+                                      <div class="card-header">아이디:&nbsp&nbsp<c:out value="${received.reviewer}"/>님</div>
+                                      <div class="card-body">
+                                        <h4 class="card-title"><c:out value="${received.content}"/></h4>
+                                        <p class="card-text">
+                                            <c:forEach var="k" begin="0" end="${received.star-1}">
+                                                <i class="bi bi-star-fill" style="font-size:24px;"></i>
+                                            </c:forEach>
+                                            <c:forEach var="k" begin="${received.star}" end="4">
+                                                <i class="bi bi-star" style="font-size:24px;"></i>
+                                            </c:forEach>
+                                        </p>
+                                      </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
+
+    		<div class="col-md-2">
+    		</div>
+    	</div>
+
+        <br>
+
+            <div class="row">
+            		<div class="col-md-2">
+            		</div>
+            		<div class="col-md-8">
+            			<div class="row">
+            				<div class="col-md-4">
+            				</div>
+            				<div class="col-md-4">
+            					<nav>
+            						<c:out value="${pageNavi}" escapeXml="false"/>
+            					</nav>
+            				</div>
+            				<div class="col-md-4">
+            				</div>
+            			</div>
+            		</div>
+            		<div class="col-md-2">
+            		</div>
+            	</div>
+            </c:otherwise>
+        </c:choose>
     </div>
 </body>

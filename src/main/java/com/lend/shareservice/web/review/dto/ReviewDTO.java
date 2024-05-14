@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class ReviewDTO {
-
+    
     private String content;
     private Integer star;
     private String reviewer;

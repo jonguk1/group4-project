@@ -11,22 +11,25 @@ public class Auction {
 
     // 경매번호 (ID)
     @NotNull
-    private Integer auction_id;
+    private Integer auctionId;
 
     // 현재 금액 (default = 0)
     @NotNull
-    private Integer current_price;
+    private Integer currentPrice;
 
     // 등록일 (default = sysdate)
     @NotNull
-    private Date reg_date;
+    private Date regDate;
 
     // 최대 금액
     @NotNull
-    private Integer max_price;
+    private Integer maxPrice;
 
     // 글번호
     @NotNull
-    private Integer board_id;
+    private Integer boardId;
+
+    // 낙찰자
+    private String userId;
 
 }

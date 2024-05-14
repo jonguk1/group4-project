@@ -12,15 +12,14 @@ public class Favorite {
 
     // 관심번호 (ID)
     @NotNull
-    private Integer favorite_id;
+    private Integer favoriteId;
 
     // 유저 아이디 (FK)
     @NotNull
-    private String user_id;
+    private String userId;
 
     // 글번호 (FK)
     @NotNull
-    private Integer board_id;
+    private Integer boardId;
 
-    private List<Board> boards;
 }

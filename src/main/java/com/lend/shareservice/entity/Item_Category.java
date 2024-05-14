@@ -10,8 +10,8 @@ public class Item_Category {
 
     // 물건 카테고리 번호 (ID)
     @NotNull
-    private Integer item_category_id;
+    private Integer itemCategoryId;
 
     // 카테고리명
-    private String item_category_name;
+    private String itemCategoryName;
 }

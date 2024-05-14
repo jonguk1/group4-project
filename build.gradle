@@ -32,16 +32,18 @@ dependencies {
 	// 롬복
 	compileOnly 'org.projectlombok:lombok'
 
+	implementation 'org.json:json:20210307'
+
 
 	// mysql
 	runtimeOnly 'com.mysql:mysql-connector-j'
-
-
 
 	annotationProcessor 'org.projectlombok:lombok'
 	// providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+
+
 
 
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
@@ -56,6 +58,12 @@ dependencies {
 	// jackson ObjectMapper를 사용하기 위한 라이브러리
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.2'
 
+	// sockjs
+	implementation 'org.webjars:sockjs-client:1.5.1'
+	// stomp
+	implementation 'org.webjars:stomp-websocket:2.3.4'
+	// gson
+	implementation 'com.google.code.gson:gson:2.9.0'
 
 }
 

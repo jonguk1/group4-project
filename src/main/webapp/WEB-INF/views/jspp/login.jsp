@@ -24,7 +24,7 @@
                 <form class="d-flex">
                     <div class="input-group mt-3"> <!-- 여기에 mt-3 클래스 추가 -->
                         <input class="form-control me-2" type="search" placeholder="빌리고 싶은 물건을 입력하세요">
-                        <button class="btn btn-secondary" type="submit">Search</button>
+                        <button class="btn btn-secondary" type="submit">상품명 검색</button>
                     </div>
                 </form>
             </div>
