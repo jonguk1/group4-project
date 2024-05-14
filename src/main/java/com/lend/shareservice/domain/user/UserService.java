@@ -16,8 +16,5 @@ public interface UserService {
     String getUserId(String userId);
 
 
-    UserVo login(String userId, String pw);
-
-    UserVo get(String param);
 
 }

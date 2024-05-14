@@ -1,6 +1,5 @@
 package com.lend.shareservice.entity;
 
-import com.lend.shareservice.domain.user.UserRole;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,8 +29,6 @@ public class User {
     // 비밀번호
     @NotBlank
     private String pw;
-
-    private UserRole role;
 
    // 전화번호
     @NotNull
