@@ -2,12 +2,18 @@ package com.lend.shareservice.domain.user.vo;
 
 import lombok.Data;
 
+
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 @Data
-public class UserVo {
+public class UserVo  {
 
 
     //유저 id
-    private String user_id;
+    private String userId;
 
     // 이름
 
@@ -19,7 +25,7 @@ public class UserVo {
 
     // 전화번호
 
-    private String phone_number;
+    private String phoneNumber;
 
     // 위도
     private Double latitude;
@@ -30,6 +36,11 @@ public class UserVo {
     // 주소
     private String address;
 
-    //
+
+
+
+
+
+
 
 }

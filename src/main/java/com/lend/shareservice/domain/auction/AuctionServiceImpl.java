@@ -86,7 +86,6 @@ public class AuctionServiceImpl implements AuctionService{
     @Transactional
     public int paticipateAuction(String userId, Integer boardId) {
 
-
         Auction findAuction = auctionMapper.selectAuctionByBoardId(boardId);
         log.info("findAuction = {}", findAuction);
         // 아직 생성된 적 없음 -> 생성
@@ -138,10 +137,18 @@ public class AuctionServiceImpl implements AuctionService{
                 // 글쓴이에게 전달
                 notificationService.sendToClient(boardService.findPostById(boardId).getWriter(), userId + "님이 경매에 참여하였습니다.");
 
+                Notification notification = new Notification();
+                notification.setContent(userId + "님이 경매에 참여하였습니다.");
+                notification.setUserId(boardService.findPostById(boardId).getWriter());
+                notification.setIsRead(false);
+                notificationMapper.insertNotification(notification);
+
                 List<String> ids = auctionMapper.selectIdsByAuctionId(findAuctionId.getAuctionId());
 
                 // 경매 참여자에게 전달
                 for (String id : ids) {
+                    notification.setUserId(id);
+                    notificationMapper.insertNotification(notification);
                     notificationService.sendToClient(id, userId + "님이 경매에 참여하였습니다.");
                 }
             }
@@ -152,7 +159,6 @@ public class AuctionServiceImpl implements AuctionService{
 
             return auctionMapper.insertAuctionParticipant(participantAuction);
         }
-
     }
 
     @Override
