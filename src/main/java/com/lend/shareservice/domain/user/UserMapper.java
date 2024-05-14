@@ -12,16 +12,11 @@ import java.util.Map;
 @Mapper
 public interface UserMapper {
 
-    UserVo getUserAccount(String userId);
-
     void saveUser(UserVo userVo);
 
     List<User> userList();
 
     String getUserId(String userId);
-
-
-    UserVo findByUserId(String userId);
 
 
     int blockUser(Block block);
@@ -33,6 +28,5 @@ public interface UserMapper {
     int getLenderCount(String userId);
 
     int getLendyCount(String userId);
-
 
 }
