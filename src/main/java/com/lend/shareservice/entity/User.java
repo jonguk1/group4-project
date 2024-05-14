@@ -1,16 +1,27 @@
 package com.lend.shareservice.entity;
 
-import lombok.Data;
+import com.lend.shareservice.domain.user.UserRole;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.*;
 
 import jakarta.validation.constraints.*;
 
 // 회원
-@Data
+
+@Entity
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class User {
 
     // 아이디 (Id)
-    @NotBlank
-    private String user_id;
+    @NotBlank @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String userId;
 
     // 이름
     @NotBlank
@@ -20,7 +31,9 @@ public class User {
     @NotBlank
     private String pw;
 
-    // 전화번호
+    private UserRole role;
+
+   // 전화번호
     @NotNull
     @Pattern(regexp="^\\d{3}-\\d{3,4}-\\d{4}$", message="올바른 전화번호 형식이 아닙니다.")
     private String phone_number;

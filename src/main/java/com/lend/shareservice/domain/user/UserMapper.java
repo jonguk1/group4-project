@@ -9,9 +9,13 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
+    UserVo getUserAccount(String userId);
+
     void saveUser(UserVo userVo);
 
     List<User> userList();
 
     String getUserId(String userId);
+
+    UserVo findByUserId(String userId);
 }
