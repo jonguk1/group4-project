@@ -2,7 +2,7 @@
 
 
 <!DOCTYPE html>
-
+<html lang="en">
 <head>
 
 
@@ -139,27 +139,21 @@
        		</div>
        		<div class="col-md-2">
        		</div>
-
        		<div class="col-md-4">
-       		<div class="board">
-                <form id="loginForm" onsubmit="return false;" method="post">
-
        		    <div class="form-group">
 
-
-
-                					<label for="exampleInputUserId1">
+                					<label for="exampleInputEmail1">
                 						아이디
                 					</label>
-                					<input type="text" name="userId" id="userId" class="form-control" id="userid1" />
+                					<input type="text" class="form-control" id="userid1" />
                 				</div>
                                 <br>
                 				<div class="form-group">
 
-                					<label th:for="exampleInputPassword">
+                					<label for="exampleInputPassword1">
                 						비밀번호
                 					</label>
-                					<input type="password" name="pw" id="pw" class="form-control" id="exampleInputPassword1" />
+                					<input type="password" class="form-control" id="exampleInputPassword1" />
                 				</div>
 <br>
 <label for="remember-check">
@@ -173,7 +167,7 @@
 
     <div class="col text-center">
         <div class="form-group">
-            <button type="button" onclick="login();" class="btn btn-primary btn-block" style="width: 100%;">
+            <button type="submit" class="btn btn-primary btn-block" style="width: 100%;">
                 login
             </button>
         </div>
@@ -185,7 +179,7 @@
                                     <div class="col-md text-center">
                                         <div class="form-group">
 
-                                            <button type="button" onclick="location.href='user/signup'"  class="btn btn-info" style="width: 100%;">
+                                            <button type="submit" onclick="location.href='user/signup'"  class="btn btn-info" style="width: 100%;">
 
 
                                             회원가입
@@ -203,46 +197,6 @@
        		<div class="col-md-2">
        		</div>
        	</div>
-    </div>
 
-<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script>
-window.onload = () => {
-		document.querySelectorAll('#userId, #pw').forEach(element => {
-			element.addEventListener('keyup', (e) => {
-				if (e.keyCode === 13) {
-					login();
-				}
-			})
-		})
-	}
 
-			function login() {
-
-            			const form = document.getElementById('loginForm');
-
-            			if ( !form.userId.value || !form.pw.value ) {
-            				alert('아이디와 비밀번호를 모두 입력해 주세요.');
-            				form.userId.focus();
-            				return false;
-            			}
-
-            			$.ajax({
-            				url : '/login',
-            				type : 'POST',
-            				dataType : 'json',
-            				data : {
-            					userId: form.userId.value,
-            					pw: form.pw.value
-            				},
-            				async : false,
-            				success : function (response) {
-            					location.href = '/test';
-            				},
-            				error : function (request, status, error) {
-            					alert('아이디와 비밀번호를 확인해 주세요.');
-            				}
-            			})
-            		}
-	</script>
 </body>
