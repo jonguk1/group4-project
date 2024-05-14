@@ -38,7 +38,7 @@
 		<!-- Header -->
 			<header id="header">
 				<h1 style="display: flex; align-items: center;">
-                    <img src="/images/logo.png" style="width: 50px; height: auto; margin-right: 10px;">
+                    <img src="/images/icon/logo.png" style="width: 50px; height: auto; margin-right: 10px;">
                     무엇을 빌리고 싶으신가요?
                 </h1>
 				<p>사기에는 아까운 물건이 있으세요?<br>

@@ -22,6 +22,21 @@
             height: 400px;
         }
 
+       #messageContainer {
+           position: absolute;
+           top: 20px;
+           left: 20px;
+           right: 180px;
+           background-color: #f8f9fa;
+           border: 1px solid #ced4da;
+           border-radius: 8px;
+           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+           padding: 10px;
+           max-height: 150px;
+           overflow-y: auto;
+           z-index: 9999;
+       }
+
     </style>
 
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
@@ -53,9 +68,14 @@
                                 <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#">
+                                            <a class="nav-link" href="#" id="notificationIcon">
                                                 <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
                                             </a>
+                                        </li>
+                                        <li>
+                                            <div id="messageContainer" style="display: none;">
+
+                                            </div>
                                         </li>
 
                                         <li class="nav-item">
@@ -185,6 +205,29 @@
 
 <script>
    $(document).ready(function() {
+
+
+
+       $.ajax({
+           url: "/notification",
+           type: "GET",
+           dataType: "json",
+           success: function(response) {
+                response.forEach(function(notification) {
+                    addMessage(notification.notiRegDate);
+                    addMessage(notification.content);
+                    addMessage(notification.notiRegDate);
+                    addMessage(notification.content);
+                    addMessage(notification.notiRegDate);
+                    addMessage(notification.content);
+                });
+
+           },
+           error: function(xhr, status, error) {
+
+           }
+       });
+
        $.ajax({
            url: "/board/board-category",
            type: "GET",
@@ -419,6 +462,30 @@
 
                 document.getElementById("loadMoreBtn").addEventListener("click", loadMorePosts);
     }
+
+    // 새로운 메시지를 추가하는 함수
+           function addMessage(message) {
+               var messageContainer = document.getElementById('messageContainer');
+               var newMessage = document.createElement('div');
+               newMessage.textContent = message;
+               messageContainer.appendChild(newMessage);
+               scrollToBottom();
+           }
+
+           // 새로운 메시지가 추가될 때마다 스크롤을 아래로 이동하는 함수
+           function scrollToBottom() {
+               var messageContainer = document.getElementById('messageContainer');
+               messageContainer.scrollTop = messageContainer.scrollHeight;
+           }
+
+           document.getElementById('notificationIcon').addEventListener('click', function() {
+               var messageContainer = document.getElementById('messageContainer');
+               if (messageContainer.style.display === 'block') {
+                   messageContainer.style.display = 'none';
+               } else {
+                   messageContainer.style.display = 'block';
+               }
+           });
 
 </script>
 

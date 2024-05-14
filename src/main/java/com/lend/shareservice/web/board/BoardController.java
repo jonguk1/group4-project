@@ -247,6 +247,18 @@ public class BoardController {
 
         ItemDetailDTO postById = boardService.findPostById(boardId);
         model.addAttribute("postById", postById);
+
         return "jspp/writingEditForm";
+    }
+
+    @PostMapping("/edit")
+    public String editPost(Model model, @Valid @ModelAttribute PostEditDTO postEditDTO, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("postRegistrationBindingResult", bindingResult);
+            return "jspp/writingEditForm";
+        }
+        log.info("postEditDTO = {}", postEditDTO);
+        return null;
     }
 }

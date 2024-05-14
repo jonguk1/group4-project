@@ -114,7 +114,8 @@
                 <div class="col-md-2">
                 </div>
                 <div class="col-md-8">
-                    <form action="/board" enctype="multipart/form-data" method="post">
+                    <form action="/board/edit" enctype="multipart/form-data" method="post">
+
                         <fieldset>
                             <legend class="text-center">글 등록</legend> <br><br>
                             <fieldset>
@@ -170,24 +171,62 @@
 
                             <br>
 
+                           <div class="row">
+                               <div class="col-md-4">
+                                   <div class="text-center" id="existingProductImage1">기존 상품 이미지1</div>
+
+                                   <c:if test="${postById.itemImage[0] ne null}">
+                                       <img src="${postById.itemImage[0]}" class="changingImage1" style="width:320px; height:300px;">
+                                   </c:if>
+
+                                   <c:if test="${postById.itemImage[0] eq null}">
+                                       <img src="/images/icon/noImage.png" class="changingImage1" style="width:320px; height:300px;">
+                                   </c:if>
+                               </div>
+                               <div class="col-md-4">
+                                   <div class="text-center" id="existingProductImage2">기존 상품 이미지2</div>
+                                   <c:if test="${postById.itemImage[1] ne null}">
+                                       <img src="${postById.itemImage[1]}" class="changingImage2" style="width:320px; height:300px;">
+                                   </c:if>
+
+                                   <c:if test="${postById.itemImage[1] eq null}">
+                                       <img src="/images/icon/noImage.png" class="changingImage2" style="width:320px; height:300px;">
+                                   </c:if>
+                               </div>
+                               <div class="col-md-4">
+                                   <div class="text-center" id="existingProductImage3">기존 상품 이미지3</div>
+                                   <c:if test="${postById.itemImage[2] ne null}">
+                                       <img src="${postById.itemImage[2]}" class="changingImage3" style="width:320px; height:300px;">
+                                   </c:if>
+
+                                   <c:if test="${postById.itemImage[2] eq null}">
+                                       <img src="/images/icon/noImage.png" class="changingImage3" style="width:320px; height:300px;">
+                                   </c:if>
+                               </div>
+                           </div>
+
+                            <br>
+
                             <div class="mb-3">
-                                <label for="fileInput1" class="form-label">상품 이미지1</label>
-                                <c:if test="${postRegistrationBindingResult.hasFieldErrors('fileInput')}">
-                                    <div>
-                                        <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('fileInput').defaultMessage}</span>
-                                    </div>
-                                </c:if>
-                                <input class="form-control" type="file" id="fileInput1" name="fileInput">
+                                <label for="fileInput1" class="form-label">수정할 상품 이미지1</label>&nbsp;&nbsp;
+                                <button type="button" class="btn btn-dark" id="updateExistingImage1">기존 이미지 선택</button>
+                                <input class="form-control" type="file" id="fileInput1" name="fileInput" >
+
                             </div>
                             <div class="mb-3">
-                                <label for="fileInput2" class="form-label">상품 이미지2</label>
-                                <input class="form-control" type="file" id="fileInput2" name="fileInput">
+                                <label for="fileInput2" class="form-label">수정할 상품 이미지2</label>&nbsp;&nbsp;
+                                <button type="button" class="btn btn-dark" id="updateExistingImage2">기존 이미지 선택</button>
+                                <input class="form-control" type="file" id="fileInput2" name="fileInput" >
+
                             </div>
 
                             <div class="mb-3">
-                                <label for="fileInput3" class="form-label">상품 이미지3</label>
-                                <input class="form-control" type="file" id="fileInput3" name="fileInput">
+                                <label for="fileInput3" class="form-label">수정할 상품 이미지3</label>&nbsp;&nbsp;
+                                <button type="button" class="btn btn-dark" id="updateExistingImage3">기존 이미지 선택</button>
+                                <input class="form-control" type="file" id="fileInput3" name="fileInput" >
+
                             </div>
+
 
                             <div>
                                 <label for="exampleTextarea" class="form-label mt-4">자세한 설명</label>
@@ -238,10 +277,84 @@
             </div>
         </div>
     </div>
+
 </div>
 
     <script>
         $(document).ready(function() {
+
+
+                    $('input[type="file"]').change(function(e){
+                        var id = $(this).attr('id');
+                        previewImage(this, id);
+                    });
+
+                    function previewImage(input, id) {
+
+
+                        if (input.files && input.files[0]) {
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                if (id === 'fileInput1') {
+                                    document.getElementById('existingProductImage1').innerText = '변경할 이미지1';
+                                    var imgElement = document.querySelector('.changingImage1');
+                                    imgElement.src = e.target.result;
+
+                                } else if (id === 'fileInput2') {
+                                    document.getElementById('existingProductImage2').innerText = '변경할 이미지2';
+                                    var imgElement = document.querySelector('.changingImage2');
+                                    imgElement.src = e.target.result;
+                                } else if (id === 'fileInput3') {
+                                    document.getElementById('existingProductImage3').innerText = '변경할 이미지3';
+                                    var imgElement = document.querySelector('.changingImage3');
+                                    imgElement.src = e.target.result;
+                                }
+                            }
+                            reader.readAsDataURL(input.files[0]);
+                        }
+                    }
+
+                    document.getElementById('updateExistingImage1').addEventListener('click', function() {
+                        document.getElementById('existingProductImage1').innerText = '기존 이미지1';
+                        var imgElement = document.querySelector('.changingImage1');
+                        var fileInput = document.getElementById('fileInput1');
+                        if ("${postById.itemImage[0]}" === '' || "${postById.itemImage[0]}" === 'null') {
+                            imgElement.src = "/images/icon/noImage.png";
+                            fileInput.value = null;
+                        } else {
+                            imgElement.src = "${postById.itemImage[0]}";
+                            fileInput.value = null;
+                        }
+
+
+                    });
+
+                    document.getElementById('updateExistingImage2').addEventListener('click', function() {
+                        document.getElementById('existingProductImage2').innerText = '기존 이미지2';
+                        var imgElement = document.querySelector('.changingImage2');
+                        var fileInput = document.getElementById('fileInput2');
+                        if ("${postById.itemImage[1]}" === '' || "${postById.itemImage[1]}" === 'null') {
+                            imgElement.src = "/images/icon/noImage.png";
+                            fileInput.value = null;
+                        } else {
+                            imgElement.src = "${postById.itemImage[1]}";
+                            fileInput.value = null;
+                        }
+                    });
+                    document.getElementById('updateExistingImage3').addEventListener('click', function() {
+                        document.getElementById('existingProductImage3').innerText = '기존 이미지3';
+                        var imgElement = document.querySelector('.changingImage3');
+                        var fileInput = document.getElementById('fileInput3');
+                        if ("${postById.itemImage[2]}" === '' || "${postById.itemImage[2]}" === 'null') {
+                            imgElement.src = "/images/icon/noImage.png";
+                            fileInput.value = null;
+                        } else {
+                            imgElement.src = "${postById.itemImage[2]}";
+                            fileInput.value = null;
+                        }
+
+                    });
+
                     $.ajax({
                         url: "/board/board-category",
                         type: "GET",
@@ -370,6 +483,8 @@
                 infowindow2.close();
             }
         });
+
+
     </script>
 </body>
 </html>
