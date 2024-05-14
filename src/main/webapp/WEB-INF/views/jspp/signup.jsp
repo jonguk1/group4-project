@@ -147,6 +147,7 @@
        		<div class="col-md-4">
        		    <div class="form-group">
                     <form name="signup" action="/user/signup" method="post" accept-charset-"utf-8">
+                					<input type ="hidden" name="idDupChk" value="f">
                 					<label for="exampleInputEmail1">
                 						아이디
                 					</label>
@@ -154,13 +155,14 @@
                                 <div class="row">
                                     <div class="col-md-8 text start">
                                       <div class="form-group">
-                					<input type="user_id" name="user_id" class="form-control" id="user_id1" placeholder="아이디 입력(6~20자)" />
+
+                					<input type="user_id" name="userId" class="form-control" id="user_id1" placeholder="아이디 입력(6~20자)" required/>
 
                                     </div>
                                     </div>
                                     <div class="col-md-4 text-start">
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary">
+                                        <input type="button" value="중복체크" onclick="idDupPopup()" class="btn btn-primary">
                                         중복 확인
                                          </button>
                                          </div>
@@ -169,20 +171,16 @@
                 				</div>
                                 <br>
                 				<div class="form-group">
-
-                					<label for="exampleInputPassword1">
-                						비밀번호
-                					</label>
-                					<input type="password" name="pw" class="form-control" id="exampleInputPassword1" />
-                				</div>
-                				<br>
-                				<div class="form-group">
-
-                                <label for="exampleInputPassword2">
-                                    비밀번호 확인
-                                </label>
-                                <input type="password" class="form-control" id="exampleInputPassword2" />
-                            </div>
+                                    <label for="exampleInputPassword1">비밀번호</label>
+                                    <input type="password" name="pw" class="form-control" id="exampleInputPassword1" required />
+                                </div>
+                                <div id="passwordLengthError" class="text-danger"></div>
+                                <br>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword2">비밀번호 확인</label>
+                                    <input type="password" class="form-control" id="exampleInputPassword2" />
+                                    <div id="passwordMatchError" class="text-danger"></div>
+                                </div>
 
                                 <br>
                                 <div class="form-group">
@@ -190,7 +188,7 @@
                                 <label for="exampleInputName1">
                                     이름
                                 </label>
-                                <input type="text" name="name"class="form-control" id="exampleInputName1" />
+                                <input type="text" name="name"class="form-control" id="exampleInputName1" required/>
                             </div>
                             <br>
                             <div class="form-group">
@@ -198,7 +196,7 @@
                                     <label for="exampleInputPhone_number1">
                                         전화번호
                                     </label>
-                                    <input type="tel" name="phone_number" class="form-control" id="exampleInputPhone_number1" />
+                                    <input type="tel" name="phoneNumber" class="form-control" id="exampleInputPhone_number1" required />
                                 </div>
                                 <br>
 
@@ -211,12 +209,12 @@
                                 <div class="row">
                                     <div class="col-md-8 text-start">
                                         <div class="form-group">
-                                            <input type="input"name="address" class="form-control" id="myAroundHome" />
+                                            <input type="text" name="address" class="form-control" id="myAroundHome" placeholder="주소" required/>
                                         </div>
                                     </div>
                                     <div class="col-md-4 text-start">
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">
+                                            <button type="button" onclick="sample5_execDaumPostcode()" value="주소검색" class="btn btn-primary">
                                             위치검색
                                             </button>
                                         </div>
@@ -224,16 +222,24 @@
                                 </div>
 
                                 <br>
+                               <div id="map" style="width:300px;height:300px;margin-top:10px;display:none"></div>
                                 <br>
                                 <div class="row">
                                     <div class="col text-center">
                                         <div class="form-group">
-                                            <button type="submit" value="회원가입" class="btn btn-info btn-block" style="width: 60%;">
+                                            <button type="submit"  value="회원가입" class="btn btn-info btn-block" style="width: 60%;">
                                                 가입완료
                                             </button>
                                         </div>
                                     </div>
                                 </div>
+<div class="form-group">
+    <input type="text" name="latitude" class="form-control" id="latitude" placeholder="위도를 입력하세요" style="display:none">
+</div>
+<div class="form-group">
+    <input type="text" name="longitude" class="form-control" id="longitude" placeholder="경도를 입력하세요" style="display:none">
+
+</div>
 
 
 
@@ -247,6 +253,122 @@
        		</div>
        	</div>
 
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1c08b45ccd77d7bdeca02bed5ff2979c&libraries=services"></script>
+<script>
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+            center: new daum.maps.LatLng(37.537187, 127.005476), // 지도의 중심좌표
+            level: 5 // 지도의 확대 레벨
+        };
 
+    //지도를 미리 생성
+    var map = new daum.maps.Map(mapContainer, mapOption);
+    //주소-좌표 변환 객체를 생성
+    var geocoder = new daum.maps.services.Geocoder();
+    //마커를 미리 생성
+    var marker = new daum.maps.Marker({
+        position: new daum.maps.LatLng(37.537187, 127.005476),
+        map: map
+    });
+
+
+   function sample5_execDaumPostcode() {
+       new daum.Postcode({
+           oncomplete: function(data) {
+               var addr = data.address; // 최종 주소 변수
+
+               // 주소 정보를 해당 필드에 넣는다.
+               document.getElementById("myAroundHome").value = addr;
+               // 주소로 상세 정보를 검색
+               geocoder.addressSearch(data.address, function(results, status) {
+                   // 정상적으로 검색이 완료됐으면
+                   if (status === daum.maps.services.Status.OK) {
+                       var result = results[0]; //첫번째 결과의 값을 활용
+
+                       // 해당 주소에 대한 좌표를 받아서
+                       var coords = new daum.maps.LatLng(result.y, result.x);
+
+                       // Set latitude and longitude input values
+                       document.getElementById("latitude").value = result.y;
+                       document.getElementById("longitude").value = result.x;
+
+                       // 지도를 보여준다.
+                       mapContainer.style.display = "block";
+                       map.relayout();
+                       // 지도 중심을 변경한다.
+                       map.setCenter(coords);
+                       // 마커를 결과값으로 받은 위치로 옮긴다.
+                       marker.setPosition(coords);
+                   }
+               });
+           }
+       }).open();
+   }
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var passwordInput = document.getElementById("exampleInputPassword1");
+        var confirmPasswordInput = document.getElementById("exampleInputPassword2");
+        var passwordLengthError = document.getElementById("passwordLengthError");
+        var passwordMatchError = document.getElementById("passwordMatchError");
+
+        function validatePassword() {
+            if (passwordInput.value.length < 8) {
+                passwordLengthError.textContent = "비밀번호는 8자 이상이어야 합니다.";
+                return false;
+            } else {
+                passwordLengthError.textContent = "";
+            }
+
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                passwordMatchError.textContent = "비밀번호가 일치하지 않습니다.";
+                return false;
+            } else {
+                passwordMatchError.textContent = "";
+            }
+
+            return true;
+        }
+
+        passwordInput.addEventListener("input", validatePassword);
+        confirmPasswordInput.addEventListener("input", validatePassword);
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var form = document.getElementById("signupForm");
+        var submitButton = document.getElementById("submitButton");
+
+        function validateForm() {
+            var isValid = form.checkValidity();
+            if (isValid) {
+                submitButton.removeAttribute("disabled");
+            } else {
+                submitButton.setAttribute("disabled", "disabled");
+            }
+        }
+
+        form.addEventListener("input", validateForm);
+    });
+</script>
+
+
+
+<script>
+function idDupPopup(){
+window.open('idDup.jsp','','width=200,height=300');
+}
+function memberSubmit(){
+    var idDupChk= document.f1.userId.value;
+    if(idDupChk =='t'){
+    document.f1.submit();
+    }else{
+    alert('아이디 중복체크를 해주세요');
+    }
+    }
+    </script>
 
 </body>
