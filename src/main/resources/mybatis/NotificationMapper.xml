@@ -10,4 +10,8 @@
         VALUES(#{userId}, #{content}, #{isRead}, NOW())
     </insert>
 
+    <select id="selectNotificationsByUserId" parameterType="string" resultType="com.lend.shareservice.entity.Notification">
+        SELECT * FROM NOTIFICATION
+        WHERE userId = #{userId}
+    </select>
 </mapper>

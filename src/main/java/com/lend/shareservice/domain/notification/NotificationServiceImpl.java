@@ -1,11 +1,15 @@
 package com.lend.shareservice.domain.notification;
 
+import com.lend.shareservice.entity.Notification;
+import com.lend.shareservice.web.notification.dto.NotificationDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +57,16 @@ public class NotificationServiceImpl implements NotificationService{
             }
         }
     }
+    @Override
+    public List<NotificationDTO> findNotificationByUserId(String userId) {
 
+        List<Notification> findNotifications = notificationMapper.selectNotificationsByUserId(userId);
 
+        List<NotificationDTO> findNotificationDTOS = new ArrayList<>();
+        for (Notification findNotification : findNotifications) {
+            findNotificationDTOS.add(new NotificationDTO(findNotification.getNotiId(), findNotification.getUserId(), findNotification.getContent(), findNotification.getNotiRegDate()));
+        }
+
+        return findNotificationDTOS;
+    }
 }

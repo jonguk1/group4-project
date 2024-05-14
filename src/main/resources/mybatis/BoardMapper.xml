@@ -18,6 +18,7 @@
         SELECT * FROM Board
         WHERE itemCategoryId = #{itemCategoryId}
         AND boardCategoryId = #{boardCategoryId}
+        ORDER BY isMegaphone DESC, regDate DESC;
     </select>
 
 
@@ -31,6 +32,7 @@
     <select id="selectPostsBySearchTerm" parameterType="String" resultType="com.lend.shareservice.entity.Board">
         SELECT * FROM Board
         WHERE itemName LIKE CONCAT('%', #{searchTerm}, '%')
+        ORDER BY isMegaphone DESC, regDate DESC;
     </select>
 
     <!-- 조회수 1증가   -->
@@ -43,7 +45,7 @@
     <!-- 인기순 글 조회   -->
     <select id="selectAllPostsInOrderOfInterest" resultType="com.lend.shareservice.entity.Board">
         SELECT * FROM Board
-        ORDER BY interestCnt DESC
+        ORDER BY isMegaphone DESC, interestCnt DESC, regDate DESC;
     </select>
 
     <!-- 관심글 등록 -->
