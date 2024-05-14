@@ -1,6 +1,6 @@
 package com.lend.shareservice.domain.user;
 
-import com.lend.shareservice.domain.user.vo.UserVo;
+
 import com.lend.shareservice.entity.User;
 import lombok.RequiredArgsConstructor;
 
