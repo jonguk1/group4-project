@@ -21,7 +21,7 @@
             width: 100%;
             height: 400px;
         }
-        /* 필요한 스타일 추가 */
+
     </style>
 
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
@@ -34,9 +34,9 @@
                     <div class="col" >
                         <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
                             <a href="/">
-                            <img src="/images/logo.png" style="height: 55px; width: 55px; margin-right: 8px;">
+                                <img src="/images/icon/logo.png" style="height: 50px; width: 50px; margin-right: 8px;">
                             </a>
-                            <a class="navbar-brand" href="/" style="color: black; font-size: 25px;">썸띵랜드</a>
+                            <a class="navbar-brand" href="/" style="color: black; font-size: 25px;" id="logo">썸띵랜드</a>
                         </nav>
                     </div>
                     <div class="col" >
@@ -53,16 +53,19 @@
                                 <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#" style="color: black;">알림</a>
+                                            <a class="nav-link" href="#">
+                                                <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                            </a>
                                         </li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#">
+                                                <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
+                                            </a>
+                                        </li>
+
                                         <li class="nav-item">
                                             <a class="nav-link" href="#" style="color: black;">로그아웃</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#" style="color: black;">채팅</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#" style="color: black;">메시지</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -76,14 +79,14 @@
     <nav class="navbar navbar-expand-lg" data-bs-theme="light">
         <ul class="navbar-nav me-auto">
             <li class="nav-item dropdown text-center">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려주세요</a>
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려드려요</a>
                 <div class="dropdown-menu" id="lendServe">
 
                 </div>
             </li>
 
             <li class="nav-item dropdown text-center">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려드려요</a>
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려주세요</a>
                 <div class="dropdown-menu"  id="lendServed">
 
                 </div>
@@ -382,17 +385,21 @@
                                                     '<span class="badge bg-danger">' + post.isAuction + '</span>' +
                                                     '<span class="badge bg-primary">' + post.isLend + '</span>' +
                                                 '</div>' +
-                                                    '<div>' + post.regDate + '</div>' +
-                                                    '<div>' + post.address + '</div>' +
-                                                    '<div>' + post.price + '원</div>' +
+                                                    '<div><img src="/images/icon/postRegDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.regDate + '</div>' +
+                                                    '<div><img src="/images/icon/mapIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.address + '</div>' +
+                                                    '<div><img src="/images/icon/moneyIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.price + '원</div>' +
+                                                    '<div><img src="/images/icon/returnDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;반납 희망일 : ' + (post.returnDate ? post.returnDate : '미정') + '</div>' +
                                                     '<div class="d-flex justify-content-start">' +
-                                                        '<span>관심 ' + post.interestCnt + '&nbsp;</span>' +
-                                                        '<span>조회 ' + post.hits + '</span>' +
+                                                        '<span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + post.interestCnt + '&nbsp;</span>' +
+                                                        '<span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41&nbsp;</span>' +
+                                                        '<span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;">&nbsp;' + post.hits + '</span>' +
                                                     '</div>' +
                                             '</div>' +
                                         '</div>' +
                                     '</div>';
-
+                            if (post.isMegaphone === "급구") {
+                                postHtml = postHtml.replace('<span class="badge bg-danger">' + post.isMegaphone + '</span>', '<img src="images/icon/megaphoneIcon.png" style="width: 20px; height: 20px;">');
+                            }
 
                     }
 

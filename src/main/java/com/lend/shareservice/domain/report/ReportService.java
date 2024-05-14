@@ -9,6 +9,10 @@ public interface ReportService {
 
     List<ReportDTO> reports(PagingDTO page);
 
+    List<ReportDTO> reportWriters(String writer,PagingDTO page);
+
     int getReportCount();
+
+    int getReportWriterCount(String writer);
 
 }

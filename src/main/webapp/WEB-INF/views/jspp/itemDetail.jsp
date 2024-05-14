@@ -26,7 +26,7 @@
                     <div class="col" >
                         <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
                             <a href="/">
-                            <img src="/images/logo.png" style="height: 55px; width: 55px; margin-right: 8px;">
+                            <img src="/images/icon/logo.png" style="height: 50px; width: 50px; margin-right: 8px;">
                             </a>
                             <a class="navbar-brand" href="/" style="color: black; font-size: 25px;">썸띵랜드</a>
                         </nav>
@@ -45,18 +45,22 @@
                                 <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#" style="color: black;">알림</a>
+                                            <a class="nav-link" href="#">
+                                                <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                            </a>
                                         </li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#">
+                                                <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
+                                            </a>
+                                        </li>
+
                                         <li class="nav-item">
                                             <a class="nav-link" href="#" style="color: black;">로그아웃</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#" style="color: black;">채팅</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#" style="color: black;">메시지</a>
-                                        </li>
                                     </ul>
+
                                 </div>
                             </div>
                         </nav>
@@ -72,14 +76,14 @@
                 <nav class="navbar navbar-expand-lg" data-bs-theme="light">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item dropdown text-center">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려주세요</a>
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려드려요</a>
                             <div class="dropdown-menu" id="lendServe">
 
                             </div>
                         </li>
 
                         <li class="nav-item dropdown text-center">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려드려요</a>
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려주세요</a>
                             <div class="dropdown-menu" id="lendServed">
                             </div>
                         </li>
@@ -98,33 +102,55 @@
 
 
             <br>
-            <div class="container-fluid">
+           <div class="container-fluid">
+               <div class="row">
+                   <div class="col-md-3"></div>
+                   <div class="col-md-6 text-center">
+                       <div class="row">
+                           <div class="col-md-10">
+                               <div class="row">
+                                   <div class="col-md-2"></div>
+                                   <div class="col-md-10 text-center">
+                                       <c:if test="${not empty postById.isMegaphone}">
+                                           <c:if test="${postsBySearchTerm[0].isMegaphone eq '급구'}">
+
+                                               <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                           </c:if>
+                                       </c:if>
+                                       <span class="badge bg-danger">
+                                           ${postById.isAuction}
+                                       </span>
+                                       <span class="badge bg-success">
+                                           ${postById.isLend}
+                                       </span>
+                                   </div>
+                               </div>
+                           </div>
+                           <div class="col-md-2 text-end">
+                               <a href="#" onclick="sendEditRequest()">
+                                   <img src="/images/icon/editIcon.png" style="width:25px; height:25px;">
+                               </a>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="col-md-3"></div>
+               </div>
+           </div>
+
+                <br>
 
                 <div class="row">
-                    <div class="col-md-3">
-                    </div>
+                    <div class="col-md-3"></div>
                     <div class="col-md-6 text-center">
-                        <c:if test="${not empty postById.isMegaphone}">
-                            <span class="badge bg-danger">
-                                ${postById.isMegaphone}
-                            </span>
-                        </c:if>
-                        <span class="badge bg-danger">
-                            ${postById.isAuction}
-                        </span>
-                        <span class="badge bg-success">
-                            ${postById.isLend}
-                        </span>
                         <span>
                             <h2>
                             ${postById.title}
                             </h2>
                         </span>
                     </div>
-                    <div class="col-md-3">
-                    </div>
+                    <div class="col-md-3"></div>
                 </div>
-                <br>
 
                 <div class="row">
                     <div class="col-md-3"></div>
@@ -185,9 +211,7 @@
                             <span>
                                  <img src="/images/people.png" alt="대체_텍스트" style="width: 50px;">
                             </span>
-
                                 <span>${postById.writer}</span>
-
                             <span>
                                 <button type="button" class="btn btn-primary" onclick="chat()">채팅</button>
                             </span>
@@ -239,7 +263,7 @@
                     <div class="col-md-3">
                     </div>
                     <div class="col-md-6">
-                        <span>${postById.regDate}</span>
+                        <span><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postById.regDate}</span>
                     </div>
                     <div class="col-md-3">
                     </div>
@@ -249,7 +273,7 @@
                     <div class="col-md-3">
                     </div>
                     <div class="col-md-6">
-                        <span id="address">${postById.address}</span>
+                        <span id="address"><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">${postById.address}</span>
                     </div>
                     <div class="col-md-3">
                     </div>
@@ -259,11 +283,47 @@
                     <div class="col-md-3">
                     </div>
                     <div class="col-md-6">
-                        <span id="address">${postById.price}원</span>
+                        <span id="price"><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postById.price}원</span>
                     </div>
                     <div class="col-md-3">
                     </div>
                 </div>
+
+               <div class="row">
+                   <div class="col-md-3">
+                   </div>
+                   <div class="col-md-6">
+                       <span id="returnDate">
+                           <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">&nbsp; 반납 희망일 :
+                           <c:choose>
+                               <c:when test="${postById.returnDate ne null}">
+                                   ${postById.returnDate}
+                               </c:when>
+                               <c:otherwise>
+                                   미정
+                               </c:otherwise>
+                           </c:choose>
+                       </span>
+                   </div>
+                   <div class="col-md-3">
+                   </div>
+               </div>
+
+              <div class="row">
+                  <div class="col-md-3">
+                  </div>
+                  <div class="col-md-6">
+                      <span id="deadline">
+                          <c:if test="${postById.isAuction ne '경매 불가'}">
+                            <img src="/images/icon/auctionIcon.png" style="width:25px; height:25px;">
+                            ${postById.deadline}
+                          </c:if>
+                      </span>
+                  </div>
+                  <div class="col-md-3">
+                  </div>
+              </div>
+
 
                 <div class="row">
                     <div class="col-md-3">
@@ -294,9 +354,10 @@
                     <div class="col-md-3">
                     </div>
                     <div class="col-md-6">
-                        <span id="interestCnt">관심 ${postById.interestCnt}</span>
-                        <span>채팅 12</span>
-                        <span>조회 ${postById.hits}</span>
+                        <span id="interestCnt"><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postById.interestCnt}</span>&nbsp;
+                        <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postById.hits}</span>
+                        <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 12</span>
+
                     </div>
                     <div class="col-md-3">
                     </div>
@@ -341,24 +402,40 @@
                                 <div class="col-md-4">
                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                         <h5 class="card-header">
-                                            <span class="badge bg-danger">${postsBySearchTerm[0].isMegaphone}</span>
+                                            <c:if test="${postsBySearchTerm[0].isMegaphone eq '급구'}">
+
+                                                    <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                            </c:if>
                                             <span>${postsBySearchTerm[0].title}</span>
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
                                                 <a href="/board/${postsBySearchTerm[0].boardId}">
-                                                    <img src="${postsBySearchTerm[0].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                    <img src="${postsBySearchTerm[0].imgSrc}" alt="대체_텍스트" style="width: 200px; height: 200px;">
                                                 </a>
                                             </p>
                                         </div>
                                         <div class="card-footer">
                                             <span class="badge bg-danger">${postsBySearchTerm[0].isAuction}</span>
                                             <span class="badge bg-success">${postsBySearchTerm[0].isLend}</span>
-                                            <p>${postsBySearchTerm[0].price}원</p>
-                                            <p>${postsBySearchTerm[0].address}</p>
-                                            <span>관심 ${postsBySearchTerm[0].interestCnt}</span>
-                                            <span>채팅 41</span>
-                                            <span>조회 ${postsBySearchTerm[0].hits}</span>
+                                            <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[0].regDate}</div>
+                                            <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[0].address}</div>
+                                            <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[0].price}원</div>
+                                            <div>
+                                                <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                <c:choose>
+                                                    <c:when test="${postsBySearchTerm[0].returnDate ne null}">
+                                                        ${postsBySearchTerm[0].returnDate}
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        미정
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[0].interestCnt}</span>
+                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                            <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[0].hits}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -366,24 +443,40 @@
                                 <div class="col-md-4">
                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                         <h5 class="card-header">
-                                            <span class="badge bg-danger">${postsBySearchTerm[1].isMegaphone}</span>
+                                            <c:if test="${postsBySearchTerm[1].isMegaphone eq '급구'}">
+
+                                                    <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                            </c:if>
                                             <span>${postsBySearchTerm[1].title}</span>
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
                                                 <a href="/board/${postsBySearchTerm[1].boardId}">
-                                                    <img src="${postsBySearchTerm[1].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                    <img src="${postsBySearchTerm[1].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 200px;">
                                                 </a>
                                             </p>
                                         </div>
                                         <div class="card-footer">
                                             <span class="badge bg-danger">${postsBySearchTerm[1].isAuction}</span>
                                             <span class="badge bg-success">${postsBySearchTerm[1].isLend}</span>
-                                            <p>${postsBySearchTerm[1].price}원</p>
-                                            <p>${postsBySearchTerm[1].address}</p>
-                                            <span>관심 ${postsBySearchTerm[1].interestCnt}</span>
-                                            <span>채팅 41</span>
-                                            <span>조회 ${postsBySearchTerm[1].hits}</span>
+                                            <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[1].regDate}</div>
+                                            <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[1].address}</div>
+                                            <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[1].price}원</div>
+                                            <div>
+                                                <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                <c:choose>
+                                                    <c:when test="${postsBySearchTerm[1].returnDate ne null}">
+                                                        ${postsBySearchTerm[1].returnDate}
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        미정
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[1].interestCnt}</span>
+                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                            <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[1].hits}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -392,24 +485,40 @@
                                 <div class="col-md-4">
                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                         <h5 class="card-header">
-                                            <span class="badge bg-danger">${postsBySearchTerm[2].isMegaphone}</span>
+                                            <c:if test="${postsBySearchTerm[2].isMegaphone eq '급구'}">
+
+                                                    <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                            </c:if>
                                             <span>${postsBySearchTerm[2].title}</span>
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
                                                 <a href="/board/${postsBySearchTerm[2].boardId}">
-                                                    <img src="${postsBySearchTerm[2].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                    <img src="${postsBySearchTerm[2].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 200px;">
                                                 </a>
                                             </p>
                                         </div>
                                         <div class="card-footer">
                                             <span class="badge bg-danger">${postsBySearchTerm[2].isAuction}</span>
                                             <span class="badge bg-success">${postsBySearchTerm[2].isLend}</span>
-                                            <p>${postsBySearchTerm[2].price}원</p>
-                                            <p>${postsBySearchTerm[2].address}</p>
-                                            <span>관심 ${postsBySearchTerm[2].interestCnt}</span>
-                                            <span>채팅 41</span>
-                                            <span>조회 ${postsBySearchTerm[2].hits}</span>
+                                            <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[2].regDate}</div>
+                                            <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[2].price}원</div>
+                                            <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[2].address}</div>
+                                            <div>
+                                                <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                <c:choose>
+                                                    <c:when test="${postsBySearchTerm[2].returnDate ne null}">
+                                                        ${postsBySearchTerm[2].returnDate}
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        미정
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[2].interestCnt}</span>
+                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                            <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[2].hits}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -431,24 +540,40 @@
                                             <div class="card border-light mb-3" style="max-width: 20rem;">
                                                 <h5 class="card-header">
 
-                                                    <span class="badge bg-danger">${postsBySearchTerm[3].isMegaphone}</span>
+                                                    <c:if test="${postsBySearchTerm[3].isMegaphone eq '급구'}">
+
+                                                            <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                                    </c:if>
                                                     <span>${postsBySearchTerm[3].title}</span>
                                                 </h5>
                                                 <div class="card-body">
                                                     <p class="card-text">
                                                         <a href="/board/${postsBySearchTerm[3].boardId}">
-                                                            <img src="${postsBySearchTerm[3].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                            <img src="${postsBySearchTerm[3].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 200px;">
                                                         </a>
                                                     </p>
                                                 </div>
                                                 <div class="card-footer">
                                                     <span class="badge bg-danger">${postsBySearchTerm[3].isAuction}</span>
                                                     <span class="badge bg-success">${postsBySearchTerm[3].isLend}</span>
-                                                    <p>${postsBySearchTerm[3].price}원</p>
-                                                    <p>${postsBySearchTerm[3].address}</p>
-                                                    <span>관심 ${postsBySearchTerm[3].interestCnt}</span>
-                                                    <span>채팅 41</span>
-                                                    <span>조회 ${postsBySearchTerm[3].hits}</span>
+                                                    <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[3].regDate}</div>
+                                                    <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[3].address}</div>
+                                                    <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[3].price}원</div>
+                                                    <div>
+                                                        <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                        <c:choose>
+                                                            <c:when test="${postsBySearchTerm[3].returnDate ne null}">
+                                                                ${postsBySearchTerm[3].returnDate}
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                미정
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </div>
+                                                    <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[3].interestCnt}</span>
+                                                    <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                    <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[3].hits}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -457,24 +582,40 @@
 
                                             <div class="card border-light mb-3" style="max-width: 20rem;">
                                                 <h5 class="card-header">
-                                                    <span class="badge bg-danger">${postsBySearchTerm[4].isMegaphone}</span>
+                                                    <c:if test="${postsBySearchTerm[4].isMegaphone eq '급구'}">
+
+                                                            <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                                    </c:if>
                                                     <span>${postsBySearchTerm[4].title}</span>
                                                 </h5>
                                                 <div class="card-body">
                                                     <p class="card-text">
                                                         <a href="/board/${postsBySearchTerm[4].boardId}">
-                                                            <img src="${postsBySearchTerm[4].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                            <img src="${postsBySearchTerm[4].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 200px;">
                                                         </a>
                                                     </p>
                                                 </div>
                                                 <div class="card-footer">
                                                     <span class="badge bg-danger">${postsBySearchTerm[4].isAuction}</span>
                                                     <span class="badge bg-success">${postsBySearchTerm[4].isLend}</span>
-                                                    <p>${postsBySearchTerm[4].price}원</p>
-                                                    <p>${postsBySearchTerm[4].address}</p>
-                                                    <span>관심 ${postsBySearchTerm[4].interestCnt}</span>
-                                                    <span>채팅 41</span>
-                                                    <span>조회 ${postsBySearchTerm[4].hits}</span>
+                                                    <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[4].regDate}</div>
+                                                    <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[4].address}</div>
+                                                    <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[4].price}원</div>
+                                                    <div>
+                                                        <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                        <c:choose>
+                                                            <c:when test="${postsBySearchTerm[4].returnDate ne null}">
+                                                                ${postsBySearchTerm[4].returnDate}
+                                                            </c:when>
+                                                         <c:otherwise>
+                                                            미정
+                                                         </c:otherwise>
+                                                        </c:choose>
+                                                    </div>
+                                                    <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[4].interestCnt}</span>
+                                                    <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                    <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[4].hits}</span>
                                                 </div>
                                             </div>
                                             </c:if>
@@ -484,24 +625,40 @@
                                         <div class="col-md-4">
                                             <div class="card border-light mb-3" style="max-width: 20rem;">
                                                 <h5 class="card-header">
-                                                    <span class="badge bg-danger">${postsBySearchTerm[5].isMegaphone}</span>
+                                                    <c:if test="${postsBySearchTerm[5].isMegaphone eq '급구'}">
+
+                                                            <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                                    </c:if>
                                                     <span>${postsBySearchTerm[5].title}</span>
                                                 </h5>
                                                 <div class="card-body">
                                                     <p class="card-text">
                                                         <a href="/board/${postsBySearchTerm[5].boardId}">
-                                                            <img src="${postsBySearchTerm[5].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                            <img src="${postsBySearchTerm[5].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 200px;">
                                                         </a>
                                                     </p>
                                                 </div>
                                                 <div class="card-footer">
                                                     <span class="badge bg-danger">${postsBySearchTerm[5].isAuction}</span>
                                                     <span class="badge bg-success">${postsBySearchTerm[5].isLend}</span>
-                                                    <p>${postsBySearchTerm[5].price}원</p>
-                                                    <p>${postsBySearchTerm[5].address}</p>
-                                                    <span>관심 ${postsBySearchTerm[5].interestCnt}</span>
-                                                    <span>채팅 41</span>
-                                                    <span>조회 ${postsBySearchTerm[5].hits}</span>
+                                                    <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[5].regDate}</div>
+                                                    <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[5].address}</div>
+                                                    <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[5].price}원</div>
+                                                    <div>
+                                                        <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                        <c:choose>
+                                                            <c:when test="${postsBySearchTerm[5].returnDate ne null}">
+                                                                ${postsBySearchTerm[5].returnDate}
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                미정
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </div>
+                                                    <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[5].interestCnt}</span>
+                                                    <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                    <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[5].hits}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -554,24 +711,40 @@
                                                 <div class="col-md-4">
                                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                                         <h5 class="card-header">
-                                                            <span class="badge bg-danger">${interestPosts[0].isMegaphone}</span>
+                                                            <c:if test="${interestPosts[0].isMegaphone eq '급구'}">
+
+                                                                    <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                                            </c:if>
                                                             <span>${interestPosts[0].title}</span>
                                                         </h5>
                                                         <div class="card-body">
                                                             <p class="card-text">
                                                                 <a href="/board/${interestPosts[0].boardId}">
-                                                                    <img src="${interestPosts[0].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                    <img src="${interestPosts[0].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 200px;">
                                                                 </a>
                                                             </p>
                                                         </div>
                                                         <div class="card-footer">
                                                             <span class="badge bg-danger">${interestPosts[0].isAuction}</span>
                                                             <span class="badge bg-success">${interestPosts[0].isLend}</span>
-                                                            <p>${interestPosts[0].price}원</p>
-                                                            <p>${interestPosts[0].address}</p>
-                                                            <span>관심 ${interestPosts[0].interestCnt}</span>
-                                                            <span>채팅 41</span>
-                                                            <span>조회 ${interestPosts[0].hits}</span>
+                                                            <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[0].regDate}</div>
+                                                            <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[0].address}</div>
+                                                            <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[0].price}원</div>
+                                                            <div>
+                                                                <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                                <c:choose>
+                                                                    <c:when test="${interestPosts[0].returnDate ne null}">
+                                                                        ${interestPosts[0].returnDate}
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        미정
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </div>
+                                                            <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[0].interestCnt}</span>
+                                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                            <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[0].hits}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -579,24 +752,40 @@
                                                 <div class="col-md-4">
                                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                                         <h5 class="card-header">
-                                                            <span class="badge bg-danger">${interestPosts[1].isMegaphone}</span>
+                                                            <c:if test="${interestPosts[1].isMegaphone eq '급구'}">
+
+                                                                    <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                                            </c:if>
                                                             <span>${interestPosts[1].title}</span>
                                                         </h5>
                                                         <div class="card-body">
                                                             <p class="card-text">
                                                                 <a href="/board/${interestPosts[1].boardId}">
-                                                                    <img src="${interestPosts[1].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                    <img src="${interestPosts[1].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 200px;">
                                                                 </a>
                                                             </p>
                                                         </div>
                                                         <div class="card-footer">
                                                             <span class="badge bg-danger">${interestPosts[1].isAuction}</span>
                                                             <span class="badge bg-success">${interestPosts[1].isLend}</span>
-                                                            <p>${interestPosts[1].price}원</p>
-                                                            <p>${interestPosts[1].address}</p>
-                                                            <span>관심 ${interestPosts[1].interestCnt}</span>
-                                                            <span>채팅 41</span>
-                                                            <span>조회 ${interestPosts[1].hits}</span>
+                                                            <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[1].regDate}</div>
+                                                            <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[1].address}</div>
+                                                            <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[1].price}원</div>
+                                                            <div>
+                                                                <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                                <c:choose>
+                                                                    <c:when test="${interestPosts[1].returnDate ne null}">
+                                                                        ${interestPosts[1].returnDate}
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        미정
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </div>
+                                                            <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[1].interestCnt}</span>
+                                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                            <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[1].hits}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -605,24 +794,40 @@
                                                 <div class="col-md-4">
                                                     <div class="card border-light mb-3" style="max-width: 20rem;">
                                                         <h5 class="card-header">
-                                                            <span class="badge bg-danger">${interestPosts[2].isMegaphone}</span>
+                                                            <c:if test="${interestPosts[2].isMegaphone eq '급구'}">
+
+                                                                    <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                                            </c:if>
                                                             <span>${interestPosts[2].title}</span>
                                                         </h5>
                                                         <div class="card-body">
                                                             <p class="card-text">
                                                                 <a href="/board/${interestPosts[2].boardId}">
-                                                                    <img src="${interestPosts[2].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                    <img src="${interestPosts[2].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 200px;">
                                                                 </a>
                                                             </p>
                                                         </div>
                                                         <div class="card-footer">
                                                             <span class="badge bg-danger">${interestPosts[2].isAuction}</span>
                                                             <span class="badge bg-success">${interestPosts[2].isLend}</span>
-                                                            <p>${interestPosts[2].price}원</p>
-                                                            <p>${interestPosts[2].address}</p>
-                                                            <span>관심 ${interestPosts[2].interestCnt}</span>
-                                                            <span>채팅 41</span>
-                                                            <span>조회 ${interestPosts[2].hits}</span>
+                                                            <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[2].regDate}</div>
+                                                            <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[2].address}</div>
+                                                            <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[2].price}원</div>
+                                                            <div>
+                                                                <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                                <c:choose>
+                                                                    <c:when test="${interestPosts[2].returnDate ne null}">
+                                                                        ${interestPosts[2].returnDate}
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        미정
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </div>
+                                                            <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[2].interestCnt}</span>
+                                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                            <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[2].hits}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -644,24 +849,40 @@
                                                                     <div class="col-md-4">
                                                                         <div class="card border-light mb-3" style="max-width: 20rem;">
                                                                             <h5 class="card-header">
-                                                                                <span class="badge bg-danger">${interestPosts[3].isMegaphone}</span>
+                                                                                <c:if test="${interestPosts[3].isMegaphone eq '급구'}">
+
+                                                                                        <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                                                                </c:if>
                                                                                 <span>${interestPosts[3].title}</span>
                                                                             </h5>
                                                                             <div class="card-body">
                                                                                 <p class="card-text">
                                                                                     <a href="/board/${interestPosts[3].boardId}">
-                                                                                        <img src="${interestPosts[3].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                                        <img src="${interestPosts[3].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 200px;">
                                                                                     </a>
                                                                                 </p>
                                                                             </div>
                                                                             <div class="card-footer">
                                                                                 <span class="badge bg-danger">${interestPosts[3].isAuction}</span>
                                                                                 <span class="badge bg-success">${interestPosts[3].isLend}</span>
-                                                                                <p>${interestPosts[3].price}원</p>
-                                                                                <p>${interestPosts[3].address}</p>
-                                                                                <span>관심 ${interestPosts[3].interestCnt}</span>
-                                                                                <span>채팅 41</span>
-                                                                                <span>조회 ${interestPosts[3].hits}</span>
+                                                                                <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[3].regDate}</div>
+                                                                                <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[3].address}</div>
+                                                                                <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[3].price}원</div>
+                                                                                <div>
+                                                                                        <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                                                        <c:choose>
+                                                                                            <c:when test="${interestPosts[3].returnDate ne null}">
+                                                                                                ${interestPosts[3].returnDate}
+                                                                                            </c:when>
+                                                                                            <c:otherwise>
+                                                                                                미정
+                                                                                            </c:otherwise>
+                                                                                        </c:choose>
+                                                                                    </div>
+                                                                                <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[3].interestCnt}</span>
+                                                                                <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                                                <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[3].hits}</span>
                                                                             </div>
                                                                         </div>
                                                                     <c:if test="${not empty interestPosts[4]}">
@@ -669,24 +890,40 @@
                                                                     <div class="col-md-4">
                                                                         <div class="card border-light mb-3" style="max-width: 20rem;">
                                                                             <h5 class="card-header">
-                                                                                <span class="badge bg-danger">${interestPosts[4].isMegaphone}</span>
+                                                                                <c:if test="${interestPosts[4].isMegaphone eq '급구'}">
+
+                                                                                        <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                                                                </c:if>
                                                                                 <span>${interestPosts[4].title}</span>
                                                                             </h5>
                                                                             <div class="card-body">
                                                                                 <p class="card-text">
                                                                                     <a href="/board/${interestPosts[4].boardId}">
-                                                                                        <img src="${interestPosts[4].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                                        <img src="${interestPosts[4].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 200px;">
                                                                                     </a>
                                                                                 </p>
                                                                             </div>
                                                                             <div class="card-footer">
                                                                                 <span class="badge bg-danger">${interestPosts[4].isAuction}</span>
                                                                                 <span class="badge bg-success">${interestPosts[4].isLend}</span>
-                                                                                 <p>${interestPosts[4].price}원</p>
-                                                                                 <p>${interestPosts[4].address}</p>
-                                                                                 <span>관심 ${interestPosts[4].interestCnt}</span>
-                                                                                 <span>채팅 41</span>
-                                                                                 <span>조회 ${interestPosts[4].hits}</span>
+                                                                                <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[4].regDate}</div>
+                                                                                 <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[4].address}</div>
+                                                                                 <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[4].price}원</div>
+                                                                                 <div>
+                                                                                        <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                                                        <c:choose>
+                                                                                            <c:when test="${interestPosts[4].returnDate ne null}">
+                                                                                                ${interestPosts[4].returnDate}
+                                                                                            </c:when>
+                                                                                            <c:otherwise>
+                                                                                                미정
+                                                                                            </c:otherwise>
+                                                                                        </c:choose>
+                                                                                    </div>
+                                                                                 <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[4].interestCnt}</span>
+                                                                                 <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;">41</span>
+                                                                                 <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[4].hits}</span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -695,24 +932,40 @@
                                                                     <div class="col-md-4">
                                                                         <div class="card border-light mb-3" style="max-width: 20rem;">
                                                                             <h5 class="card-header">
-                                                                                <span class="badge bg-danger">${interestPosts[5].isMegaphone}</span>
+                                                                                <c:if test="${interestPosts[5].isMegaphone eq '급구'}">
+
+                                                                                        <img src="/images/icon/megaphoneIcon.png" alt="급구 아이콘" style="width: 20px; height: 20px;">
+
+                                                                                </c:if>
                                                                                 <span>${interestPosts[5].title}</span>
                                                                             </h5>
                                                                             <div class="card-body">
                                                                                 <p class="card-text">
                                                                                     <a href="/board/${interestPosts[5].boardId}">
-                                                                                        <img src="${interestPosts[5].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 250px;">
+                                                                                        <img src="${interestPosts[5].imgSrc}" alt="대체_텍스트" style="width: 180px; height: 200px;">
                                                                                     </a>
                                                                                 </p>
                                                                             </div>
                                                                             <div class="card-footer">
                                                                                  <span class="badge bg-danger">${interestPosts[5].isAuction}</span>
                                                                                  <span class="badge bg-success">${interestPosts[5].isLend}</span>
-                                                                                 <p>${interestPosts[5].price}원</p>
-                                                                                 <p>${interestPosts[5].address}</p>
-                                                                                 <span>관심 ${interestPosts[5].interestCnt}</span>
-                                                                                 <span>채팅 41</span>
-                                                                                 <span>조회 ${interestPosts[5].hits}</span>
+                                                                                 <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[5].regDate}</div>
+                                                                                 <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[5].address}</div>
+                                                                                 <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[5].price}원</div>
+                                                                                  <div>
+                                                                                        <img src="/images/icon/returnDateIcon.png" style="width: 20px; height: 20px;">
+                                                                                        <c:choose>
+                                                                                            <c:when test="${interestPosts[5].returnDate ne null}">
+                                                                                                ${interestPosts[5].returnDate}
+                                                                                            </c:when>
+                                                                                            <c:otherwise>
+                                                                                                미정
+                                                                                            </c:otherwise>
+                                                                                        </c:choose>
+                                                                                    </div>
+                                                                                 <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[5].interestCnt}</span>
+                                                                                 <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                                                 <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[5].hits}</span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -734,7 +987,7 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <div id="postById" style="display: none;">${postById}</div>
-            ]
+
             <script>
 
                 $(document).ready(function() {
@@ -742,7 +995,7 @@
                     const eventSource = new EventSource('http://localhost:8081/subscribe');
 
                     eventSource.addEventListener('auction', event => {
-                        alert(event.data);
+
                     });
 
                      var userId = document.getElementById("userId").value;
@@ -806,7 +1059,8 @@
                         dataType: "json",
                         success: function(response) {
                             console.log(response);
-                            $("#address").html(response.address.replace(/^"(.*)"$/, '$1'));
+                            var html = '<img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;"> ' + response.address.replace(/^"(.*)"$/, '$1');
+                            $("#address").html(html);
                         },
                         error: function(xhr, status, error) {
                             console.error(xhr.responseText);
@@ -871,7 +1125,7 @@
                                type: 'POST',
                                success: function(response) {
                                     var interestCntElement = document.getElementById('interestCnt');
-                                    interestCntElement.textContent = '관심 ' + response;
+                                    interestCntElement.innerHTML = '<img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + response;
                                     var button = document.getElementById('interestButton');
                                     button.textContent = '관심 해제';
                                }
@@ -884,7 +1138,7 @@
                                type: 'DELETE',
                                success: function(response) {
                                     var interestCntElement = document.getElementById('interestCnt');
-                                    interestCntElement.textContent = '관심 ' + response;
+                                    interestCntElement.innerHTML = '<img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + response;
                                     var button = document.getElementById('interestButton');
                                     button.textContent = '관심';
 
@@ -939,7 +1193,17 @@
                 };
 
 
+                  function sendEditRequest() {
+                      let boardId = ${postById.boardId};
 
+                      var dataToSend = {
+                              boardId: boardId,
+                      };
+
+                      var queryString = $.param(dataToSend);
+
+                      window.location.href = "/board/editForm?" + queryString;
+                  }
             </script>
 
         </body>

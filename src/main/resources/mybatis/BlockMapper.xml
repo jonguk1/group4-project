@@ -2,6 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lend.shareservice.domain.block.BlockMapper">
 
+    <select id="getBlockCount" resultType="_int" parameterType="String">
+        select count(*) from block
+        <where>
+            blockUserId=#{value}
+        </where>
+    </select>
 
+    <select id="blocks" resultType="com.lend.shareservice.entity.Block" parameterType="map">
+        select blockedUserId from block
+        <where>
+            blockUserId=#{userId}
+        </where>
+        order by blockId limit #{limit} offset #{offset}
+    </select>
+
+    <delete id="deleteBlock" parameterType="String">
+        delete from block
+        <where>
+            blockedUserId=#{value}
+        </where>
+    </delete>
 
 </mapper>

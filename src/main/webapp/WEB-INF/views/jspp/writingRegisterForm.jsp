@@ -37,7 +37,7 @@
                     <div class="col" >
                         <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
                             <a href="/">
-                            <img src="/images/logo.png" style="height: 55px; width: 55px; margin-right: 8px;">
+                            <img src="/images/icon/logo.png" style="height: 50px; width: 50px; margin-right: 8px;">
                             </a>
                             <a class="navbar-brand" href="/" style="color: black; font-size: 25px;">썸띵랜드</a>
                         </nav>
@@ -56,18 +56,22 @@
                                 <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#" style="color: black;">알림</a>
+                                            <a class="nav-link" href="#">
+                                                <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                            </a>
                                         </li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#">
+                                                <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
+                                            </a>
+                                        </li>
+
                                         <li class="nav-item">
                                             <a class="nav-link" href="#" style="color: black;">로그아웃</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#" style="color: black;">채팅</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#" style="color: black;">메시지</a>
-                                        </li>
                                     </ul>
+
                                 </div>
                             </div>
                         </nav>
@@ -79,14 +83,14 @@
     <nav class="navbar navbar-expand-lg" data-bs-theme="light">
         <ul class="navbar-nav me-auto">
             <li class="nav-item dropdown text-center">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려주세요</a>
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려드려요</a>
                 <div class="dropdown-menu" id="lendServe">
 
                 </div>
             </li>
 
             <li class="nav-item dropdown text-center">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려드려요</a>
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려주세요</a>
                 <div class="dropdown-menu"  id="lendServed">
 
                 </div>
