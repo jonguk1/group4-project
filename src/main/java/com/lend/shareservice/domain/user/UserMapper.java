@@ -21,9 +21,6 @@ public interface UserMapper {
     String getUserId(String userId);
 
 
-    UserVo findByUserId(String userId);
-
-
     int blockUser(Block block);
 
     List<MyLenderAndMyLendyDTO> lenders(Map<String, Object> map);
@@ -33,6 +30,5 @@ public interface UserMapper {
     int getLenderCount(String userId);
 
     int getLendyCount(String userId);
-
 
 }
