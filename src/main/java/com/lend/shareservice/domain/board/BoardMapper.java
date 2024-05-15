@@ -22,7 +22,7 @@ public interface BoardMapper {
 
     List<Board> selectPostsBySearchTerm(String searchTerm);
 
-    void incrementingViewCount(Integer boardId);
+    int incrementingViewCount(Integer boardId);
 
     List<Board> selectAllPostsInOrderOfInterest();
 
