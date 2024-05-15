@@ -45,19 +45,32 @@
                                 <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#">
-                                                <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
-                                            </a>
+                                            <c:if test="${loggedIn}">
+                                                <a class="nav-link" href="#">
+                                                    <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                </a>
+                                            </c:if>
                                         </li>
 
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#">
-                                                <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
-                                            </a>
+                                            <c:if test="${loggedIn}">
+                                                <a class="nav-link" href="#">
+                                                    <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
+                                                </a>
+                                            </c:if>
                                         </li>
-
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#" style="color: black;">로그아웃</a>
+                                            <c:if test="${loggedIn}">
+                                                <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                            </c:if>
+                                        </li>
+                                        <li class="nav-item">
+                                            <c:if test="${not loggedIn}">
+                                                <a class="nav-link" href="/login" style="color: black;">로그인</a>
+                                            </c:if>
+                                            <c:if test="${loggedIn}">
+                                                <a class="nav-link" href="/logout" style="color: black;">로그아웃</a>
+                                            </c:if>
                                         </li>
                                     </ul>
 
@@ -211,8 +224,9 @@
                             <span>
                                  <img src="/images/people.png" alt="대체_텍스트" style="width: 50px;">
                             </span>
-                                <span>${postById.writer}</span>
+                                <a href="/user"><span>${postById.writer}</span></a>
                             <span>
+
                                 <button type="button" class="btn btn-primary" onclick="chat()">채팅</button>
                             </span>
                             <span>

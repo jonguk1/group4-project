@@ -95,7 +95,6 @@ public class BoardController {
     @GetMapping("/itemDetail")
     public String itemDetail() {
 
-
         return "jspp/itemDetail";
     }
 
