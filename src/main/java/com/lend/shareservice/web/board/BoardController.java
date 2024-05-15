@@ -103,6 +103,9 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public String boardDetail(@PathVariable("boardId") Integer boardId, Model model)  {
 
+        if (boardId >= Integer.MAX_VALUE) {
+            throw new PostNotFoundException("해당 글이 존재하지 않습니다.");
+        }
         // 조회수 1증가
         if (boardService.incrementingViewCount(boardId) <= 0) {
             throw new PostNotFoundException("해당 글이 존재하지 않습니다.");

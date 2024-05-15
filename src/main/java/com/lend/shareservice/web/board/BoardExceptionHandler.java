@@ -12,7 +12,7 @@ public class BoardExceptionHandler {
     @ExceptionHandler(PostNotFoundException.class)
     public ModelAndView handlePostNotFoundException(PostNotFoundException ex) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("error/404");
+        modelAndView.setViewName("error/postNotFoundError");
         return modelAndView;
     }
 }
