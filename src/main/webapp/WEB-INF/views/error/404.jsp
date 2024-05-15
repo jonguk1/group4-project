@@ -3,10 +3,11 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Error 404 - 페이지를 찾을 수 없습니다.</title>
+    <title>해당 글은 존재하지 않아요</title>
 </head>
 <body>
-    <h1>Error 404 - 페이지를 찾을 수 없습니다.</h1>
-    <p>죄송합니다. 요청하신 페이지를 찾을 수 없습니다.</p>
+    <img src="/images/icon/logo.png" style="width:200px; height:200px;">
+    <h1>해당 글은 존재하지 않아요</h1>
+    <p>죄송합니다. 해당 글은 존재하지 않아요.</p>
 </body>
 </html>
