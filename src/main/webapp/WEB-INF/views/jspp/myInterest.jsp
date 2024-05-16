@@ -15,87 +15,97 @@
 
 <body>
 
-<div class="container bg-green text-center">
-        <div class="row">
-            <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
-                <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
-                    <a class="navbar-brand" href="#" style="color: black;">썸띵랜드</a>
-                </nav>
-            </div>
-            <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
-                <form class="d-flex">
-                    <div class="input-group mt-3"> <!-- 여기에 mt-3 클래스 추가 -->
-                        <input class="form-control me-2" type="search" placeholder="빌리고 싶은 물건을 입력하세요">
-                        <button class="btn btn-secondary" type="submit">Search</button>
-                    </div>
-                </form>
-            </div>
-            <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
-                <nav class="navbar navbar-expand-lg bg-green">
-                    <div class="container-fluid">
-                        <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
-                            <ul class="navbar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: black;">알림</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: black;">로그아웃</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: black;">채팅</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: black;">메시지</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </div>
+  <div class="container bg-green text-center">
+                  <div class="row">
+                      <div class="col" >
+                          <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
+                              <a href="/">
+                              <img src="/images/icon/logo.png" style="height: 50px; width: 50px; margin-right: 8px;">
+                              </a>
+                              <a class="navbar-brand" href="/" style="color: black; font-size: 25px;">썸띵랜드</a>
+                          </nav>
+                      </div>
+                      <div class="col" >
+                          <form class="d-flex" method="get" action="/board/search">
+                              <div class="input-group mt-3" >
+                                  <input class="form-control me-2" type="search" name="searchTerm" id="searchTerm" placeholder="빌리고 싶은 물건을 입력하세요">
+                                  <button class="btn btn-secondary" type="submit">상품명 검색</button>
+                              </div>
+                          </form>
+                      </div>
+                      <div class="col" >
+                          <nav class="navbar navbar-expand-lg bg-green">
+                              <div class="container-fluid">
+                                  <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
+                                      <ul class="navbar-nav">
+                                          <li class="nav-item">
+                                              <c:if test="${loggedIn}">
+                                                  <a class="nav-link" href="#">
+                                                      <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                  </a>
+                                              </c:if>
+                                          </li>
+
+                                          <li class="nav-item">
+                                              <c:if test="${loggedIn}">
+                                                  <a class="nav-link" href="#">
+                                                      <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
+                                                  </a>
+                                              </c:if>
+                                          </li>
+                                          <li class="nav-item">
+                                              <c:if test="${loggedIn}">
+                                                  <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                              </c:if>
+                                          </li>
+                                          <li class="nav-item">
+                                              <c:if test="${not loggedIn}">
+                                                  <a class="nav-link" href="/login" style="color: black;">로그인</a>
+                                              </c:if>
+                                              <c:if test="${loggedIn}">
+                                                  <a class="nav-link" href="/logout" style="color: black;">로그아웃</a>
+                                              </c:if>
+                                          </li>
+                                      </ul>
+
+                                  </div>
+                              </div>
+                          </nav>
+                      </div>
+                  </div>
+              </div>
 
 
 
 
-    <div class="container d-flex justify-content-center">
-        <nav class="navbar navbar-expand-lg" data-bs-theme="light">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item dropdown text-center">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려주세요</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
-                    </div>
-                </li>
 
-                <li class="nav-item dropdown text-center">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려드려요</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">도서</a>
-                        <a class="dropdown-item" href="#">생활용품</a>
-                        <a class="dropdown-item" href="#">의류</a>
+              <div class="container d-flex justify-content-center">
+                  <nav class="navbar navbar-expand-lg" data-bs-theme="light">
+                      <ul class="navbar-nav me-auto">
+                          <li class="nav-item dropdown text-center">
+                              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려드려요</a>
+                              <div class="dropdown-menu" id="lendServe">
 
-                    </div>
-                </li>
+                              </div>
+                          </li>
 
-                <li class="nav-item dropdown text-center">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
-                    </div>
-                </li>
-            </ul>
-        </nav>
-    </div>
+                          <li class="nav-item dropdown text-center">
+                              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려주세요</a>
+                              <div class="dropdown-menu" id="lendServed">
+                              </div>
+                          </li>
 
+                          <li class="nav-item dropdown text-center">
+                              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
+                              <div class="dropdown-menu">
+                                  <a class="dropdown-item" href="#">경매 현황</a>
+                                  <a class="dropdown-item" href="#">마감 임박</a>
+
+                              </div>
+                          </li>
+                      </ul>
+                  </nav>
+              </div>
    <br><br>
 
 
@@ -260,4 +270,25 @@
         </c:choose>
     </div>
 </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: "/board/board-category",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
 
+                $.each(response, function(index, value) {
+                    $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                    $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                    $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("요청 실패:", status, error);
+            }
+        });
+    });
+</script>

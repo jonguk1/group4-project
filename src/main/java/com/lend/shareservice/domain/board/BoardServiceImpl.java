@@ -189,6 +189,12 @@ public class BoardServiceImpl implements BoardService{
     public ItemDetailDTO findPostById(Integer boardId) {
 
         Board board = boardMapper.selectPostById(boardId);
+
+        // 해당 ID의 글이 없는 경우
+        if (board == null) {
+            return null;
+        }
+
         log.info("board = {}", board);
 
         ItemDetailDTO itemDetailDTO = new ItemDetailDTO();
@@ -238,9 +244,8 @@ public class BoardServiceImpl implements BoardService{
     }
 
     // 조회수 1 증가
-    public void incrementingViewCount(Integer boarId) {
-
-        boardMapper.incrementingViewCount(boarId);
+    public int incrementingViewCount(Integer boarId) {
+        return boardMapper.incrementingViewCount(boarId);
     }
 
     // 인기글 찾기

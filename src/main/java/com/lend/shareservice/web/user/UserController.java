@@ -5,16 +5,9 @@ import com.lend.shareservice.domain.user.UserService;
 import com.lend.shareservice.domain.user.service.UserSignupService;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.User;
-
-
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-
-import lombok.extern.slf4j.Slf4j;
-
-
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
 import lombok.AllArgsConstructor;
@@ -22,16 +15,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
-
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@Slf4j
 @AllArgsConstructor
 public class UserController {
 
@@ -94,8 +83,8 @@ public class UserController {
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
         //1.회원정보 조회
-        String userId =request.getParameter("userId");
-        String pw =request.getParameter("pw");
+        String userId = request.getParameter("userId");
+        String pw = request.getParameter("pw");
         UserVo user = userSignupService.logiin(userId,pw);
 
         //2. 세션에 회원정보 저장 , 세션 유지 시간 설정
@@ -111,7 +100,7 @@ public class UserController {
 
     }
     //로그아웃
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public String logout(HttpServletRequest request, Model model){
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
@@ -164,7 +153,6 @@ public class UserController {
 
         userId=userService.getUserId(userId);
 
-
         int totalCount = userService.getLendyCount(userId);
 
         page.setTotalCount(totalCount);
@@ -195,28 +183,14 @@ public class UserController {
     }
 
 
-
-
     //회원가입 진행
     @PostMapping("/user/signup")
     public String signup(UserVo userVo){
         System.out.println("userVo = " + userVo);
         userSignupService.joinUser(userVo);
 
-
-
         return "redirect:/login";
     }
-
-
-
-
-}
-
-
-        return "test";
-    }
-
 
     // 차단 등록
     @PostMapping("/user/{userId}/block")

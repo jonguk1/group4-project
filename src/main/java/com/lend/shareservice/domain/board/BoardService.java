@@ -18,7 +18,7 @@ public interface BoardService {
 
     List<PostDTO> findPostsBySearchTerm(String searchTerm);
 
-    void incrementingViewCount(Integer boarId);
+    int incrementingViewCount(Integer boarId);
 
      List<PostDTO> findInterestPosts();
 

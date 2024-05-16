@@ -14,87 +14,71 @@
 
 <body>
 <div class="container bg-green text-center">
-        <div class="row">
-            <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
-                <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
-                    <a class="navbar-brand" href="#" style="color: black;">썸띵랜드</a>
+                <div class="row">
+                    <div class="col" >
+                        <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
+                            <a href="/">
+                            <img src="/images/icon/logo.png" style="height: 50px; width: 50px; margin-right: 8px;">
+                            </a>
+                            <a class="navbar-brand" href="/" style="color: black; font-size: 25px;">썸띵랜드</a>
+                        </nav>
+                    </div>
+                    <div class="col" >
+                        <form class="d-flex" method="get" action="/board/search">
+                            <div class="input-group mt-3" >
+                                <input class="form-control me-2" type="search" name="searchTerm" id="searchTerm" placeholder="빌리고 싶은 물건을 입력하세요">
+                                <button class="btn btn-secondary" type="submit">상품명 검색</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col" >
+                        <nav class="navbar navbar-expand-lg bg-green">
+                            <div class="container-fluid">
+                                <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
+                                    <ul class="navbar-nav">
+
+                                        <li class="nav-item">
+                                            <c:if test="${not loggedIn}">
+                                                <a class="nav-link" href="/login" style="color: black;">로그인</a>
+                                            </c:if>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container d-flex justify-content-center">
+                <nav class="navbar navbar-expand-lg" data-bs-theme="light">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item dropdown text-center">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려드려요</a>
+                            <div class="dropdown-menu" id="lendServe">
+
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown text-center">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려주세요</a>
+                            <div class="dropdown-menu" id="lendServed">
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown text-center">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">경매 현황</a>
+                                <a class="dropdown-item" href="#">마감 임박</a>
+
+                            </div>
+                        </li>
+                    </ul>
                 </nav>
             </div>
-            <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
-                <form class="d-flex">
-                    <div class="input-group mt-3"> <!-- 여기에 mt-3 클래스 추가 -->
-                        <input class="form-control me-2" type="search" placeholder="빌리고 싶은 물건을 입력하세요">
-                        <button class="btn btn-secondary" type="submit">상품명 검색</button>
-                    </div>
-                </form>
-            </div>
-            <div class="col" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
-                <nav class="navbar navbar-expand-lg bg-green">
-                    <div class="container-fluid">
-                        <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
-                            <ul class="navbar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: black;">알림</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: black;">로그인</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: black;">채팅</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: black;">메시지</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </div>
 
-
-
-
-    <div class="container d-flex justify-content-center">
-        <nav class="navbar navbar-expand-lg" data-bs-theme="light">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item dropdown text-center">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려주세요</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
-                    </div>
-                </li>
-
-                <li class="nav-item dropdown text-center">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">빌려드려요</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">도서</a>
-                        <a class="dropdown-item" href="#">생활용품</a>
-                        <a class="dropdown-item" href="#">의류</a>
-
-                    </div>
-                </li>
-
-                <li class="nav-item dropdown text-center">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
-                    </div>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
-   <br><br>
+   <br><br><br>
 
 
    <div class="row">
@@ -103,6 +87,7 @@
        		<div class="col-md-8 text-center">
 
        		<span>
+
        				<h3>로그인</h3>
        		</span>
        		</div>
@@ -113,109 +98,93 @@
        	<br><br>
 
    <div class="container-fluid">
-       	<div class="row">
-       		<div class="col-md-2">
-       		    <div class="accordion" id="accordionExample">
-                     <div class="accordion-item">
-                       <h2 class="accordion-header" id="headingOne">
-                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                           여기 뭐 넣지?
-                         </button>
-                       </h2>
-                       <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
-                         <div class="accordion-body">
-                            <div class="list-group">
-                              <a href="#" class="list-group-item list-group-item-action">내 정보</a>
-                              <a href="#" class="list-group-item list-group-item-action">관심 목록</a>
-                              <a href="#" class="list-group-item list-group-item-action">빌려준 목록</a>
-                              <a href="#" class="list-group-item list-group-item-action">빌린 목록</a>
-                              <a href="#" class="list-group-item list-group-item-action">채팅 목록</a>
-                              <a href="#" class="list-group-item list-group-item-action">내 경매 목록</a>
-                            </div>
-                         </div>
+       <div class="row">
+           <div class="col-md-2">
+           </div>
+           <div class="col-md-2">
+           </div>
+           <div class="col-md-4">
+               <div class="board">
+                   <form id="loginForm" onsubmit="return false;" method="post">
+                       <div class="form-group">
+                           <label for="exampleInputUserId1">
+                               아이디
+                           </label>
+                           <input type="text" name="userId" id="userId" class="form-control" id="userid1" />
                        </div>
-                     </div>
-       		    </div>
-       		</div>
-       		<div class="col-md-2">
-       		</div>
+                       <br>
+                       <div class="form-group">
+                           <label th:for="exampleInputPassword">
+                               비밀번호
+                           </label>
+                           <input type="password" name="pw" id="pw" class="form-control" id="exampleInputPassword1" />
+                       </div>
+                       <br>
+                       <label for="remember-check">
+                           <input type="checkbox" id="remember-check">아이디 저장하기
+                       </label>
+                       <br>
+                       <br>
+                       <div class="row">
+                           <div class="col text-center">
+                               <div class="form-group">
+                                   <button type="button" onclick="login();" class="btn btn-primary btn-block" style="width: 100%;">
+                                       login
+                                   </button>
+                               </div>
+                           </div>
+                       </div>
+                       <br>
+                       <div class="row">
+                           <div class="col-md text-center">
+                               <div class="form-group">
+                                   <button type="button" onclick="location.href='user/signup'" class="btn btn-info" style="width: 100%;">
+                                       회원가입
+                                   </button>
+                               </div>
+                           </div>
+                       </div>
+                   </form>
+               </div>
+           </div>
+           <div class="col-md-2">
+           </div>
+           <div class="col-md-2">
+           </div>
+       </div>
+   </div>
 
-       		<div class="col-md-4">
-       		<div class="board">
-                <form id="loginForm" onsubmit="return false;" method="post">
-
-       		    <div class="form-group">
-
-
-
-                					<label for="exampleInputUserId1">
-                						아이디
-                					</label>
-                					<input type="text" name="userId" id="userId" class="form-control" id="userid1" />
-                				</div>
-                                <br>
-                				<div class="form-group">
-
-                					<label th:for="exampleInputPassword">
-                						비밀번호
-                					</label>
-                					<input type="password" name="pw" id="pw" class="form-control" id="exampleInputPassword1" />
-                				</div>
-<br>
-<label for="remember-check">
-                <input type="checkbox" id="remember-check">아이디 저장하기
-            </label>
-
-                                <br>
-                                <br>
-
-                               <div class="row">
-
-    <div class="col text-center">
-        <div class="form-group">
-            <button type="button" onclick="login();" class="btn btn-primary btn-block" style="width: 100%;">
-                login
-            </button>
-        </div>
-    </div>
-</div>
-                                     <br>
-
-                                     <div class="row">
-                                    <div class="col-md text-center">
-                                        <div class="form-group">
-
-                                            <button type="button" onclick="location.href='user/signup'"  class="btn btn-info" style="width: 100%;">
-
-
-                                            회원가입
-                                            </button>
-                                        </div>
-                                    </div>
-</div>
-
-
-                			</form>
-
-       		</div>
-       		<div class="col-md-2">
-                   		</div>
-       		<div class="col-md-2">
-       		</div>
-       	</div>
-    </div>
 
 <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
 window.onload = () => {
-		document.querySelectorAll('#userId, #pw').forEach(element => {
-			element.addEventListener('keyup', (e) => {
-				if (e.keyCode === 13) {
-					login();
-				}
-			})
-		})
-	}
+    document.querySelectorAll('#userId, #pw').forEach(element => {
+        element.addEventListener('keyup', (e) => {
+            if (e.keyCode === 13) {
+                login();
+            }
+        })
+    })
+
+    $.ajax({
+        url: "/board/board-category",
+        type: "GET",
+        dataType: "json",
+        success: function(response) {
+            console.log(response);
+
+            $.each(response, function(index, value) {
+                $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error("요청 실패:", status, error);
+        }
+    });
+}
+
 
 			function login() {
 
@@ -237,7 +206,7 @@ window.onload = () => {
             				},
             				async : false,
             				success : function (response) {
-            					location.href = '/test';
+            					location.href = '/board?boardCategoryId=1&itemCategoryId=1';
             				},
             				error : function (request, status, error) {
             					alert('아이디와 비밀번호를 확인해 주세요.');

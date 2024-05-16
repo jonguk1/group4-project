@@ -19,7 +19,6 @@ public interface UserService {
 
     List<MyLenderAndMyLendyDTO> lenders(PagingDTO page, String userId);
 
-
     List<MyLenderAndMyLendyDTO> lendys(PagingDTO page, String userId);
 
     int getLenderCount(String userId);
@@ -27,5 +26,4 @@ public interface UserService {
     int getLendyCount(String userId);
 
     int blockUser(String userId);
-
 }
