@@ -26,20 +26,19 @@ public class NotificationServiceImpl implements NotificationService{
         sendToClient(userId, "EventStream Created. [userId=" + userId + "]");
         return emitter;
     }
-
     @Override
     public void noti(String id, Object data) {
         sendToClient(id, data);
     }
 
-    private SseEmitter createEmitter(String id) {
+    private SseEmitter createEmitter(String userId) {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
-        emitterRepository.save(id, emitter);
+        emitterRepository.save(userId, emitter);
 
         // Emitter가 완료될 때(모든 데이터가 성공적으로 전송된 상태) Emitter를 삭제한다.
-        emitter.onCompletion(() -> emitterRepository.deleteById(id));
+        emitter.onCompletion(() -> emitterRepository.deleteById(userId));
         // Emitter가 타임아웃 되었을 때(지정된 시간동안 어떠한 이벤트도 전송되지 않았을 때) Emitter를 삭제한다.
-        emitter.onTimeout(() -> emitterRepository.deleteById(id));
+        emitter.onTimeout(() -> emitterRepository.deleteById(userId));
 
         return emitter;
     }
@@ -49,7 +48,6 @@ public class NotificationServiceImpl implements NotificationService{
         log.info("emitter = {}", emitter);
         if (emitter != null) {
             try {
-
                 emitter.send(SseEmitter.event().id(String.valueOf(id)).name("auction").data(data));
             } catch (IOException exception) {
                 emitterRepository.deleteById(id);
