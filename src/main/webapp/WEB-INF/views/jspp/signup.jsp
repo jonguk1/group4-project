@@ -122,7 +122,7 @@
                 					</label>
                             </div>
                                 <div class="row">
-                                    <div class="col-md-7 text start">
+                                    <div class="col-md-8 text start">
                                       <div class="form-group">
 
                 					<input type="text" name="userId" class="form-control" id="userId" placeholder="아이디 입력(6~20자)" onkeydown="inputIdChk()" required/>
