@@ -5,16 +5,9 @@ import com.lend.shareservice.domain.user.UserService;
 import com.lend.shareservice.domain.user.service.UserSignupService;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.User;
-
-
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-
-import lombok.extern.slf4j.Slf4j;
-
-
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
 import lombok.AllArgsConstructor;
@@ -22,16 +15,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
-
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@Slf4j
 @AllArgsConstructor
 public class UserController {
 
@@ -202,14 +191,6 @@ public class UserController {
 
         return "redirect:/login";
     }
-
-
-
-
-
-
-
-
 
     // 차단 등록
     @PostMapping("/user/{userId}/block")

@@ -2,16 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lend.shareservice.domain.user.UserMapper">
 
+
     <!--로그인-->
     <select id="getUserAccount" resultType="com.lend.shareservice.domain.user.vo.UserVo">
         SELECT * FROM user
         WHERE userId= #{userId}
     </select>
 
-    <!--회원가입-->
 
     <resultMap id="MyLenderAndMyLendyMap" type="com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO">
     </resultMap>
+
+
+    <!--회원가입-->
 
     <insert id="saveUser" parameterType="com.lend.shareservice.domain.user.vo.UserVo">
         INSERT  IGNORE INTO user
@@ -22,9 +25,6 @@
     <select id="userList" resultType="string">
         select name from user;
     </select>
-
-
-
 
     <select id="getUserId" resultType="String" parameterType="String">
         select userId from user
@@ -72,11 +72,11 @@
 
     <select id="getLendyCount" resultType="_int" parameterType="String">
         select count(*) from chatroom
-
         <where>
             lendy=#{values}
         </where>
     </select>
+
 
 
     <select id="findByUserId" parameterType="String" resultType="com.lend.shareservice.domain.user.vo.UserVo">
@@ -85,5 +85,6 @@
             userId=#{value}
         </where>
     </select>
+
 
 </mapper>
