@@ -86,5 +86,11 @@
         </where>
     </select>
 
+    <select id="idCheck" resultType="_int" parameterType="string">
+        select count(userId) from user
+        <where>
+            userId=#{userId}
+        </where>
+    </select>
 
 </mapper>

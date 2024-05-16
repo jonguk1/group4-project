@@ -37,6 +37,13 @@ public class UserServiceImpl implements UserService{
         return userMapper.blockUser(block);
     }
 
+    @Override
+    public boolean idCheck(String userId) {
+        int n=userMapper.idCheck(userId);
+
+        return (n>0)? false: true;
+    }
+
 
     @Override
     public List<MyLenderAndMyLendyDTO> lenders(PagingDTO page, String userId) {

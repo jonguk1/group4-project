@@ -26,4 +26,6 @@ public interface UserService {
     int getLendyCount(String userId);
 
     int blockUser(String userId);
+
+    boolean idCheck(String userId);
 }

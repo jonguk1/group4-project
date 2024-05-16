@@ -31,4 +31,5 @@ public interface UserMapper {
 
     int getLendyCount(String userId);
 
+    int idCheck(String userId);
 }
