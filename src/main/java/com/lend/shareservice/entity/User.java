@@ -3,14 +3,28 @@ package com.lend.shareservice.entity;
 
 import lombok.Data;
 
+import lombok.*;
+
+
 import jakarta.validation.constraints.*;
 
 // 회원
 
+
 @Data
+
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+
+
 public class User {
 
     // 아이디 (Id)
+
+
+
 
     @NotBlank
     private String userId;

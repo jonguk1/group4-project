@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.domain.board.BoardService;
+import com.lend.shareservice.web.board.boardexception.PostNotFoundException;
 import com.lend.shareservice.web.board.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -95,18 +96,27 @@ public class BoardController {
     @GetMapping("/itemDetail")
     public String itemDetail() {
 
-
         return "jspp/itemDetail";
     }
 
     // 글의 사진을 클릭하면 나오는 글 상세
     @GetMapping("/{boardId}")
-    public String boardDetail(@PathVariable("boardId") Integer boardId, Model model) {
+    public String boardDetail(@PathVariable("boardId") Integer boardId, Model model)  {
 
+        if (boardId >= Integer.MAX_VALUE) {
+            throw new PostNotFoundException("해당 글이 존재하지 않습니다.");
+        }
         // 조회수 1증가
-        boardService.incrementingViewCount(boardId);
+        if (boardService.incrementingViewCount(boardId) <= 0) {
+            throw new PostNotFoundException("해당 글이 존재하지 않습니다.");
+        }
 
         ItemDetailDTO postById = boardService.findPostById(boardId);
+
+        if (postById == null) {
+            throw new PostNotFoundException("해당 글이 존재하지 않습니다.");
+        }
+
         postById.setAddress(addressService.getAddressFromLatLng(postById.getLatitude(), postById.getLongitude()));
         List<PostDTO> postsBySearchTerm = boardService.findPostsBySearchTerm(postById.getItemName());
         List<PostDTO> interestPosts = boardService.findInterestPosts();

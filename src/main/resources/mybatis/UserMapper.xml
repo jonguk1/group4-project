@@ -13,7 +13,9 @@
     <resultMap id="MyLenderAndMyLendyMap" type="com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO">
     </resultMap>
 
+
     <!--회원가입-->
+
     <insert id="saveUser" parameterType="com.lend.shareservice.domain.user.vo.UserVo">
         INSERT  IGNORE INTO user
         (userId, name, phoneNumber, pw, address,latitude, longitude)
@@ -30,8 +32,6 @@
             userId=#{value}
         </where>
     </select>
-
-
 
     <!-- 차단을 등록함 -->
     <insert id="blockUser" parameterType="com.lend.shareservice.entity.Block"  useGeneratedKeys="true" keyProperty="blockId">
@@ -77,6 +77,14 @@
         </where>
     </select>
 
+
+
+    <select id="findByUserId" parameterType="String" resultType="com.lend.shareservice.domain.user.vo.UserVo">
+        select userId from user
+        <where>
+            userId=#{value}
+        </where>
+    </select>
 
 
 </mapper>
