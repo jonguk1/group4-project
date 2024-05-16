@@ -94,8 +94,8 @@ public class UserController {
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
         //1.회원정보 조회
-        String userId =request.getParameter("userId");
-        String pw =request.getParameter("pw");
+        String userId = request.getParameter("userId");
+        String pw = request.getParameter("pw");
         UserVo user = userSignupService.logiin(userId,pw);
 
         //2. 세션에 회원정보 저장 , 세션 유지 시간 설정
@@ -111,7 +111,7 @@ public class UserController {
 
     }
     //로그아웃
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public String logout(HttpServletRequest request, Model model){
         model.addAttribute("loginType", "session-login");
         model.addAttribute("pageName", "세션 로그인");
@@ -164,7 +164,6 @@ public class UserController {
 
         userId=userService.getUserId(userId);
 
-
         int totalCount = userService.getLendyCount(userId);
 
         page.setTotalCount(totalCount);
@@ -195,15 +194,11 @@ public class UserController {
     }
 
 
-
-
     //회원가입 진행
     @PostMapping("/user/signup")
     public String signup(UserVo userVo){
         System.out.println("userVo = " + userVo);
         userSignupService.joinUser(userVo);
-
-
 
         return "redirect:/login";
     }
@@ -211,11 +206,9 @@ public class UserController {
 
 
 
-}
 
 
-        return "test";
-    }
+
 
 
     // 차단 등록

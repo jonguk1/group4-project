@@ -1,16 +1,13 @@
 package com.lend.shareservice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
 import lombok.*;
 
 import jakarta.validation.constraints.*;
 
 // 회원
 
-@Entity
+
 @Builder
 @Getter
 @NoArgsConstructor
@@ -20,7 +17,7 @@ public class User {
 
     // 아이디 (Id)
 
-    @NotBlank @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotBlank
 
     @NotBlank
 

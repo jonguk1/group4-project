@@ -52,6 +52,7 @@ public class BlockController {
         return "jspp/myBlock";
     }
 
+
     @GetMapping("/user/{blocked_user_id}")
     public String deleteBlockUser(@PathVariable("blocked_user_id") String userId,Model model){
 
@@ -71,6 +72,5 @@ public class BlockController {
 
         return (n>0)?"redirect:/user/"+loginUser+"/block":"javascript:history.back()";
     }
-
 
 }
