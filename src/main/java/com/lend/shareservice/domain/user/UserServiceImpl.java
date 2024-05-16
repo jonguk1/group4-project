@@ -1,15 +1,12 @@
 package com.lend.shareservice.domain.user;
 
-
-
-
 import com.lend.shareservice.entity.Block;
-
 import com.lend.shareservice.entity.User;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
+import com.lend.shareservice.web.user.dto.MyDetailDTO;
 import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
+import com.lend.shareservice.web.user.dto.UpdateUserDTO;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -18,26 +15,10 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-
 public class UserServiceImpl implements UserService{
 
 
     private final UserMapper userMapper;
-
-
-    @Override
-    public List<User> userList() {
-        return userMapper.userList();
-    }
-
-    @Override
-    public String getUserId(String userId)
-    {
-        return userMapper.getUserId(userId);
-    }
-
-
-
 
     @Override
     public int blockUser(String userId) {
@@ -46,6 +27,17 @@ public class UserServiceImpl implements UserService{
         return userMapper.blockUser(block);
     }
 
+    @Override
+    public int updateUser(String userId,UpdateUserDTO updateUserDTO) {
+        updateUserDTO.setUserId(userId);
+        return userMapper.updateUser(updateUserDTO);
+    }
+
+
+    @Override
+    public MyDetailDTO findByUserDetail(String userId) {
+        return userMapper.findByUserDetail(userId);
+    }
 
     @Override
     public List<MyLenderAndMyLendyDTO> lenders(PagingDTO page, String userId) {

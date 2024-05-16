@@ -7,6 +7,7 @@ import com.lend.shareservice.entity.User;
 import com.lend.shareservice.web.block.dto.BlockDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,18 +20,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BlockController {
 
-    private final UserService userService;
-
     private final BlockService blockService;
 
-    @GetMapping("/user/{user_id}/block")
+    @GetMapping("/user/{userId}/block")
     public String blockUserList(Model model,
-                                @PathVariable("user_id") String userId,
+                                @PathVariable("userId") String userId,
                                 PagingDTO page,
                                 @RequestParam(defaultValue = "1") int pageNum){
-
-        userId=userService.getUserId(userId);
-
         int totalCount=blockService.getBlockCount(userId);
 
         page.setTotalCount(totalCount);
@@ -45,32 +41,21 @@ public class BlockController {
         String pageNavi=page.getPageNavi(loc);
 
         model.addAttribute("blocks",blocks);
-        model.addAttribute("userId",userId);
         model.addAttribute("page",page);
         model.addAttribute("pageNavi",pageNavi);
 
         return "jspp/myBlock";
     }
 
-    @GetMapping("/user/{blocked_user_id}")
-    public String deleteBlockUser(@PathVariable("blocked_user_id") String userId,Model model){
 
-        String loginUser="테스트1";
-
-        try {
-            loginUser = URLEncoder.encode(loginUser, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+    @DeleteMapping("/block/{blockedUserId}")
+    public ResponseEntity<String> deleteBlockUser(@PathVariable("blockedUserId") String blockedUserId,Model model){
+        int n = blockService.deleteBlock(blockedUserId);
+        if (n > 0) {
+            return ResponseEntity.ok("ok");
+        } else {
+            return ResponseEntity.ok("no");
         }
-
-        if(userId==null||userId.equals("")){
-            return "redirect:/user/"+loginUser+"/block";
-        }
-
-        int n = blockService.deleteBlock(userId);
-
-        return (n>0)?"redirect:/user/"+loginUser+"/block":"javascript:history.back()";
     }
-
 
 }

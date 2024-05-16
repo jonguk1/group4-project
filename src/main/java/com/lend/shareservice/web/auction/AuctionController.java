@@ -32,8 +32,6 @@ import java.util.List;
 public class AuctionController {
 
     private final AuctionService auctionService;
-    private final UserService userService;
-
 
     @GetMapping(value = "/time/{user_id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseBody
@@ -57,13 +55,11 @@ public class AuctionController {
         return emitter;
     }
 
-    @GetMapping("/auction/{user_id}")
+    @GetMapping("/auction/{userId}")
     public String myAuctionList(Model model,
                                 PagingDTO page,
-                                @PathVariable("user_id") String userId,
+                                @PathVariable("userId") String userId,
                                 @RequestParam(defaultValue = "1") int pageNum){
-
-        userId=userService.getUserId(userId);
 
         int totalCount = auctionService.getAuctionCount(userId);
         page.setTotalCount(totalCount);
@@ -79,20 +75,17 @@ public class AuctionController {
         String pageNavi=page.getPageNavi(loc);
 
         model.addAttribute("auctions",auctions);
-        model.addAttribute("userId",userId);
         model.addAttribute("page",page);
         model.addAttribute("pageNavi",pageNavi);
 
         return "jspp/myAuction";
     }
 
-    @GetMapping("/auction/{user_id}/complete")
+    @GetMapping("/auction/{userId}/complete")
     public String myAuctionCompleteList(Model model,
                                PagingDTO page,
-                               @PathVariable("user_id") String userId,
+                               @PathVariable("userId") String userId,
                                @RequestParam(defaultValue = "1") int pageNum){
-
-        userId=userService.getUserId(userId);
 
         int totalCount = auctionService.getCompleteAuctionCount(userId);
         page.setTotalCount(totalCount);
@@ -108,24 +101,16 @@ public class AuctionController {
         String pageNavi=page.getPageNavi(loc);
 
         model.addAttribute("auctions",auctions);
-        model.addAttribute("userId",userId);
         model.addAttribute("page",page);
         model.addAttribute("pageNavi",pageNavi);
 
         return "jspp/myAuction";
     }
 
-    @PutMapping("/auction/{auction_id}/current-price")
-    public ResponseEntity<String> updateCurrentPrice(@PathVariable("auction_id") int auctionId,
+    @PutMapping("/auction/{auctionId}/current-price")
+    public ResponseEntity<String> updateCurrentPrice(@PathVariable("auctionId") int auctionId,
                                                      @RequestParam(value = "currentPrice", defaultValue = "0") int currentPrice,
                                                      @RequestParam(value="userId") String userId) {
-        String loginUser = "테스트1";
-
-        try {
-            loginUser = URLEncoder.encode(loginUser, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
 
         if (currentPrice == 0) {
             return ResponseEntity.ok("emptyCurrentPrice");
@@ -152,8 +137,8 @@ public class AuctionController {
         }
     }
 
-    @PatchMapping("/auction/{auction_id}/isAuction")
-    public ResponseEntity<String> updateIsAuction(@PathVariable("auction_id") int auctionId){
+    @PatchMapping("/auction/{auctionId}/isAuction")
+    public ResponseEntity<String> updateIsAuction(@PathVariable("auctionId") int auctionId){
         if(auctionService.updateIsAuction(auctionId)>0){
             return ResponseEntity.ok("ok");
         }

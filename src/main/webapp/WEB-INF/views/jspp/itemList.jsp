@@ -26,7 +26,7 @@
            position: absolute;
            top: 20px;
            left: 20px;
-           right: 180px;
+           right: 240px;
            background-color: #f8f9fa;
            border: 1px solid #ced4da;
            border-radius: 8px;
@@ -68,9 +68,11 @@
                                 <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
+                                            <c:if test="${loggedIn}">
                                             <a class="nav-link" href="#" id="notificationIcon">
                                                 <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
                                             </a>
+                                            </c:if>
                                         </li>
                                         <li>
                                             <div id="messageContainer" style="display: none;">
@@ -79,13 +81,25 @@
                                         </li>
 
                                         <li class="nav-item">
+                                            <c:if test="${loggedIn}">
                                             <a class="nav-link" href="#">
                                                 <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
                                             </a>
+                                            </c:if>
                                         </li>
+                                         <li class="nav-item">
 
+                                             <c:if test="${loggedIn}">
+                                                 <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
+                                             </c:if>
+                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#" style="color: black;">로그아웃</a>
+                                            <c:if test="${not loggedIn}">
+                                                <a class="nav-link" href="/login" style="color: black;">로그인</a>
+                                            </c:if>
+                                            <c:if test="${loggedIn}">
+                                                <a class="nav-link" href="/logout" style="color: black;">로그아웃</a>
+                                            </c:if>
                                         </li>
                                     </ul>
                                 </div>
@@ -142,7 +156,9 @@
 				        <div class="col-md-6">
 				        </div>
 				        <div class="col-md-2">
-				            <a href="/board/boardForm" class="btn btn-dark">글쓰기</a>
+				            <c:if test="${loggedIn}">
+				                <a href="/board/boardForm" class="btn btn-dark">글쓰기</a>
+				            </c:if>
 				        </div>
                     </div>
 				</div>
@@ -441,7 +457,7 @@
                                         '</div>' +
                                     '</div>';
                             if (post.isMegaphone === "급구") {
-                                postHtml = postHtml.replace('<span class="badge bg-danger">' + post.isMegaphone + '</span>', '<img src="images/icon/megaphoneIcon.png" style="width: 20px; height: 20px;">');
+                                postHtml = postHtml.replace('<span class="badge bg-danger">' + post.isMegaphone + '</span>', '<img src="/images/icon/megaphoneIcon.png" style="width: 20px; height: 20px;">');
                             }
 
                     }
