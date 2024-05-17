@@ -6,6 +6,8 @@ import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.web.auction.dto.AuctionBoardDTO;
 import com.lend.shareservice.web.auction.dto.AuctionDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Future;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -117,10 +119,12 @@ public class AuctionController {
     }
 
     @PostMapping("/auction/{boardId}")
-    public ResponseEntity<String> auction(@PathVariable("boardId") Integer boardId) {
-        String id = "hong";
+    public ResponseEntity<String> auction(HttpServletRequest request, @PathVariable("boardId") Integer boardId) {
 
-        if (auctionService.paticipateAuction(id, boardId) > 0) {
+        HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("userId");
+
+        if (auctionService.paticipateAuction(userId, boardId) > 0) {
             return ResponseEntity.ok("ok");
         }
         return ResponseEntity.ok("no");

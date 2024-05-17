@@ -18,6 +18,10 @@ public class UserServiceImpl implements UserService{
 
     private final UserMapper userMapper;
 
+    @Override
+    public User findUserById(String userId) {
+        return userMapper.selectUserById(userId);
+    }
 
     @Override
     public List<User> userList() {

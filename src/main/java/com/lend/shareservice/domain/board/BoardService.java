@@ -12,15 +12,15 @@ public interface BoardService {
 
     List<ItemCategoryDTO> findAllItemCategory();
 
-    List<PostDTO> findAllPostsByCategorys(ItemAndBoardCategoryDTO itemAndBoardCategoryDTO);
+    List<PostDTO> findAllPostsByCategorys(String userId, ItemAndBoardCategoryDTO itemAndBoardCategoryDTO);
 
     ItemDetailDTO findPostById(Integer board_id);
 
-    List<PostDTO> findPostsBySearchTerm(String searchTerm);
+    List<PostDTO> findPostsBySearchTerm(String userId, String searchTerm);
 
     int incrementingViewCount(Integer boarId);
 
-     List<PostDTO> findInterestPosts();
+     List<PostDTO> findInterestPosts(String userId);
 
     List<PostDTO> sortForHits(List<PostDTO> postDTOS);
 
@@ -36,4 +36,8 @@ public interface BoardService {
     List<PostDTO> getPostsByTitleAndContent(List<PostDTO> postDTOS, String searchTermDetail);
 
     List<PostDTO> sortForRecent(List<PostDTO> postDTOS);
+
+    List<PostDTO> sortForDistance(List<PostDTO> postDTOS);
+
+    int calculateRoundedDistance(double lat1, double lon1, double lat2, double lon2);
 }

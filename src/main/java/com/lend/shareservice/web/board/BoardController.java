@@ -4,11 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.domain.board.BoardService;
+import com.lend.shareservice.domain.user.UserService;
+import com.lend.shareservice.entity.User;
 import com.lend.shareservice.web.board.boardexception.PostNotFoundException;
 import com.lend.shareservice.web.board.dto.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tags.shaded.org.apache.xpath.operations.Mod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -30,9 +35,14 @@ public class BoardController {
     private final BoardService boardService;
     private final AddressService addressService;
     private final ObjectMapper objectMapper;
+    private final UserService userService;
     @GetMapping("/boardForm")
-    public String test() {
-
+    public String boardForm(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("userId");
+        User userById = userService.findUserById(userId);
+        LatiLongDTO latiLongDTO = new LatiLongDTO(userById.getLatitude(), userById.getLongitude());
+        model.addAttribute("latiAndLong", latiLongDTO);
         return "jspp/writingRegisterForm";
     }
 
@@ -46,12 +56,13 @@ public class BoardController {
             bindingResult.rejectValue("fileInput", "error.fileInput", "상품 이미지를 최소 하나를 등록해야합니다.");
         }
         if (bindingResult.hasErrors()) {
-            log.info("bindingResult = {}", bindingResult);
+
 
             model.addAttribute("postRegistrationBindingResult", bindingResult);
 
             return "jspp/writingRegisterForm";
         }
+
 
         boardService.savePost(postRegistrationDTO);
 
@@ -65,16 +76,19 @@ public class BoardController {
     public ResponseEntity<List<ItemCategoryDTO>> getItemCategory() {
 
         List<ItemCategoryDTO> allItemCategory = boardService.findAllItemCategory();
-        log.info("allItemCategory = {}", allItemCategory);
+
         return ResponseEntity.ok(allItemCategory);
     }
 
     // 글 카테고리 + 물건 카테고리에 해당하는 글들 응답 -> 메뉴에서 선택하면 나오는 글들
     @GetMapping()
-    public String getPostsByCategory(Model model, @RequestParam("boardCategoryId") Integer boardCategoryId
+    public String getPostsByCategory(HttpServletRequest request, Model model, @RequestParam("boardCategoryId") Integer boardCategoryId
             , @RequestParam("itemCategoryId") Integer itemCategoryId) {
 
-        List<PostDTO> allPostsByCategorys = boardService.findAllPostsByCategorys(new ItemAndBoardCategoryDTO(itemCategoryId, boardCategoryId));
+        HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("userId");
+
+        List<PostDTO> allPostsByCategorys = boardService.findAllPostsByCategorys(userId, new ItemAndBoardCategoryDTO(itemCategoryId, boardCategoryId));
 
         String allPostsByCategorysJson = null;
         try {
@@ -101,7 +115,7 @@ public class BoardController {
 
     // 글의 사진을 클릭하면 나오는 글 상세
     @GetMapping("/{boardId}")
-    public String boardDetail(@PathVariable("boardId") Integer boardId, Model model)  {
+    public String boardDetail(HttpServletRequest request, @PathVariable("boardId") Integer boardId, Model model)  {
 
         if (boardId >= Integer.MAX_VALUE) {
             throw new PostNotFoundException("해당 글이 존재하지 않습니다.");
@@ -113,28 +127,38 @@ public class BoardController {
 
         ItemDetailDTO postById = boardService.findPostById(boardId);
 
+        HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("userId");
+
+        if (userId != null) {
+            User userById = userService.findUserById(userId);
+            int distance = boardService.calculateRoundedDistance(userById.getLatitude(), userById.getLongitude(), postById.getLatitude(), postById.getLongitude());
+            postById.setDistance(distance);
+        }
+
         if (postById == null) {
             throw new PostNotFoundException("해당 글이 존재하지 않습니다.");
         }
 
         postById.setAddress(addressService.getAddressFromLatLng(postById.getLatitude(), postById.getLongitude()));
-        List<PostDTO> postsBySearchTerm = boardService.findPostsBySearchTerm(postById.getItemName());
-        List<PostDTO> interestPosts = boardService.findInterestPosts();
+        List<PostDTO> postsBySearchTerm = boardService.findPostsBySearchTerm(userId, postById.getItemName());
+        List<PostDTO> interestPosts = boardService.findInterestPosts(userId);
 
-        String userId = "hong";
         model.addAttribute("postById", postById);
         model.addAttribute("postsBySearchTerm", postsBySearchTerm);
         model.addAttribute("interestPosts", interestPosts);
-        model.addAttribute("userId", userId);
-        log.info("postById = {}", postById);
+
         return "jspp/itemDetail";
     }
 
     @GetMapping("/search")
-    public String postsBySearchTerm(Model model, @RequestParam("searchTerm") String searchTerm) {
+    public String postsBySearchTerm(HttpServletRequest request, Model model, @RequestParam("searchTerm") String searchTerm) {
 
-        List<PostDTO> postsBySearchTerm = boardService.findPostsBySearchTerm(searchTerm);
-        log.info("postsBySearchTerm = {}", postsBySearchTerm);
+        HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("userId");
+
+        List<PostDTO> postsBySearchTerm = boardService.findPostsBySearchTerm(userId, searchTerm);
+
 
         String allPostsByCategorysJson = null;
         try {
@@ -197,9 +221,25 @@ public class BoardController {
 
     @PostMapping("/price")
     @ResponseBody
+    public ResponseEntity<String> postsByDistance(@RequestBody List<PostDTO> postDTOS) throws ParseException {
+
+        List<PostDTO> lowDistancePosts = boardService.sortForLowPrice(postDTOS);
+
+        String allPostsByCategorysJson = null;
+        try {
+            allPostsByCategorysJson = objectMapper.writeValueAsString(lowDistancePosts);
+        } catch (JsonProcessingException e) {
+
+        }
+
+        return ResponseEntity.ok(allPostsByCategorysJson);
+    }
+
+    @PostMapping("/distance")
+    @ResponseBody
     public ResponseEntity<String> postsByLowPrice(@RequestBody List<PostDTO> postDTOS) throws ParseException {
-        log.info("haha = {}", postDTOS);
-        List<PostDTO> lowPricePosts = boardService.sortForLowPrice(postDTOS);
+
+        List<PostDTO> lowPricePosts = boardService.sortForDistance(postDTOS);
 
         String allPostsByCategorysJson = null;
         try {
@@ -213,9 +253,13 @@ public class BoardController {
 
     // 제목 + 내용으로 검색하는 요청
     @PostMapping("/titleAndContent")
-    public ResponseEntity<String> postsByTitleAndContent(@RequestBody SearchByTitleAndContentDTO searchByTitleAndContentDTO) throws ParseException {
-        log.info("searchByTitleAndContentDTO = {}", searchByTitleAndContentDTO);
-        List<PostDTO> posts = boardService.findAllPostsByCategorys(new ItemAndBoardCategoryDTO(searchByTitleAndContentDTO.getBoardCategoryId(), searchByTitleAndContentDTO.getItemCategoryId()));
+    public ResponseEntity<String> postsByTitleAndContent(HttpServletRequest request, @RequestBody SearchByTitleAndContentDTO searchByTitleAndContentDTO) throws ParseException {
+
+
+        HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("userId");
+
+        List<PostDTO> posts = boardService.findAllPostsByCategorys(userId, new ItemAndBoardCategoryDTO(searchByTitleAndContentDTO.getBoardCategoryId(), searchByTitleAndContentDTO.getItemCategoryId()));
         List<PostDTO> postsByTitleAndContent = boardService.getPostsByTitleAndContent(posts, searchByTitleAndContentDTO.getSearchTermDetail());
         String allPostsByCategorysJson = null;
         try {
@@ -230,8 +274,11 @@ public class BoardController {
 
     // 관심글 등록
     @PostMapping("/{boardId}/favorite")
-    public ResponseEntity<String> registerInterestPost(@PathVariable("boardId") Integer boardId) {
-        String userId = "hong";
+    public ResponseEntity<String> registerInterestPost(HttpServletRequest request, @PathVariable("boardId") Integer boardId) {
+
+        HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("userId");
+
         int interestCnt = boardService.registerInterestPost(userId, boardId);
         if (interestCnt > 0) {
             return ResponseEntity.ok(String.valueOf(interestCnt));
@@ -242,8 +289,11 @@ public class BoardController {
 
     // 관심글 삭제
     @DeleteMapping("/{boardId}/favorite")
-    public ResponseEntity<String> deleteInterestPost(@PathVariable("boardId") Integer boardId) {
-        String userId = "hong";
+    public ResponseEntity<String> deleteInterestPost(HttpServletRequest request, @PathVariable("boardId") Integer boardId) {
+
+        HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("userId");
+
         int interestCnt = boardService.deleteInterestPost(userId, boardId);
         if (interestCnt >= 0) {
             return ResponseEntity.ok(String.valueOf(interestCnt));
@@ -268,7 +318,7 @@ public class BoardController {
             model.addAttribute("postRegistrationBindingResult", bindingResult);
             return "jspp/writingEditForm";
         }
-        log.info("postEditDTO = {}", postEditDTO);
+
         return null;
     }
 }
