@@ -95,4 +95,13 @@
         </where>
     </update>
 
+    <update id="updateUserAddress" parameterType="com.lend.shareservice.web.user.dto.UpdateUserAddressDTO">
+        update user
+        set latitude=#{latitude},
+        longitude=#{longitude}
+        <where>
+            userId=#{userId}
+        </where>
+    </update>
+
 </mapper>
