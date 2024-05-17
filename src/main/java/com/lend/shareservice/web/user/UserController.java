@@ -1,13 +1,17 @@
 package com.lend.shareservice.web.user;
 
+import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.domain.user.UserService;
 
 import com.lend.shareservice.domain.user.service.UserSignupService;
 import com.lend.shareservice.domain.user.util.CommonUtil;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.User;
+import com.lend.shareservice.web.user.dto.MyDetailDTO;
+import com.lend.shareservice.web.user.dto.UpdateUserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
@@ -18,12 +22,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -57,6 +58,7 @@ public class UserController {
         return "jspp/myDetail";
 
     }
+
 
 
     @GetMapping("/test")
@@ -117,13 +119,11 @@ public class UserController {
 
 
 
-    @GetMapping("/user/{user_id}/lender")
+    @GetMapping("/user/{userId}/lender")
     public String lenderList(Model model,
                              PagingDTO page,
-                             @PathVariable("user_id") String userId,
+                             @PathVariable("userId") String userId,
                              @RequestParam(defaultValue = "1") int pageNum) {
-
-        userId=userService.getUserId(userId);
 
         int totalCount = userService.getLenderCount(userId);
 
@@ -148,13 +148,11 @@ public class UserController {
         return "jspp/myLender";
     }
 
-    @GetMapping("/user/{user_id}/lendy")
+    @GetMapping("/user/{userId}/lendy")
     public String lendyList(Model model,
                              PagingDTO page,
-                             @PathVariable("user_id") String userId,
+                             @PathVariable("userId") String userId,
                              @RequestParam(defaultValue = "1") int pageNum) {
-
-        userId=userService.getUserId(userId);
 
         int totalCount = userService.getLendyCount(userId);
 
@@ -225,6 +223,70 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to block user.");
         }
     }
+
+    //내 정보
+    @GetMapping("/user/{userId}")
+    public String myDetail(Model model,
+                           @PathVariable("userId")String userId){
+
+
+
+        MyDetailDTO details=userService.findByUserDetail(userId);
+
+        if(details.getLatitude()!=null && details.getLongitude()!=null){
+            details.setAddress(addressService.getAddressFromLatLng(details.getLatitude(),details.getLongitude()));
+        }else{
+            details.setAddress("");
+        }
+
+        model.addAttribute("details",details);
+
+        return "jspp/myDetail";
+    }
+
+    //내 정보 수정페이지 이동
+    @GetMapping("/user/{userId}/edit")
+    public String editUser(Model model,
+                           @PathVariable("userId")String userId){
+
+        MyDetailDTO edit = userService.findByUserDetail(userId);
+
+        if(edit.getLatitude()!=null && edit.getLongitude()!=null){
+            edit.setAddress(addressService.getAddressFromLatLng(edit.getLatitude(),edit.getLongitude()));
+        }else{
+            edit.setAddress("");
+        }
+
+        model.addAttribute("edit",edit);
+
+        return "jspp/editUser";
+    }
+
+    @PutMapping("/user/{userId}")
+    public ResponseEntity<String> updateUser(@PathVariable("userId") String userId,
+                                             @Valid @RequestBody UpdateUserDTO updateUserDTO,
+                                             BindingResult bindingResult){
+        // 만약 유효성 검사에서 오류가 발생한 경우
+        if (bindingResult.hasErrors()) {
+            // 각 필드에 대한 오류 메시지를 응답으로 반환
+            StringBuilder errorMessage = new StringBuilder("입력한 데이터가 유효하지 않습니다:\n");
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorMessage.append(error.getDefaultMessage()).append("\n");
+            }
+            return ResponseEntity.badRequest().body(errorMessage.toString());
+        }
+        System.out.println(updateUserDTO.getName());
+
+
+        int n=userService.updateUser(userId,updateUserDTO);
+
+        if(n>0){
+            return ResponseEntity.ok("ok");
+        }
+
+        return ResponseEntity.ok("no");
+    }
+
 }
 
 

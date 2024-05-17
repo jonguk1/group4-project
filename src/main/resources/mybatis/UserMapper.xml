@@ -27,17 +27,6 @@
         VALUES(#{userId},#{name},#{phoneNumber},#{pw},#{address},#{latitude}, #{longitude});
     </insert>
 
-    <select id="userList" resultType="string">
-        select name from user;
-    </select>
-
-    <select id="getUserId" resultType="String" parameterType="String">
-        select userId from user
-        <where>
-            userId=#{value}
-        </where>
-    </select>
-
     <!-- 차단을 등록함 -->
     <insert id="blockUser" parameterType="com.lend.shareservice.entity.Block"  useGeneratedKeys="true" keyProperty="blockId">
         INSERT INTO BLOCK (blockedUserId, blockUserId)
@@ -97,5 +86,25 @@
             userId=#{userId}
         </where>
     </select>
+
+    <select id="findByUserDetail" parameterType="String" resultType="com.lend.shareservice.web.user.dto.MyDetailDTO">
+        select userId,name,pw,phoneNumber,point,money,latitude,longitude,regDate
+        from user
+        <where>
+            userId=#{value}
+        </where>
+    </select>
+
+    <update id="updateUser" parameterType="com.lend.shareservice.web.user.dto.UpdateUserDTO">
+        update user
+        set name=#{name},
+            pw=#{pw},
+            phoneNumber=#{phoneNumber},
+            latitude=#{latitude},
+            longitude=#{longitude}
+        <where>
+            userId=#{userId}
+        </where>
+    </update>
 
 </mapper>

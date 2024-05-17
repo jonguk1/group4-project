@@ -14,13 +14,21 @@ public interface AuctionService {
 
     int getAuctionCount(String userId);
 
+    int getCompleteAuctionCount(String userId);
+
     List<AuctionDTO> auctions(PagingDTO page,String userId);
+
+    List<AuctionDTO> completeAuctions(PagingDTO page,String userId);
 
     int getMaxPrice(int auctionId);
 
-    int updateCurrentPrice(int auctionId,int currentPrice);
+    int updateCurrentPrice(int auctionId,int currentPrice,String userId);
 
     int paticipateAuction(String id, Integer boardId);
 
     boolean findCurrentAuctionState(String userId);
+
+    int updateIsAuction(int auctionId);
+
+    int getCurrentPrice(int auctionId);
 }

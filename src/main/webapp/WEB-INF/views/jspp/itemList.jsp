@@ -90,7 +90,7 @@
                                          <li class="nav-item">
 
                                              <c:if test="${loggedIn}">
-                                                 <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                                 <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
                                              </c:if>
                                          </li>
                                         <li class="nav-item">

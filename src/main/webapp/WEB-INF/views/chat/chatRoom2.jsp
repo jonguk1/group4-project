@@ -97,7 +97,7 @@
                                         </li>
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                                <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
                                             </c:if>
                                         </li>
                                         <li class="nav-item">
@@ -245,7 +245,10 @@
                                </div>
                            </div>
                             <div class="col-md-10">
-                <p>boardId: ${boardId}</p> <!-- boardId 값 출력 -->
+                                <!-- boardId 값 출력 -->
+                                <p>boardId: ${boardId}</p>
+                                <!-- userId 출력 -->
+                                <p>userId: ${userId}</p>
                                 <button id="chatButton" class="btn btn-primary chatButton" OnClick="chat_connect()">로그인</button>
                 <!-- 예약하기 클릭시 달력 나타나기 -->
                                 <form id="reservForm">
@@ -265,6 +268,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
+        chat_connect();
             $.ajax({
                        url: "/board/board-category",
                        type: "GET",
@@ -288,10 +292,12 @@
     </script>
     <!------------------------------- script ----------------------------------->
     <script language="javascript" type="text/javascript">
-    let chat_id = 67; <!-- 테스트를 위한 임시 채팅방 아이디 -->
+        let chat_id = 67; <!-- 테스트를 위한 임시 채팅방 아이디 -->
         let socket = null;
         let stompClient = null;
-        let nickname;
+        //let writer = "<c:out value='${chatItem.writer}'/>"//jstl 표현식으로 글작성자 받아오기 성공
+        let user1  = "<c:out value='${userId}'/>"; // 연결된 사용자의 이름
+
         // ======================================= UI 제어 =======================================
         function setConnected(connected) // 연결 여부에 따라 UI 제어
         {
@@ -318,7 +324,6 @@
                 alert('연결됨: ' + frame);
                 setConnected(true); // UI 보여 주기
                 $('#inputMsg').focus(); // 대화 내용 입력 박스에 포커스 추가
-                // 서버로 메시지 보내기
                 stompClient.subscribe('/topic/messages', function(msg)
                 {
                     console.log('subscribe topic → ', msg);
@@ -330,9 +335,9 @@
                 // 연결 상태에 따라 버튼 텍스트 변경
                 document.getElementById("chatButton").innerText = "로그아웃";
                 document.getElementById("chatButton").setAttribute("onclick", "chat_disconnect()");
-                let connectedUsername = "testID"; // 연결된 사용자의 이름
+
                 // 연결 메시지 출력
-                let connectMessage = connectedUsername + " 님과 연결되었습니다."
+                let connectMessage = user1 + " 님과 연결되었습니다."
                 alert(connectMessage);
                 document.getElementById("connectionStatus").innerText = connectMessage;
                 document.getElementById("loginMessage").style.display = "none"; // 로그인 메시지 감추기
@@ -365,7 +370,7 @@
             {
                 if(mymsg != '')
                 {
-                    sendMessage(nickname, 'all', mymsg); // 서버로 메시지 전송
+                    sendMessage(user1, 'all', mymsg); // 서버로 메시지 전송
                     $('#inputMsg').val(''); // jquery
                     // document.getElementById('inputMsg').value = ''; // javascript
                 }
@@ -387,7 +392,7 @@
         // ======================================= 서버로 메시지 보내기 =======================================
         // ======================================= 대화 내용 출력 함수 =======================================
         function showChatMessage(obj) { // 대화 내용을 출력해 주는 함수
-            if(obj.sender == nickname) { // 내가 보낸 메시지라면
+            if(obj.sender == user1) { // 내가 보낸 메시지라면
                 let str = `
                 <p>
                 <label class='badge badge-success'>\${obj.sender}</label>
@@ -435,8 +440,7 @@
         } // -------------
         // ======================================= 메시지 추가 =======================================
  function goChatList(){//뒤로가기 버튼 클릭시 채팅리스트로 이동
-            let Id = thisUserId;
-            alert(Id); //유저아이디 출력
+
         };//goChatList() end----
 // 예약하기 누르면 달력 출력 되면서 예약 시스템 활성화
         function showReservationInput() {
@@ -444,20 +448,24 @@
             let hiddenInput = document.getElementById("hiddenInput");
             hiddenInput.removeAttribute("style"); // 스타일 속성 제거하여 기본적인 화면 표시 상태로 변경
             hiddenInput.disabled = false; // input 요소 활성화
+
             //확인 버튼 나타나게 하기
             let hiddenButton = document.getElementById("hiddenButton");
             hiddenButton.removeAttribute("style"); // 스타일 속성 제거하여 기본적인 화면 표시 상태로 변경
             hiddenButton.disabled = false; // input 요소 활성화
+
             //form 태그
             let form = document.getElementById("reservForm");
             form.setAttribute("method", "post");
             form.setAttribute("action", "/chat/reserv"); // 컨트롤러의 엔드포인트로 설정
+
             //숨겨놓은 chatid
             let chatId = document.createElement("input");
             chatId.setAttribute("type", "hidden");
             chatId.setAttribute("name", "chatId");
             chatId.setAttribute("value", chat_id);
             form.appendChild(chatId);
+
             // hiddenButton에 onclick 이벤트 추가
             hiddenButton.onclick = function() {
                 //console.log(hiddenInput.value);
