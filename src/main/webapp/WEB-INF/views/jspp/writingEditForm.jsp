@@ -69,7 +69,7 @@
                                                </li>
                                                <li class="nav-item">
                                                    <c:if test="${loggedIn}">
-                                                       <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                                       <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
                                                    </c:if>
                                                </li>
                                                <li class="nav-item">
@@ -418,7 +418,7 @@
         var clickedLongitude = null;
 
         var mapOptions = {
-            center: new naver.maps.LatLng(37.5665, 126.9780), // 서울의 좌표
+            center: new naver.maps.LatLng(${postById.latitude}, ${postById.longitude}), // 서울의 좌표
             zoom: 17 // 초기 줌 레벨
         };
 

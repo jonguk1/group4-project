@@ -9,8 +9,10 @@
 
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
      <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <meta charset="UTF-8">
-    <title>Title</title>
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script src="/js/menuControl.js"></script>
+     <meta charset="UTF-8">
+     <title>Title</title>
 </head>
 
 <body>
@@ -55,7 +57,7 @@
                                           </li>
                                           <li class="nav-item">
                                               <c:if test="${loggedIn}">
-                                                  <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                                  <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
                                               </c:if>
                                           </li>
                                           <li class="nav-item">
@@ -271,28 +273,3 @@
         </c:choose>
     </div>
 </body>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $.ajax({
-                   url: "/board/board-category",
-                   type: "GET",
-                   dataType: "json",
-                   success: function(response) {
-                       console.log(response);
-
-                       $.each(response, function(index, value) {
-                           $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                           $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                           $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
-                       });
-
-
-                   },
-                   error: function(xhr, status, error) {
-                       console.error("요청 실패:", status, error);
-                   }
-               });
-    });
-</script>

@@ -3,8 +3,9 @@
 <mapper namespace="com.lend.shareservice.domain.auction.AuctionMapper">
     <resultMap type="com.lend.shareservice.web.auction.dto.AuctionDTO" id="auctionMap">
         <id property="auctionId" column="auctionId" />
-        <result property="currentPrice" column="currentPrice"/>
+        <result property="currentPrice" column="auctionCurrentPrice"/>
         <result property="maxPrice" column="maxPrice"/>
+        <result property="userId" column="userId"/>
         <collection property="boards" javaType="java.util.ArrayList"
                     ofType="com.lend.shareservice.web.auction.dto.AuctionBoardDTO">
             <result property="boardId" column="boardId"/>
@@ -20,6 +21,10 @@
             <result property="longitude" column="longitude"/>
             <result property="deadline" column="deadline"/>
         </collection>
+        <collection property="participantAuctions" javaType="java.util.ArrayList"
+                    ofType="com.lend.shareservice.entity.Participant_Auction">
+            <result property="currentPrice" column="participantCurrentPrice"/>
+        </collection>
     </resultMap>
 
     <resultMap type="com.lend.shareservice.entity.Participant_Auction" id="participantAuctionMap">
@@ -27,10 +32,12 @@
 
     <select id="auctions" parameterType="map" resultMap="auctionMap">
         select
-        a.auctionId,b.deadline,b.title,b.itemImage1,b.isAuction,b.isLend
+        a.auctionId,a.userId,b.deadline,b.title,b.itemImage1,b.isAuction,b.isLend
         ,b.price,b.itemName,b.latitude,b.longitude
         ,b.hits,b.interestCnt
-        ,a.currentPrice,a.maxPrice
+        ,a.currentPrice as auctionCurrentPrice
+        ,a.maxPrice
+        ,p.currentPrice as participantCurrentPrice
         from auction a
         inner join board b
         on a.boardId=b.boardId
@@ -39,22 +46,75 @@
         <where>
         b.isAuction=1
         and p.userId=#{userId}
+        and a.currentPrice = (
+            select
+                currentPrice
+            from auction a2
+            where a2.auctionId=a.auctionId
+            group by auctionId )
+        </where>
+        order by b.deadline limit #{limit} offset #{offset}
+    </select>
+
+    <select id="completeAuctions" parameterType="map" resultMap="auctionMap">
+        select
+        a.auctionId,a.userId,b.deadline,b.title,b.itemImage1,b.isAuction,b.isLend
+        ,b.price,b.itemName,b.latitude,b.longitude
+        ,b.hits,b.interestCnt
+        ,a.maxPrice
+        ,a.currentPrice as auctionCurrentPrice
+        ,p.currentPrice as participantCurrentPrice
+        from auction a
+        inner join board b
+        on a.boardId=b.boardId
+        inner join participant_Auction p
+        on a.auctionId=p.auctionId
+        <where>
+            b.isAuction=2
+            and p.userId=#{userId}
+            and a.currentPrice = (
+            select
+                currentPrice
+            from auction a2
+            where a2.auctionId=a.auctionId
+            group by auctionId )
         </where>
         order by b.deadline limit #{limit} offset #{offset}
     </select>
 
     <select id="getAuctionCount" parameterType="String" resultType="_int">
-        select count(*) from participant_Auction
+        select count(*) from participant_Auction p
+        inner join auction a
+        on p.auctionId=a.auctionId
+        inner join board b
+        on a.boardId=b.boardId
         <where>
-            userId=#{values}
+            p.userId=#{values}
+            and b.isAuction=1
+        </where>
+    </select>
+
+    <select id="getCompleteAuctionCount" parameterType="String" resultType="_int">
+        select count(*) from participant_Auction p
+        inner join auction a
+        on p.auctionId=a.auctionId
+        inner join board b
+        on a.boardId=b.boardId
+        <where>
+            p.userId=#{values}
+            and b.isAuction=2
         </where>
     </select>
 
     <update id="updateCurrentPrice" parameterType="map">
-        update auction
-        set currentPrice=#{currentPrice}
+        update auction a,participant_Auction p
+        set a.currentPrice=#{currentPrice},
+            p.currentPrice=#{currentPrice},
+            a.userId=#{userId}
         <where>
-            auctionId=#{auctionId}
+            a.auctionId=#{auctionId}
+            and a.auctionId=p.auctionId
+            and p.userId=#{userId}
         </where>
     </update>
 
@@ -110,4 +170,26 @@
         FROM Participant_Auction
         WHERE auctionId = #{auctionId}
     </select>
+
+    <update id="updateIsAuction" parameterType="_int">
+        update board
+        set isAuction=2
+        <where>
+            boardId=(select boardId
+                      from auction
+                     <where>
+                       auctionId=#{value}
+                     </where>
+                    )
+        </where>
+    </update>
+    <select id="getCurrentPrice" parameterType="_int">
+        select currentPrice
+        from auction
+        <where>
+            auctionId=#{value}
+        </where>
+    </select>
+
+
 </mapper>

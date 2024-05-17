@@ -24,17 +24,12 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    private final UserService userService;
 
-
-    @GetMapping("/review/{userid}/received")
+    @GetMapping("/review/{userId}/received")
     public String receivedReviewList(Model model,
                                      PagingDTO page,
-                                     @PathVariable("userid") String userId,
+                                     @PathVariable("userId") String userId,
                                      @RequestParam(defaultValue = "1") int pageNum){
-
-        userId=userService.getUserId(userId);
-
         int totalCount= reviewService.receivedGetTotalCount(userId);
 
         page.setTotalCount(totalCount);
@@ -50,20 +45,17 @@ public class ReviewController {
         String pageNavi=page.getPageNavi(loc);
 
         model.addAttribute("receiveds",receiveds);
-        model.addAttribute("userId",userId);
         model.addAttribute("page",page);
         model.addAttribute("pageNavi",pageNavi);
 
         return "jspp/myReceivedReview";
     }
 
-    @GetMapping("/review/{userid}/sent")
+    @GetMapping("/review/{userId}/sent")
     public String sentReviewList(Model model,
                                  PagingDTO page,
-                                 @PathVariable("userid") String userId,
+                                 @PathVariable("userId") String userId,
                                      @RequestParam(defaultValue = "1") int pageNum){
-
-        userId=userService.getUserId(userId);
 
         int totalCount=reviewService.sentGetTotalCount(userId);
 
@@ -80,7 +72,6 @@ public class ReviewController {
         String pageNavi=page.getPageNavi(loc);
 
         model.addAttribute("sents",sents);
-        model.addAttribute("userId",userId);
         model.addAttribute("page",page);
         model.addAttribute("pageNavi",pageNavi);
 

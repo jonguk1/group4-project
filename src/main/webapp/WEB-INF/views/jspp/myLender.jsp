@@ -9,8 +9,10 @@
 
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
      <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <meta charset="UTF-8">
-    <title>Title</title>
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script src="/js/menuControl.js"></script>
+     <meta charset="UTF-8">
+     <title>Title</title>
 </head>
 
 <body>
@@ -55,7 +57,7 @@
                                           </li>
                                           <li class="nav-item">
                                               <c:if test="${loggedIn}">
-                                                  <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                                  <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
                                               </c:if>
                                           </li>
                                           <li class="nav-item">
@@ -110,16 +112,16 @@
 
 
     <div class="row">
-           		<div class="col-md-2">
-           		</div>
-           		<div class="col-md-8 text-center">
-           			<h3>
-           				<c:out value="${userId}"/>님의 빌려준 목록
-           			</h3>
-           		</div>
-           		<div class="col-md-2">
-           		</div>
-           	</div>
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8 text-center">
+            <h3>
+                <c:out value="${userId}"/>님의 빌려준 목록
+            </h3>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
 
            	<br><br>
 
@@ -151,13 +153,13 @@
                                         <div class="card-footer">
                                             <c:choose>
                                                 <c:when test="${lenders.isAuction eq 0}">
-                                                    <p><span class="badge bg-danger">경매전</span>
+                                                    <span class="badge bg-danger">경매전</span>
                                                 </c:when>
                                                 <c:when test="${lenders.isAuction eq 1}">
-                                                    <p><span class="badge bg-danger">경매중</span>
+                                                    <span class="badge bg-danger">경매중</span>
                                                 </c:when>
                                                 <c:when test="${lenders.isAuction eq 2}">
-                                                    <p><span class="badge bg-danger">경매후</span>
+                                                    <span class="badge bg-danger">경매후</span>
                                                 </c:when>
                                             </c:choose>
                                             <c:choose>
@@ -171,12 +173,16 @@
                                                     <span class="badge bg-success">대여후</span>
                                                 </c:when>
                                             </c:choose>
-                                            <p>
-                                                <c:out value="${lenders.itemName}"/>
-                                                <fmt:formatNumber value="${lenders.price}" pattern="#,###"/>원
-                                            </p>
-                                            <span>관심 <c:out value="${lenders.interestCnt}"/></span>
-                                            <span>조회 <c:out value="${lenders.hits}"/></span>
+                                            <div><c:out value="${lenders.itemName}"/></div>
+                                            <div>주소</div>
+                                            <div>
+                                            <img src="/images/icon/moneyIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
+                                            <fmt:formatNumber value="${lenders.price}" pattern="#,###"/>원
+                                            </div>
+                                            <div>
+                                            <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${lenders.interestCnt}"/></span>
+                                            <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${lenders.hits}"/></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -248,50 +254,25 @@
         	<br>
 
             <div class="row">
-            		<div class="col-md-2">
-            		</div>
-            		<div class="col-md-8">
-            			<div class="row">
-            				<div class="col-md-4">
-            				</div>
-            				<div class="col-md-4">
-            					<nav>
-            						<c:out value="${pageNavi}" escapeXml="false"/>
-            					</nav>
-            				</div>
-            				<div class="col-md-4">
-            				</div>
-            			</div>
-            		</div>
-            		<div class="col-md-2">
-            		</div>
-            	</div>
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-4">
+                            <nav>
+                                <c:out value="${pageNavi}" escapeXml="false"/>
+                            </nav>
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
             </c:otherwise>
         </c:choose>
     </div>
 </body>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $.ajax({
-                   url: "/board/board-category",
-                   type: "GET",
-                   dataType: "json",
-                   success: function(response) {
-                       console.log(response);
-
-                       $.each(response, function(index, value) {
-                           $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                           $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                           $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
-                       });
-
-
-                   },
-                   error: function(xhr, status, error) {
-                       console.error("요청 실패:", status, error);
-                   }
-               });
-    });
-</script>

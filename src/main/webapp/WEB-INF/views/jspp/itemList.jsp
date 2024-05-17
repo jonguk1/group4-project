@@ -90,7 +90,7 @@
                                          <li class="nav-item">
 
                                              <c:if test="${loggedIn}">
-                                                 <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                                 <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
                                              </c:if>
                                          </li>
                                         <li class="nav-item">
@@ -182,7 +182,9 @@
                                <a class="dropdown-item" href="/board/hits" id="recent-link">최신순</a>
                                <a class="dropdown-item" href="/board/hits" id="hits-link">조회순</a>
                                <a class="dropdown-item" href="/board/interest" id="interest-link">관심순</a>
-                               <a class="dropdown-item" href="#">거리순</a>
+                               <c:if test="${loggedIn}">
+                                <a class="dropdown-item" href="/board/distance" id="distance-link">거리순</a>
+                               </c:if>
                                <a class="dropdown-item" href="/board/price" id="low-price-link">가격 낮은순</a>
                            </div>
                        </li>
@@ -193,7 +195,6 @@
                </div>
            </div>
        </div>
-
 
        <div id="postContainer">
         </div>
@@ -220,50 +221,42 @@
     <script id="allPostsByCategorys" type="application/json">${allPostsByCategorys}</script>
 
 <script>
-   $(document).ready(function() {
+    $(document).ready(function() {
 
-
-
-       $.ajax({
-           url: "/notification",
-           type: "GET",
-           dataType: "json",
-           success: function(response) {
+        $.ajax({
+            url: "/notification",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
                 response.forEach(function(notification) {
                     addMessage(notification.notiRegDate);
                     addMessage(notification.content);
-                    addMessage(notification.notiRegDate);
-                    addMessage(notification.content);
-                    addMessage(notification.notiRegDate);
-                    addMessage(notification.content);
+
                 });
+            },
+            error: function(xhr, status, error) {
 
-           },
-           error: function(xhr, status, error) {
+            }
+        });
 
-           }
-       });
+        $.ajax({
+            url: "/board/board-category",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
 
-       $.ajax({
-           url: "/board/board-category",
-           type: "GET",
-           dataType: "json",
-           success: function(response) {
-               console.log(response);
-
-               $.each(response, function(index, value) {
-                   $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                   $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                   $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
-               });
-
-
-           },
-           error: function(xhr, status, error) {
-               console.error("요청 실패:", status, error);
-           }
-       });
-   });
+                $.each(response, function(index, value) {
+                    $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                    $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                    $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("요청 실패:", status, error);
+            }
+        });
+    });
 
     document.addEventListener("DOMContentLoaded", function() {
         start();
@@ -272,238 +265,292 @@
     // 최신순을 클릭했을 때
     document.getElementById('recent-link').addEventListener('click', function(event) {
 
-       event.preventDefault();
-       var allPostsByCategorysJson = $("#allPostsByCategorys").html();
+        event.preventDefault();
+        var container = document.getElementById("postContainer");
+        container.innerHTML = "";
+        document.getElementById("loadMoreBtn").style.display = "block";
+        var allPostsByCategorysJson = $("#allPostsByCategorys").html();
 
-       var xhr = new XMLHttpRequest();
-       xhr.open('POST', '/board/hits', true);
-       xhr.setRequestHeader('Content-Type', 'application/json');
-       xhr.onreadystatechange = function() {
-           if (xhr.readyState === 4 && xhr.status === 200) {
-              var responseData = xhr.responseText;
-              var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
-              allPostsByCategorysScript.textContent = responseData;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/board/hits', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var responseData = xhr.responseText;
+                var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
+                allPostsByCategorysScript.textContent = responseData;
 
-              document.getElementById('top').textContent = '최신순';
-              start();
-           }
-       };
+                document.getElementById('top').textContent = '최신순';
+                start();
+
+            }
+        };
         xhr.send(allPostsByCategorysJson);
     });
+
 
     // 조회순을 클릭했을 때
     document.getElementById('hits-link').addEventListener('click', function(event) {
 
-       event.preventDefault();
-       var allPostsByCategorysJson = $("#allPostsByCategorys").html();
+        event.preventDefault();
+        var container = document.getElementById("postContainer");
+        container.innerHTML = "";
+        document.getElementById("loadMoreBtn").style.display = "block";
+        var allPostsByCategorysJson = $("#allPostsByCategorys").html();
 
-       var xhr = new XMLHttpRequest();
-       xhr.open('POST', '/board/hits', true);
-       xhr.setRequestHeader('Content-Type', 'application/json');
-       xhr.onreadystatechange = function() {
-           if (xhr.readyState === 4 && xhr.status === 200) {
-              var responseData = xhr.responseText;
-              var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
-              allPostsByCategorysScript.textContent = responseData;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/board/hits', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var responseData = xhr.responseText;
+                var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
+                allPostsByCategorysScript.textContent = responseData;
 
-              document.getElementById('top').textContent = '조회순';
+                document.getElementById('top').textContent = '조회순';
 
-              start();
-           }
-       };
+                start();
+
+            }
+        };
         xhr.send(allPostsByCategorysJson);
     });
 
     // 관심순을 클릭했을 때
-        document.getElementById('interest-link').addEventListener('click', function(event) {
+    document.getElementById('interest-link').addEventListener('click', function(event) {
 
-           event.preventDefault();
-           var allPostsByCategorysJson = $("#allPostsByCategorys").html();
-
-
-           var xhr = new XMLHttpRequest();
-           xhr.open('POST', '/board/interest', true); // 요청할 URL 설정
-           xhr.setRequestHeader('Content-Type', 'application/json');
-           xhr.onreadystatechange = function() {
-               if (xhr.readyState === 4 && xhr.status === 200) {
-                  var responseData = xhr.responseText;
-                  var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
-                  allPostsByCategorysScript.textContent = responseData;
-
-                  document.getElementById('top').textContent = '관심순';
-
-                  start();
-               }
-           };
-            xhr.send(allPostsByCategorysJson);
-        });
-
-        // 가격 낮은순을 클릭했을 때
-        document.getElementById('low-price-link').addEventListener('click', function(event) {
-
-           event.preventDefault();
-           var allPostsByCategorysJson = $("#allPostsByCategorys").html();
-
-
-           var xhr = new XMLHttpRequest();
-           xhr.open('POST', '/board/price', true); // 요청할 URL 설정
-           xhr.setRequestHeader('Content-Type', 'application/json');
-           xhr.onreadystatechange = function() {
-               if (xhr.readyState === 4 && xhr.status === 200) {
-                  var responseData = xhr.responseText;
-                  var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
-                  allPostsByCategorysScript.textContent = responseData;
-
-                  document.getElementById('top').textContent = '가격 낮은순';
-
-                  start();
-               }
-           };
-            xhr.send(allPostsByCategorysJson); // JSON 데이터를 문자열로 변환하여 요청 본문에 포함시킵니다.
-        });
-
-
-        // 제목 + 내용 검색어 입력
-        document.getElementById('searchTermDetailButton').addEventListener('click', function(event) {
-
-           event.preventDefault();
-           var searchTermDetail = document.getElementById("searchTermDetail").value;
-           var allPostsByCategorysJson = $("#allPostsByCategorys").html();
-           var allPostsByCategorysObject = JSON.parse(allPostsByCategorysJson);
-           var jsonObject = {
-               "searchTermDetail": searchTermDetail,
-               "boardCategoryId": allPostsByCategorysObject[0].boardCategoryId,
-               "itemCategoryId": allPostsByCategorysObject[0].itemCategoryId
-           };
-
-            // AJAX 요청 보내기
-           var xhr = new XMLHttpRequest();
-           xhr.open('POST', '/board/titleAndContent', true); // 요청할 URL 설정
-           xhr.setRequestHeader('Content-Type', 'application/json');
-           xhr.onreadystatechange = function() {
-               if (xhr.readyState === 4 && xhr.status === 200) {
-                  var responseData = xhr.responseText;
-                  var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
-                  allPostsByCategorysScript.textContent = responseData;
-
-                  start();
-               }
-           };
-            xhr.send(JSON.stringify(jsonObject)); // JSON 데이터를 문자열로 변환하여 요청 본문에 포함시킵니다.
-        });
-
-    function start() {
+        event.preventDefault();
         var container = document.getElementById("postContainer");
         container.innerHTML = "";
+        document.getElementById("loadMoreBtn").style.display = "block";
         var allPostsByCategorysJson = $("#allPostsByCategorys").html();
-                var allPostsByCategorys = JSON.parse(allPostsByCategorysJson);
-                var visiblePosts = 9;
-
-                function renderPosts(startIndex, count) {
-                    var container = document.getElementById("postContainer");
 
 
-                    var postHtml = '<div class="row">' +
-                                   '<div class="col-md-2"></div>' +
-                                   '<div class="col-md-8">' +
-                                   '<div class="row">'; // 새로운 행 시작
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/board/interest', true); // 요청할 URL 설정
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var responseData = xhr.responseText;
+                var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
+                allPostsByCategorysScript.textContent = responseData;
 
-                    for (var i = startIndex; i < startIndex + count && i < allPostsByCategorys.length; i++) {
-                        var post = allPostsByCategorys[i];
+                document.getElementById('top').textContent = '관심순';
+
+                start();
+            }
+        };
+        xhr.send(allPostsByCategorysJson);
+    });
+
+    // 가격 낮은순을 클릭했을 때
+    document.getElementById('low-price-link').addEventListener('click', function(event) {
+
+        event.preventDefault();
+        var container = document.getElementById("postContainer");
+        container.innerHTML = "";
+        document.getElementById("loadMoreBtn").style.display = "block";
+
+        var allPostsByCategorysJson = $("#allPostsByCategorys").html();
 
 
-                        if ((i - startIndex) % 3 == 0) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/board/price', true); // 요청할 URL 설정
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var responseData = xhr.responseText;
+                var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
 
-                            postHtml += '</div>' +
-                                        '</div>' +
-                                        '</div>' +
-                                        '<br>';
+                allPostsByCategorysScript.textContent = responseData;
 
-                            postHtml += '<div class="row">' +
-                                        '<div class="col-md-2"></div>' +
-                                        '<div class="col-md-8">' +
-                                        '<div class="row">';
-                        }
+                document.getElementById('top').textContent = '가격 낮은순';
 
-                        postHtml += '<div class="col-md-4">' +
-                                        '<div class="card border-light mb-3" style="max-width: 20rem;">' +
-                                            '<div class="card-header">' +
-                                                '<span class="badge bg-danger">' + post.isMegaphone + '</span>' +
-                                                '&nbsp;<span>' + post.title + '</span>' +
-                                            '</div>' +
+                start();
+            }
+        };
+        xhr.send(allPostsByCategorysJson); // JSON 데이터를 문자열로 변환하여 요청 본문에 포함시킵니다.
+    });
 
-                                            '<div class="card-body">' +
 
-                                                 '<a href="/board/' + post.boardId + '">' +
-                                                        '<img src="' + post.imgSrc + '" style="width: 100%; height: 200px">' +
-                                                 '</a>' +
+    // 거리순을 클릭했을 때
+    $('#distance-link').click(function(event) {
+        event.preventDefault();
+        var container = document.getElementById("postContainer");
+        container.innerHTML = "";
+        document.getElementById("loadMoreBtn").style.display = "block";
 
-                                            '</div>' +
-                                            '<div class="card-footer">' +
-                                                '<div class="d-flex justify-content-start">' +
-                                                    '<span class="badge bg-danger">' + post.isAuction + '</span>' +
-                                                    '<span class="badge bg-primary">' + post.isLend + '</span>' +
-                                                '</div>' +
-                                                    '<div><img src="/images/icon/postRegDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.regDate + '</div>' +
-                                                    '<div><img src="/images/icon/mapIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.address + '</div>' +
-                                                    '<div><img src="/images/icon/moneyIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.price + '원</div>' +
-                                                    '<div><img src="/images/icon/returnDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;반납 희망일 : ' + (post.returnDate ? post.returnDate : '미정') + '</div>' +
-                                                    '<div class="d-flex justify-content-start">' +
-                                                        '<span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + post.interestCnt + '&nbsp;</span>' +
-                                                        '<span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41&nbsp;</span>' +
-                                                        '<span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;">&nbsp;' + post.hits + '</span>' +
-                                                    '</div>' +
-                                            '</div>' +
-                                        '</div>' +
-                                    '</div>';
-                            if (post.isMegaphone === "급구") {
-                                postHtml = postHtml.replace('<span class="badge bg-danger">' + post.isMegaphone + '</span>', '<img src="/images/icon/megaphoneIcon.png" style="width: 20px; height: 20px;">');
-                            }
 
-                    }
+        var allPostsByCategorysJson = $("#allPostsByCategorys").html();
 
-                    postHtml += '</div>'; // row 닫기
-                    container.innerHTML += postHtml;
+        $.ajax({
+            type: 'POST',
+            url: '/board/distance',
+            contentType: 'application/json',
+            data: allPostsByCategorysJson,
+            success: function(responseData) {
+                $('#allPostsByCategorys').empty().text(responseData);
+                $('#top').text('거리순');
+                start();
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX request failed:', status, error);
+            }
+        });
+    });
+
+    // 제목 + 내용 검색어 입력
+    document.getElementById('searchTermDetailButton').addEventListener('click', function(event) {
+
+        event.preventDefault();
+        var searchTermDetail = document.getElementById("searchTermDetail").value;
+        var allPostsByCategorysJson = $("#allPostsByCategorys").html();
+        var allPostsByCategorysObject = JSON.parse(allPostsByCategorysJson);
+        var jsonObject = {
+            "searchTermDetail": searchTermDetail,
+            "boardCategoryId": allPostsByCategorysObject[0].boardCategoryId,
+            "itemCategoryId": allPostsByCategorysObject[0].itemCategoryId
+        };
+
+        // AJAX 요청 보내기
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/board/titleAndContent', true); // 요청할 URL 설정
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+
+                var responseData = xhr.responseText;
+                var allPostsByCategorysScript = document.getElementById('allPostsByCategorys');
+                allPostsByCategorysScript.textContent = responseData;
+
+                start();
+            }
+        };
+        xhr.send(JSON.stringify(jsonObject)); // JSON 데이터를 문자열로 변환하여 요청 본문에 포함시킵니다.
+    });
+
+    function start() {
+
+        var container = document.getElementById("postContainer");
+        container.innerHTML = "";
+
+        var allPostsByCategorysJson = $("#allPostsByCategorys").html();
+
+        var allPostsByCategorys = JSON.parse(allPostsByCategorysJson);
+        var numberOfPosts = allPostsByCategorys.length;
+        var visiblePosts = 9;
+
+        function renderPosts(startIndex, count) {
+
+            var container = document.getElementById("postContainer");
+
+            var postHtml = '<div class="row">' +
+                '<div class="col-md-2"></div>' +
+                '<div class="col-md-8">' +
+                '<div class="row">'; // 새로운 행 시작
+
+            for (var i = startIndex; i < startIndex + count && i < allPostsByCategorys.length; i++) {
+                var post = allPostsByCategorys[i];
+
+                if ((i - startIndex) % 3 == 0) {
+
+                    postHtml += '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<br>';
+
+                    postHtml += '<div class="row">' +
+                        '<div class="col-md-2"></div>' +
+                        '<div class="col-md-8">' +
+                        '<div class="row">';
                 }
 
-                function loadMorePosts() {
-                    renderPosts(visiblePosts, 9);
-                    visiblePosts += 9;
-                    if (visiblePosts >= allPostsByCategorys.length) {
-                        document.getElementById("loadMoreBtn").style.display = "none";
-                    }
+                postHtml += '<div class="col-md-4">' +
+                    '<div class="card border-light mb-3" style="max-width: 20rem;">' +
+                    '<div class="card-header">' +
+                    '<span class="badge bg-danger">' + post.isMegaphone + '</span>' +
+                    '&nbsp;<span>' + post.title + '</span>' +
+                    '</div>' +
+
+                    '<div class="card-body">' +
+
+                    '<a href="/board/' + post.boardId + '">' +
+                    '<img src="' + post.imgSrc + '" style="width: 100%; height: 200px">' +
+                    '</a>' +
+
+                    '</div>' +
+                    '<div class="card-footer">' +
+                    '<div class="d-flex justify-content-start">' +
+                    '<span class="badge bg-danger">' + post.isAuction + '</span>' +
+                    '<span class="badge bg-primary">' + post.isLend + '</span>' +
+                    '</div>' +
+                    '<div><img src="/images/icon/postRegDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.regDate + '</div>' +
+                    '<div><img src="/images/icon/mapIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.address + (post.distance ? ' <span style="color: orange;">(' + post.distance + ' km)</span>' : '') + '</div>' +
+
+                    '<div><img src="/images/icon/moneyIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.price + '원</div>' +
+                    '<div><img src="/images/icon/returnDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;반납 희망일 : ' + (post.returnDate ? post.returnDate : '미정') + '</div>' +
+                    '<div class="d-flex justify-content-start">' +
+                    '<span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + post.interestCnt + '&nbsp;</span>' +
+                    '<span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41&nbsp;</span>' +
+                    '<span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;">&nbsp;' + post.hits + '</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+                if (post.isMegaphone === "급구") {
+                    postHtml = postHtml.replace('<span class="badge bg-danger">' + post.isMegaphone + '</span>', '<img src="/images/icon/megaphoneIcon.png" style="width: 20px; height: 20px;">');
                 }
 
-                renderPosts(0, visiblePosts);
+            }
 
-                document.getElementById("loadMoreBtn").addEventListener("click", loadMorePosts);
+            postHtml += '</div>'; // row 닫기
+            container.innerHTML += postHtml;
+        }
+
+        var loadedPosts = 9;
+
+        function loadMorePosts() {
+
+            var postsToAdd = 9;
+            renderPosts(loadedPosts, postsToAdd);
+            loadedPosts += postsToAdd;
+            if (loadedPosts >= allPostsByCategorys.length) {
+                document.getElementById("loadMoreBtn").style.display = "none";
+            }
+        }
+
+        $('#loadMoreBtn').off('click').on('click', loadMorePosts);
+
+        renderPosts(0, visiblePosts);
+
     }
 
     // 새로운 메시지를 추가하는 함수
-           function addMessage(message) {
-               var messageContainer = document.getElementById('messageContainer');
-               var newMessage = document.createElement('div');
-               newMessage.textContent = message;
-               messageContainer.appendChild(newMessage);
-               scrollToBottom();
-           }
+    function addMessage(message) {
+        var messageContainer = document.getElementById('messageContainer');
+        var newMessage = document.createElement('div');
+        newMessage.textContent = message;
+        messageContainer.appendChild(newMessage);
+        scrollToBottom();
+    }
 
-           // 새로운 메시지가 추가될 때마다 스크롤을 아래로 이동하는 함수
-           function scrollToBottom() {
-               var messageContainer = document.getElementById('messageContainer');
-               messageContainer.scrollTop = messageContainer.scrollHeight;
-           }
+    // 새로운 메시지가 추가될 때마다 스크롤을 아래로 이동하는 함수
+    function scrollToBottom() {
+        var messageContainer = document.getElementById('messageContainer');
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
 
-           document.getElementById('notificationIcon').addEventListener('click', function() {
-               var messageContainer = document.getElementById('messageContainer');
-               if (messageContainer.style.display === 'block') {
-                   messageContainer.style.display = 'none';
-               } else {
-                   messageContainer.style.display = 'block';
-               }
-           });
+    document.getElementById('notificationIcon').addEventListener('click', function() {
+        var messageContainer = document.getElementById('messageContainer');
+        if (messageContainer.style.display === 'block') {
+            messageContainer.style.display = 'none';
+        } else {
+            messageContainer.style.display = 'block';
+        }
+    });
 
 </script>
+
 
 </body>
 </html>

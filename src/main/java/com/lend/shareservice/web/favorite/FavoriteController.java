@@ -23,15 +23,11 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
 
-    private final UserService userService;
-
-    @GetMapping("/favorite/{userid}")
+    @GetMapping("/favorite/{userId}")
     public String favoriteView(Model model,
                                PagingDTO page,
-                               @PathVariable("userid") String userId,
+                               @PathVariable("userId") String userId,
                                @RequestParam(defaultValue = "1") int pageNum){
-
-        userId=userService.getUserId(userId);
 
         int totalCount= favoriteService.getFavoriteTotalCount(page);
 
@@ -48,7 +44,6 @@ public class FavoriteController {
         String pageNavi=page.getPageNavi(loc);
 
         model.addAttribute("favorites",favorites);
-        model.addAttribute("userId",userId);
         model.addAttribute("page",page);
         model.addAttribute("pageNavi",pageNavi);
 
