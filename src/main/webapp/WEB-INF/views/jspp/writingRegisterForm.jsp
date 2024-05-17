@@ -228,7 +228,7 @@
                             <div id="map"></div>
                             <input type="hidden" id="latitude" name="latitude" >
                             <input type="hidden" id="longitude" name="longitude" >
-                            <input type="hidden" id="longitude" name="writer" value="hong">
+                            <input type="hidden" id="longitude" name="writer" value="${userId}">
                             <br>
 
                             <fieldset class="row">
@@ -372,15 +372,13 @@
             document.getElementById('maxPrice').value = formattedPrice2;
         }
 
-
-
         // 지도를 표시할 영역을 설정
         // 클릭한 위치의 위도와 경도를 저장할 변수
         var clickedLatitude = null;
         var clickedLongitude = null;
 
         var mapOptions = {
-            center: new naver.maps.LatLng(37.5665, 126.9780), // 서울의 좌표
+            center: new naver.maps.LatLng(${latiAndLong.latitude}, ${latiAndLong.longitude}),
             zoom: 17 // 초기 줌 레벨
         };
 
@@ -391,7 +389,7 @@
         var marker2 = null;
 
         marker2 = new naver.maps.Marker({
-            position: new naver.maps.LatLng(37.5665, 126.9780),
+            position: mapOptions.center,
             map: map
         });
 

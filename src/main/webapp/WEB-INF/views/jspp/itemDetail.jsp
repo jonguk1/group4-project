@@ -17,7 +17,20 @@
             <meta charset="UTF-8">
             <title>Title</title>
 
+            <style>
+                .alert {
+                  position: fixed;
+                  top: 50%;
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                  padding: 20px;
+                  background-color: #f44336; /* 빨간색 */
+                  color: white;
+                  display: none;
+                  z-index: 1000; /* 다른 요소들 위에 나타나도록 */
+                }
 
+            </style>
         </head>
 
         <body>
@@ -216,11 +229,11 @@
                 </div>
 
                 <br>
+
                 <div class="row">
                     <div class="col-md-3">
                     </div>
                     <div class="col-md-6">
-
                             <span>
                                  <img src="/images/people.png" alt="대체_텍스트" style="width: 50px;">
                             </span>
@@ -272,7 +285,6 @@
                     </div>
                 </div>
 
-
                 <div class="row">
                     <div class="col-md-3">
                     </div>
@@ -288,6 +300,9 @@
                     </div>
                     <div class="col-md-6">
                         <span id="address"><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">${postById.address}</span>
+                        <c:if test="${loggedIn}">
+                            <span style="color: orange;"> (${postById.distance}km)</span>
+                        </c:if>
                     </div>
                     <div class="col-md-3">
                     </div>
@@ -330,14 +345,13 @@
                       <span id="deadline">
                           <c:if test="${postById.isAuction ne '경매 불가'}">
                             <img src="/images/icon/auctionIcon.png" style="width:25px; height:25px;">
-                            ${postById.deadline}
+                            경매 마감일 : ${postById.deadline}
                           </c:if>
                       </span>
                   </div>
                   <div class="col-md-3">
                   </div>
               </div>
-
 
                 <div class="row">
                     <div class="col-md-3">
@@ -352,7 +366,6 @@
                     <div class="col-md-3">
                     </div>
                 </div>
-
 
                 <div class="row">
                     <div class="col-md-3">
@@ -990,6 +1003,12 @@
                                                             </div>
                                                         </div>
                                             </c:if>
+
+                                            <div id="myAlert" class="alert">
+                                              <span class="closebtn" onclick="closeAlert()">&times;</span>
+                                              <strong>로그인 하셔야 합니다!</strong>
+                                            </div>
+
                         <br><br>
                         <input type="hidden" name="latitude" id="latitude" value="${postById.latitude}">
                         <input type="hidden" name="longitude" id="longitude" value="${postById.longitude}">
@@ -1088,9 +1107,13 @@
 
                   document.getElementById('blockUserLink').addEventListener('click', function(event) {
                       event.preventDefault();
-                      $('#confirmModal').modal('show');
-                  });
 
+                      if (${loggedIn}) {
+                          $('#confirmModal').modal('show');
+                      } else {
+                          showAlert();
+                      }
+                  });
 
                   document.getElementById('cancelButton').addEventListener('click', function(event) {
                       event.preventDefault();
@@ -1122,6 +1145,14 @@
                       });
                   });
 
+                    function showAlert() {
+                      document.getElementById("myAlert").style.display = "block";
+                    }
+
+                    function closeAlert() {
+                      document.getElementById("myAlert").style.display = "none";
+                    }
+
                    var dataString = document.getElementById("postById").textContent;
                    var boardIdMatch = dataString.match(/boardId=([^,]+)/);
 
@@ -1130,81 +1161,98 @@
 
                    };
                    document.getElementById('interestButton').addEventListener('click', function(event) {
-                       var buttonText = document.getElementById('interestButton').textContent;
-                       if (buttonText == '관심') {
-                           // ajax 요청 보내서 관심 등록 후 버튼을 관심 취소로 바꾸기
 
-                           $.ajax({
-                               url: '/board/' + boardId.boardId + '/favorite',
-                               type: 'POST',
-                               success: function(response) {
-                                    var interestCntElement = document.getElementById('interestCnt');
-                                    interestCntElement.innerHTML = '<img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + response;
-                                    var button = document.getElementById('interestButton');
-                                    button.textContent = '관심 해제';
-                               }
-                           });
+                       if (${loggedIn}) {
 
-                       } else if (buttonText == '관심 해제') {
-                           // ajax 요청 보내서 관심 취소 후 버튼을 관심으로 바꾸기
-                           $.ajax({
-                               url: '/board/' + boardId.boardId + '/favorite',
-                               type: 'DELETE',
-                               success: function(response) {
-                                    var interestCntElement = document.getElementById('interestCnt');
-                                    interestCntElement.innerHTML = '<img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + response;
-                                    var button = document.getElementById('interestButton');
-                                    button.textContent = '관심';
+                           var buttonText = document.getElementById('interestButton').textContent;
+                           if (buttonText == '관심') {
+                               // ajax 요청 보내서 관심 등록 후 버튼을 관심 취소로 바꾸기
+                               $.ajax({
+                                   url: '/board/' + boardId.boardId + '/favorite',
+                                   type: 'POST',
+                                   success: function(response) {
+                                       var interestCntElement = document.getElementById('interestCnt');
+                                       interestCntElement.innerHTML = '<img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + response;
+                                       var button = document.getElementById('interestButton');
+                                       button.textContent = '관심 해제';
+                                   }
+                               });
+                           } else if (buttonText == '관심 해제') {
+                               // ajax 요청 보내서 관심 취소 후 버튼을 관심으로 바꾸기
+                               $.ajax({
+                                   url: '/board/' + boardId.boardId + '/favorite',
+                                   type: 'DELETE',
+                                   success: function(response) {
+                                       var interestCntElement = document.getElementById('interestCnt');
+                                       interestCntElement.innerHTML = '<img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + response;
+                                       var button = document.getElementById('interestButton');
+                                       button.textContent = '관심';
+                                   }
+                               });
+                           }
+                       } else {
+                           // 로그인 되어 있지 않을 때
 
-                               }
-                           });
+                           showAlert();
                        }
+
 
                    })
 
                    document.getElementById('auctionButton').addEventListener('click', function(event) {
                        var buttonText = this.textContent.trim();
-                       if (buttonText !== '경매참여중') {
-                           var dataString = document.getElementById("postById").textContent;
-                           var boardIdMatch = dataString.match(/boardId=([^,]+)/);
 
-                           var boardId = {
-                               boardId: boardIdMatch ? boardIdMatch[1] : null,
-                           };
+                       if (${loggedIn}) {
+                           if (buttonText !== '경매참여중') {
+                               var dataString = document.getElementById("postById").textContent;
+                               var boardIdMatch = dataString.match(/boardId=([^,]+)/);
 
-                           $.ajax({
-                               url: '/auction/' + boardId.boardId,
-                               type: 'POST',
-                               success: function(response) {
-                                  document.getElementById('auctionButton').textContent = '경매참여중';
-                               },
-                               error: function(xhr, status, error) {
-                               }
-                           });
+                               var boardId = {
+                                   boardId: boardIdMatch ? boardIdMatch[1] : null,
+                               };
+
+                               $.ajax({
+                                   url: '/auction/' + boardId.boardId,
+                                   type: 'POST',
+                                   success: function(response) {
+                                       document.getElementById('auctionButton').textContent = '경매참여중';
+                                   },
+                                   error: function(xhr, status, error) {
+                                       // 에러 처리 로직
+                                   }
+                               });
+                           } else {
+                               alert('경매 참여중');
+                           }
                        } else {
-                           alert('경매 참여중');
+                           showAlert();
                        }
                    });
 
 
+
                 // 글 상세 번호 채팅에 넘겨주기 위한 함수
-                function chat(){
-                    //alert("글 상세번호 : " + "${postById.boardId}");
-                    var boardId2 = parseInt("${postById.boardId}");//글 상세 번호
-                    var form = document.createElement("form");
-                    form.setAttribute("method", "post");
-                    form.setAttribute("action", "/chat/chat2");
+                function chat() {
+                    if (${loggedIn}) {
+                        //alert("글 상세번호 : " + "${postById.boardId}");
+                        var boardId2 = parseInt("${postById.boardId}"); // 글 상세 번호
+                        var form = document.createElement("form");
+                        form.setAttribute("method", "post");
+                        form.setAttribute("action", "/chat/chat2");
 
-                    var hiddenField = document.createElement("input");
-                    hiddenField.setAttribute("type", "hidden");
-                    hiddenField.setAttribute("name", "boardId2");
-                    hiddenField.setAttribute("value", boardId2);
-                    form.appendChild(hiddenField);
+                        var hiddenField = document.createElement("input");
+                        hiddenField.setAttribute("type", "hidden");
+                        hiddenField.setAttribute("name", "boardId2");
+                        hiddenField.setAttribute("value", boardId2);
+                        form.appendChild(hiddenField);
 
-                    document.body.appendChild(form);
-                    form.submit();
-
+                        document.body.appendChild(form);
+                        form.submit();
+                    } else {
+                        showAlert();
+                    }
                 };
+
 
 
                   function sendEditRequest() {
