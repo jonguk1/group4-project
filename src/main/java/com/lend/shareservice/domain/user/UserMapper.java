@@ -33,7 +33,7 @@ public interface UserMapper {
 
     int updateUser(UpdateUserDTO updateUserDTO);
 
-    int updateUserAddress(UpdateUserAddressDTO updateUserAddressDTO)
+    int updateUserAddress(UpdateUserAddressDTO updateUserAddressDTO);
 
     User selectUserById(String userId);
 
