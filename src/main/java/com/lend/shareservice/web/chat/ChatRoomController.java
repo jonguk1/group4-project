@@ -5,6 +5,8 @@ import com.lend.shareservice.web.chat.dto.ChatDTO;
 import com.lend.shareservice.web.chat.dto.ChatItemDTO;
 import com.lend.shareservice.web.chat.dto.OutputMessageVo;
 import com.lend.shareservice.web.chat.dto.ReservDTO;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -46,6 +48,9 @@ public class ChatRoomController {
         return "/chat/chatRoom2";
     }
 
+
+
+    //예약하기를 위한 채팅방 아이디와 날짜 갖고오기
     @PostMapping("/reserv")
     public void reservation(@RequestParam("chatId") String chatId,
                             @RequestParam(value = "datetimeInput") LocalDateTime reservDate) {
@@ -57,9 +62,6 @@ public class ChatRoomController {
 
     }
 
-
-
-
     //소켓 연결 하는 아주아주 중요한 코드
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
@@ -67,7 +69,7 @@ public class ChatRoomController {
         log.info("서버가 받은 정보: "+ chatDTO.toString());
         String time = new SimpleDateFormat("yy-MM-dd HH:mm:ss").format(new Date());
         log.info("time: " + time);
-        OutputMessageVo message = new OutputMessageVo(chatDTO.getSender(), chatDTO.getTarget(), chatDTO.getContent(), time);
+        OutputMessageVo message = new OutputMessageVo(chatDTO.getFrom(), chatDTO.getTo(), chatDTO.getContent(), time);
         return message;
     }
 }
