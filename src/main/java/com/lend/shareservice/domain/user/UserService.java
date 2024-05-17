@@ -29,4 +29,9 @@ public interface UserService {
     int blockUser(String userId);
 
     int updateUser(String userId,UpdateUserDTO updateUserDTO);
+
+    int updateUserAddress(String userId, Double latitude, Double longitude);
+
+    User findUserById(String userId);
+
 }
