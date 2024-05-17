@@ -44,20 +44,10 @@ public class UserController {
 
     private final UserSignupService userSignupService;
 
+    private final AddressService addressService;
+
     @Autowired
     private CommonUtil util;
-
-
-    @GetMapping("/user")
-    public String userList(Model model){
-
-        List<User> userList = userService.userList();
-
-        model.addAttribute("userList",userList);
-
-        return "jspp/myDetail";
-
-    }
 
 
 

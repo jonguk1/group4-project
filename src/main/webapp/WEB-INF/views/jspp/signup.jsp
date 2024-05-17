@@ -307,6 +307,9 @@ function inputIdChk(){
             if (passwordInput.value.length < 8) {
                 passwordLengthError.textContent = "비밀번호는 8자 이상이어야 합니다.";
                 return false;
+            } else if (passwordInput.value.length > 20) {
+                passwordLengthError.textContent = "비밀번호는 20자 이하여야 합니다.";
+                return false;
             } else {
                 passwordLengthError.textContent = "";
             }
@@ -325,7 +328,6 @@ function inputIdChk(){
         confirmPasswordInput.addEventListener("input", validatePassword);
     });
 </script>
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var form = document.getElementById("signupForm");
