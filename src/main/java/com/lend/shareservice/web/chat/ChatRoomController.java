@@ -1,6 +1,7 @@
 package com.lend.shareservice.web.chat;
 
 import com.lend.shareservice.domain.chat.ChatService;
+import com.lend.shareservice.domain.chat.RedisPublisher;
 import com.lend.shareservice.web.chat.dto.ChatDTO;
 import com.lend.shareservice.web.chat.dto.ChatItemDTO;
 import com.lend.shareservice.web.chat.dto.OutputMessageVo;
@@ -31,6 +32,7 @@ public class ChatRoomController {
 //        return "/chat/chatRoom";
 //    }
 
+    private final RedisPublisher redisPublisher;
     private final ChatService chatService;
 
     //상세 글 번호 가지고 채팅방으로 이동
@@ -50,6 +52,7 @@ public class ChatRoomController {
 
 
 
+
     //예약하기를 위한 채팅방 아이디와 날짜 갖고오기
     @PostMapping("/reserv")
     public void reservation(@RequestParam("chatId") String chatId,
@@ -66,10 +69,17 @@ public class ChatRoomController {
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public OutputMessageVo send(ChatDTO chatDTO){
+//        chatService.enterChatRoom(chatDTO.getChatId());
+//
+//        redisPublisher.publish(chatService.getTopic(chatDTO.getChatId()), chatDTO);
+//
+//        chatService.saveMessage(chatDTO);
+
         log.info("서버가 받은 정보: "+ chatDTO.toString());
         String time = new SimpleDateFormat("yy-MM-dd HH:mm:ss").format(new Date());
         log.info("time: " + time);
         OutputMessageVo message = new OutputMessageVo(chatDTO.getFrom(), chatDTO.getTo(), chatDTO.getContent(), time);
         return message;
     }
+
 }
