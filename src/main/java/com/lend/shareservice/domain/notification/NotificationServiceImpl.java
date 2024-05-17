@@ -1,5 +1,6 @@
 package com.lend.shareservice.domain.notification;
 
+import com.lend.shareservice.domain.auction.AuctionMapper;
 import com.lend.shareservice.entity.Notification;
 import com.lend.shareservice.web.notification.dto.NotificationDTO;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,11 @@ public class NotificationServiceImpl implements NotificationService{
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
     private final NotificationMapper notificationMapper;
     private final EmitterRepository emitterRepository;
-
+    private final AuctionMapper auctionMapper;
     public SseEmitter subscribe(String userId) {
         SseEmitter emitter = createEmitter(userId);
 
-        sendToClient(userId, "EventStream Created. [userId=" + userId + "]");
+        sendToClient(userId, "first message");
         return emitter;
     }
     @Override
@@ -62,9 +63,27 @@ public class NotificationServiceImpl implements NotificationService{
 
         List<NotificationDTO> findNotificationDTOS = new ArrayList<>();
         for (Notification findNotification : findNotifications) {
-            findNotificationDTOS.add(new NotificationDTO(findNotification.getNotiId(), findNotification.getUserId(), findNotification.getContent(), findNotification.getNotiRegDate()));
+            findNotificationDTOS.add(new NotificationDTO(findNotification.getNotiId(), findNotification.getUserId(), findNotification.getContent(), findNotification.getNotiRegDate(), findNotification.getBoardId()));
         }
 
         return findNotificationDTOS;
+    }
+
+
+    // 특정 경매방에 있는 유저들에게 특정 메세지를 보냄
+    public void sendMessageAuctionUsers(Integer auctionId, String message) {
+
+        List<String> auctionMembers = auctionMapper.selectIdsByAuctionId(auctionId);
+
+        for (String auctionMember : auctionMembers) {
+            sendToClient(auctionMember, message);
+        }
+
+    }
+
+    // 알림 삭제
+    @Override
+    public int deleteNotification(Integer notiId) {
+        return notificationMapper.deleteNotification(notiId);
     }
 }

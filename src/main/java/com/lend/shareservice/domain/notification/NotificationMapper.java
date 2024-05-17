@@ -10,4 +10,6 @@ public interface NotificationMapper {
     void insertNotification(Notification notification);
 
     List<Notification> selectNotificationsByUserId(String userId);
+
+    int deleteNotification(Integer notiId);
 }

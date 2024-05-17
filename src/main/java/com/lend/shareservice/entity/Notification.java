@@ -28,5 +28,9 @@ public class Notification {
     @NotNull
     private Date notiRegDate;
 
+    // 글번호
+    @NotNull
+    private Integer boardId;
+
 
 }
