@@ -27,5 +27,9 @@ public interface UserService {
 
     int blockUser(String userId);
 
+
     boolean idCheck(String userId);
+
+    User findUserById(String userId);
+
 }

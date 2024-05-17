@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
+@AllArgsConstructor
 public class LatiLongDTO {
 
     private double latitude;
