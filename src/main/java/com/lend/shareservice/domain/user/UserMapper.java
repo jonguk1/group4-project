@@ -28,8 +28,12 @@ public interface UserMapper {
 
     int getLendyCount(String userId);
 
+
     MyDetailDTO findByUserDetail(String userId);
 
     int updateUser(UpdateUserDTO updateUserDTO);
+
+
+    User selectUserById(String userId);
 
 }

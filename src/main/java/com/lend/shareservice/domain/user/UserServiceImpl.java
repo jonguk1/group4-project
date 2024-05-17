@@ -20,6 +20,14 @@ public class UserServiceImpl implements UserService{
 
     private final UserMapper userMapper;
 
+
+
+    @Override
+    public User findUserById(String userId) {
+        return userMapper.selectUserById(userId);
+    }
+
+
     @Override
     public int blockUser(String userId) {
         Block block = new Block();

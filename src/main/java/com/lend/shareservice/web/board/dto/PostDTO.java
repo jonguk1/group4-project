@@ -96,4 +96,6 @@ public class PostDTO {
     private String imgSrc;
 
     private String currentState;
+
+    private Integer distance;
 }

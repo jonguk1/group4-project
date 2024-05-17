@@ -1,6 +1,8 @@
 package com.lend.shareservice.domain.board;
 
 import com.lend.shareservice.domain.address.AddressService;
+import com.lend.shareservice.domain.user.UserMapper;
+import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.entity.Favorite;
 import com.lend.shareservice.web.board.dto.*;
@@ -28,6 +30,8 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardMapper boardMapper;
     private final AddressService addressService;
+    private final UserMapper userMapper;
+    private static final double EARTH_RADIUS_KM = 6371;
     // 해당 상품 카테고리와 아이템 카테고리 글들 추출
     @Value("${file-url}")
     private String url;
@@ -35,20 +39,51 @@ public class BoardServiceImpl implements BoardService{
     @Value("${file-relative-url}")
     private String relativeUrl;
     @Override
-    public List<PostDTO> findAllPostsByCategorys(ItemAndBoardCategoryDTO itemAndBoardCategoryDTO) {
+    public List<PostDTO> findAllPostsByCategorys(String userId, ItemAndBoardCategoryDTO itemAndBoardCategoryDTO) {
 
         List<Board> getBoard = boardMapper.selectAllPostsByCategorys(itemAndBoardCategoryDTO);
 
-        List<PostDTO> posts = getPostDTOS(getBoard);
+
+        List<PostDTO> posts = getPostDTOS(userId, getBoard);
 
         return posts;
     }
 
-    private List<PostDTO> getPostDTOS(List<Board> getBoard) {
+    private double toRadians(double degrees) {
+        return Math.toRadians(degrees);
+    }
+
+    public int calculateRoundedDistance(double lat1, double lon1, double lat2, double lon2) {
+        double distance = calculateDistance(lat1, lon1, lat2, lon2);
+        // 거리를 반올림하여 정수로 변환하여 반환
+        return (int) Math.round(distance);
+    }
+    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+
+        double dLat = toRadians(lat2 - lat1);
+        double dLon = toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return EARTH_RADIUS_KM * c; // 거리를 킬로미터 단위로 반환
+    }
+
+    private List<PostDTO> getPostDTOS(String userId, List<Board> getBoard) {
         List<PostDTO> posts = new ArrayList<>();
+
+        // 위도, 경도값을 받아오기위한 user정보
+        UserVo userAccount = userMapper.getUserAccount(userId);
+
         for (Board board : getBoard) {
 
             PostDTO postDTO = new PostDTO();
+
+            if (userAccount != null) {
+                int distance = calculateRoundedDistance(userAccount.getLatitude(), userAccount.getLongitude(), board.getLatitude(), board.getLongitude());
+                postDTO.setDistance(distance);
+            }
+
             postDTO.setBoardId(board.getBoardId());
             postDTO.setBoardCategoryId(board.getBoardCategoryId());
             postDTO.setItemCategoryId(board.getItemCategoryId());
@@ -162,7 +197,7 @@ public class BoardServiceImpl implements BoardService{
         board.setHits(0);
 
         if (postRegistrationDTO.getReturnDate() == null) {
-            board.setDeadline(null);
+            board.setReturnDate(null);
         } else {
             board.setReturnDate(Date.valueOf(postRegistrationDTO.getReturnDate()));
         }
@@ -236,10 +271,10 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public List<PostDTO> findPostsBySearchTerm(String searchTerm) {
+    public List<PostDTO> findPostsBySearchTerm(String userId, String searchTerm) {
 
         List<Board> postDTOS = boardMapper.selectPostsBySearchTerm(searchTerm);
-        List<PostDTO> postDTOS1 = getPostDTOS(postDTOS);
+        List<PostDTO> postDTOS1 = getPostDTOS(userId, postDTOS);
         return postDTOS1;
     }
 
@@ -249,10 +284,10 @@ public class BoardServiceImpl implements BoardService{
     }
 
     // 인기글 찾기
-    public List<PostDTO> findInterestPosts() {
+    public List<PostDTO> findInterestPosts(String userId) {
         List<Board> board = boardMapper.selectAllPostsInOrderOfInterest();
 
-        List<PostDTO> postDTOInOrderOfInterest = getPostDTOS(board);
+        List<PostDTO> postDTOInOrderOfInterest = getPostDTOS(userId, board);
 
         return postDTOInOrderOfInterest;
     }
@@ -281,10 +316,19 @@ public class BoardServiceImpl implements BoardService{
                 .collect(Collectors.toList());
     }
 
+    // 최신순으로 정렬
     @Override
     public List<PostDTO> sortForRecent(List<PostDTO> postDTOS) {
         Collections.sort(postDTOS, Comparator.comparing(PostDTO::getRegDate).reversed());
         return postDTOS;
+    }
+
+    // 거리순으로 정렬
+    @Override
+    public List<PostDTO> sortForDistance(List<PostDTO> postDTOS) {
+        return postDTOS.stream()
+                .sorted(Comparator.comparingInt(PostDTO::getDistance))
+                .collect(Collectors.toList());
     }
 
     // 제목 + 내용으로 검색
