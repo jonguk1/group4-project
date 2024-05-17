@@ -46,6 +46,7 @@
     }
 
 </script>
+
 <!-- idCheck.jsp -->
 <body onload="pValue()">
 <div id="wrap" class="container">
