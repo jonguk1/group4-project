@@ -3,7 +3,9 @@ package com.lend.shareservice.domain.user;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.Block;
 import com.lend.shareservice.entity.User;
+import com.lend.shareservice.web.user.dto.MyDetailDTO;
 import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
+import com.lend.shareservice.web.user.dto.UpdateUserDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -16,11 +18,6 @@ public interface UserMapper {
 
     void saveUser(UserVo userVo);
 
-    List<User> userList();
-
-    String getUserId(String userId);
-
-
     int blockUser(Block block);
 
     List<MyLenderAndMyLendyDTO> lenders(Map<String, Object> map);
@@ -31,5 +28,12 @@ public interface UserMapper {
 
     int getLendyCount(String userId);
 
+
+    MyDetailDTO findByUserDetail(String userId);
+
+    int updateUser(UpdateUserDTO updateUserDTO);
+
+
     User selectUserById(String userId);
+
 }

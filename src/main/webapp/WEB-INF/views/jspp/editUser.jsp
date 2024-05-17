@@ -24,6 +24,75 @@
     </style>
 </head>
 
+<script>
+    $(document).ready(function(){
+        var passwordsMatch = false;
+
+        function comparePasswords() {
+            var pw = $("#pw").val();
+            var pwConfirm = $("#pwConfirm").val();
+            var message = $(".invalid-feedback");
+            var successMessage = $(".valid-feedback");
+            var pwField = $("#pw");
+            var pwConfirmField = $("#pwConfirm");
+
+            // 값이 일치하는지 확인
+            if (pw === pwConfirm) {
+                passwordsMatch = true;
+                pwField.removeClass("is-invalid").addClass("is-valid");
+                pwConfirmField.removeClass("is-invalid").addClass("is-valid");
+                message.html("");
+                successMessage.html("비밀번호가 일치합니다");
+            } else {
+                passwordsMatch = false;
+                pwField.removeClass("is-valid").addClass("is-invalid");
+                pwConfirmField.removeClass("is-valid").addClass("is-invalid");
+                successMessage.html("");
+                message.html("비밀번호가 불일치 합니다 다시 입력하세요");
+            }
+        }
+        $("#compare").click(function(){
+            comparePasswords();
+        });
+
+        $("#editButton").click(function(){
+            if (!passwordsMatch) {
+                alert("중복체크를 해주세요.");
+                return;
+            }
+            var pw = $("#pw").val();
+
+            var updateUserDTO = {
+                userId: "${userId}",
+                name: $("input[name='name']").val(),
+                pw: pw,
+                phoneNumber: $("input[name='phoneNumber']").val(),
+                latitude: $("input[name='latitude']").val(),
+                longitude: $("input[name='longitude']").val()
+            };
+
+            $.ajax({
+                type: "PUT",
+                url: "/user/${userId}",
+                contentType: "application/json",
+                data: JSON.stringify(updateUserDTO),
+                success: function(response) {
+                    console.log("서버 응답:", response);
+                },
+                error: function(xhr, status, error) {
+                    console.error("에러 발생:", error);
+                }
+            });
+
+        });
+
+        $("#cancelButton").click(function(){
+            window.location.href = "/user/${userId}";
+        });
+
+    });
+</script>
+
 <body>
 
  <div class="container bg-green text-center">
@@ -126,7 +195,7 @@
 
        		<span>
        				<h3>
-       				    <c:out value="${userId}"/>님의 정보
+       				    <c:out value="${userId}"/>님의 수정페이지
        				</h3>
        		</span>
        		</div>
@@ -145,38 +214,38 @@
            </div>
            <div class="col-md-4">
                    <div class="form-group">
-                       <label for="inputDefault">아이디</label>
-                       <p>&nbsp;<c:out value="${details.userId}"/></p>
-                   </div>
-                   <div class="form-group">
                        <label for="inputDefault">이름</label>
-                       <p>&nbsp;<c:out value="${details.name}"/></p>
+                       <input type="text" class="form-control" name="name" value="${edit.name}">
                    </div>
+                   <br>
+                   <div class="form-group">
+                      <label for="inputDefault">비밀번호</label>
+                      <input type="password" class="form-control" id="pw" name="pw" value="${edit.pw}">
+                      <div class="valid-feedback"></div>
+                      <div class="invalid-feedback"></div>
+                   </div>
+                   <br>
+                   <div class="form-group">
+                     <label for="inputDefault">비밀번호 확인</label>
+                     <div class="row">
+                       <div class="col-md-8 text-start">
+                           <div class="form-group">
+                               <input type="password"  name="pwConfirm" id="pwConfirm" class="form-control">
+                           </div>
+                       </div>
+                       <div class="col-md-4 text-start">
+                           <div class="form-group">
+                               <button class="btn btn-primary" type="button" id="compare">중복체크</button>
+                           </div>
+                       </div>
+                     </div>
+                   </div>
+                   <br>
                    <div class="form-group">
                        <label for="inputDefault">전화번호</label>
-                       <p>&nbsp;<c:out value="${details.phoneNumber}"/></p>
+                       <input type="text" class="form-control" name="phoneNumber" value="${edit.phoneNumber}">
                    </div>
-                   <div class="form-group">
-                       <label for="inputDefault">가입일</label>
-                       <p>
-                        &nbsp;<fmt:formatDate value="${details.regDate}" pattern="yyyy"/>년
-                        <fmt:formatDate value="${details.regDate}" pattern="MM"/>월
-                        <fmt:formatDate value="${details.regDate}" pattern="dd"/>일
-                       </p>
-                   </div>
-                   <div class="form-group">
-                       <label for="inputDefault">포인트</label>
-                       <p>&nbsp;<fmt:formatNumber value="${details.point}" pattern="#,###"/> 포인트</p>
-                   </div>
-                   <div class="form-group">
-                       <label for="inputDefault">충전한 돈</label>
-                       <div>
-                           <span>&nbsp;<fmt:formatNumber value="${details.money}" pattern="#,###"/> 원</span>
-                           <button type="submit" class="btn btn-primary">
-                               충전
-                           </button>
-                       <div>
-                   </div>
+                   <br>
                    <div class="form-group">
                        <label for="inputDefault" style="margin-top:10px">
                            내 동네
@@ -184,7 +253,7 @@
                        <div class="row">
                           <div class="col-md-8 text-start">
                               <div class="form-group">
-                                  <input type="input" class="form-control" id="myAroundHome" value="${details.address}" placeholder="내 동네를 설정해주세요"/>
+                                  <input type="input" class="form-control" id="myAroundHome" value="${edit.address}" placeholder="내 동네를 설정해주세요"/>
                               </div>
                           </div>
                           <div class="col-md-4 text-start">
@@ -194,23 +263,23 @@
                                   </button>
                               </div>
                           </div>
+                          <input type="hidden" name="latitude">
+                          <input type="hidden" name="longitude">
                       </div>
                    </div>
                <br>
                <div class="row">
                    <div class="col-md-6 text-start">
-                       <form class="d-flex" method="get" action="/user/${userId}/edit">
-                           <div class="form-group">
-                               <button type="submit" class="btn btn-primary">
-                                   회원수정
-                               </button>
-                           </div>
-                       </form>
+                       <div class="form-group">
+                           <button type="submit" class="btn btn-primary" id="editButton">
+                               수정
+                           </button>
+                       </div>
                    </div>
                    <div class="col-md-6 text-end">
                        <div class="form-group">
-                           <button type="submit" class="btn btn-primary">
-                               회원탈퇴
+                           <button type="submit" class="btn btn-primary" id="cancelButton">
+                               취소
                            </button>
                        </div>
                    </div>

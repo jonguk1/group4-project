@@ -5,6 +5,7 @@ package com.lend.shareservice.domain.auction;
 import com.lend.shareservice.web.auction.dto.AuctionDTO;
 import com.lend.shareservice.entity.Auction;
 import com.lend.shareservice.entity.Participant_Auction;
+import com.lend.shareservice.web.paging.dto.PagingDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -15,7 +16,11 @@ public interface AuctionMapper {
 
     int getAuctionCount(String userId);
 
+    int getCompleteAuctionCount(String userId);
+
     List<AuctionDTO> auctions(Map<String, Object> map);
+
+    List<AuctionDTO> completeAuctions(Map<String, Object> map);
 
     Auction selectAuctionByBoardId(Integer boardId);
 
@@ -33,7 +38,11 @@ public interface AuctionMapper {
 
     List<String> selectIdsByAuctionId(Integer auctionId);
 
-    int updateCurrentPrice(Map<String, Integer> map);
+    int updateCurrentPrice(Map<String, Object> map);
 
     int getMaxPrice(int auctionId);
+
+    int updateIsAuction(int auctionId);
+
+    int getCurrentPrice(int auctionId);
 }

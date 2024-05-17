@@ -34,8 +34,6 @@ import java.util.List;
 public class AuctionController {
 
     private final AuctionService auctionService;
-    private final UserService userService;
-
 
     @GetMapping(value = "/time/{user_id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseBody
@@ -59,13 +57,11 @@ public class AuctionController {
         return emitter;
     }
 
-    @GetMapping("/auction/{user_id}")
+    @GetMapping("/auction/{userId}")
     public String myAuctionList(Model model,
                                 PagingDTO page,
-                                @PathVariable("user_id") String userId,
+                                @PathVariable("userId") String userId,
                                 @RequestParam(defaultValue = "1") int pageNum){
-
-        userId=userService.getUserId(userId);
 
         int totalCount = auctionService.getAuctionCount(userId);
         page.setTotalCount(totalCount);
@@ -81,23 +77,42 @@ public class AuctionController {
         String pageNavi=page.getPageNavi(loc);
 
         model.addAttribute("auctions",auctions);
-        model.addAttribute("userId",userId);
         model.addAttribute("page",page);
         model.addAttribute("pageNavi",pageNavi);
 
         return "jspp/myAuction";
     }
 
-    @PostMapping("/auction/{auction_id}/current-price")
-    public ResponseEntity<String> updateCurrentPrice(@PathVariable("auction_id") int auctionId,
-                                                     @RequestParam(value = "currentPrice", defaultValue = "0") int currentPrice) {
-        String loginUser = "테스트1";
+    @GetMapping("/auction/{userId}/complete")
+    public String myAuctionCompleteList(Model model,
+                               PagingDTO page,
+                               @PathVariable("userId") String userId,
+                               @RequestParam(defaultValue = "1") int pageNum){
 
-        try {
-            loginUser = URLEncoder.encode(loginUser, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        int totalCount = auctionService.getCompleteAuctionCount(userId);
+        page.setTotalCount(totalCount);
+        page.setOneRecordPage(3);
+        page.setPagingBlock(5);
+
+        page.init();
+
+        List<AuctionDTO> auctions = auctionService.completeAuctions(page,userId);
+
+        String loc ="/auction/"+userId+"/complete";
+
+        String pageNavi=page.getPageNavi(loc);
+
+        model.addAttribute("auctions",auctions);
+        model.addAttribute("page",page);
+        model.addAttribute("pageNavi",pageNavi);
+
+        return "jspp/myAuction";
+    }
+
+    @PutMapping("/auction/{auctionId}/current-price")
+    public ResponseEntity<String> updateCurrentPrice(@PathVariable("auctionId") int auctionId,
+                                                     @RequestParam(value = "currentPrice", defaultValue = "0") int currentPrice,
+                                                     @RequestParam(value="userId") String userId) {
 
         if (currentPrice == 0) {
             return ResponseEntity.ok("emptyCurrentPrice");
@@ -109,13 +124,27 @@ public class AuctionController {
             return ResponseEntity.ok("maxCurrentPrice");
         }
 
-        int n = auctionService.updateCurrentPrice(auctionId, currentPrice);
+        int getCurrentPrice =auctionService.getCurrentPrice(auctionId);
+
+        if(currentPrice<=getCurrentPrice){
+            return ResponseEntity.ok("lowCurrentPrice");
+        }
+
+        int n = auctionService.updateCurrentPrice(auctionId, currentPrice,userId);
 
         if (n > 0) {
             return ResponseEntity.ok("ok");
         } else {
             return ResponseEntity.ok("no");
         }
+    }
+
+    @PatchMapping("/auction/{auctionId}/isAuction")
+    public ResponseEntity<String> updateIsAuction(@PathVariable("auctionId") int auctionId){
+        if(auctionService.updateIsAuction(auctionId)>0){
+            return ResponseEntity.ok("ok");
+        }
+        return ResponseEntity.ok("no");
     }
 
     @PostMapping("/auction/{boardId}")

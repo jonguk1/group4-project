@@ -1,5 +1,6 @@
 package com.lend.shareservice.entity;
 
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 import jakarta.validation.constraints.NotNull;
@@ -15,4 +16,9 @@ public class Participant_Auction {
     // 아이디 (FK)
     @NotNull
     private String userId;
+
+    // 현재 금액
+    @PositiveOrZero
+    @NotNull
+    private Integer currentPrice;
 }

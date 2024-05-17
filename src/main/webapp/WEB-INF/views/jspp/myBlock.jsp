@@ -8,9 +8,35 @@
 
 
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script src="/js/menuControl.js"></script>
      <link rel="stylesheet" href="/css/bootstrap.min.css">
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script>
+        function deleteBlockUser(blockedUserId) {
+            if (confirm(blockedUserId+'님의 차단을 해제하시겠습니까?')) {
+                $.ajax({
+                    url: '/block/' + blockedUserId,
+                    type: 'DELETE',
+                    success: function(result) {
+                        if (result === 'ok') {
+                            alert('차단을 해제하셧습니다');
+                            location.reload();
+                        } else {
+                            alert('차단해제를 실패하였습니다');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('에러가 발생하였습니다');
+                    }
+                });
+            }
+        }
+    </script>
+
 </head>
 
 <body>
@@ -55,7 +81,7 @@
                                           </li>
                                           <li class="nav-item">
                                               <c:if test="${loggedIn}">
-                                                  <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                                  <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
                                               </c:if>
                                           </li>
                                           <li class="nav-item">
@@ -142,16 +168,14 @@
                               <th scope="col">삭제</th>
                             </tr>
                             <c:forEach var="block" items="${blocks}">
-                                <form class="d-flex" method="get" action="/user/${block.blockedUserId}">
-                                    <tr style="font-size:1.25rem">
-                                        <td>
-                                            <c:out value="${block.blockedUserId}"/>
-                                        </td>
-                                        <td>
-                                            <button type="submit" class="btn btn-primary">삭제</button>
-                                        </td>
-                                    </tr>
-                                </form>
+                                <tr style="font-size:1.25rem">
+                                    <td>
+                                        <c:out value="${block.blockedUserId}"/>
+                                    </td>
+                                    <td>
+                                        <button type="submit" class="btn btn-primary" onclick="deleteBlockUser('${block.blockedUserId}')">삭제</button>
+                                    </td>
+                                </tr>
                             </c:forEach>
                         </table>
                     </div>
@@ -185,28 +209,3 @@
 
 
 </body>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $.ajax({
-                   url: "/board/board-category",
-                   type: "GET",
-                   dataType: "json",
-                   success: function(response) {
-                       console.log(response);
-
-                       $.each(response, function(index, value) {
-                           $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                           $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                           $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
-                       });
-
-
-                   },
-                   error: function(xhr, status, error) {
-                       console.error("요청 실패:", status, error);
-                   }
-               });
-    });
-</script>

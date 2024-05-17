@@ -10,7 +10,7 @@
        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
          <div class="accordion-body">
             <div class="list-group">
-              <a href="/user" class="list-group-item list-group-item-action">내 정보</a>
+              <a href="/user/${userId}" class="list-group-item list-group-item-action">내 정보</a>
               <a href="/favorite/${userId}" class="list-group-item list-group-item-action">관심 목록</a>
               <a href="/user/${userId}/lender" class="list-group-item list-group-item-action">빌려준 목록</a>
               <a href="/user/${userId}/lendy" class="list-group-item list-group-item-action">빌린 목록</a>
