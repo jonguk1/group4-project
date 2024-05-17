@@ -4,6 +4,7 @@ import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.domain.user.UserService;
 
 import com.lend.shareservice.domain.user.service.UserSignupService;
+import com.lend.shareservice.domain.user.util.CommonUtil;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.User;
 import com.lend.shareservice.web.user.dto.MyDetailDTO;
@@ -43,7 +44,22 @@ public class UserController {
 
     private final UserSignupService userSignupService;
 
-    private final AddressService addressService;
+    @Autowired
+    private CommonUtil util;
+
+
+    @GetMapping("/user")
+    public String userList(Model model){
+
+        List<User> userList = userService.userList();
+
+        model.addAttribute("userList",userList);
+
+        return "jspp/myDetail";
+
+    }
+
+
 
     @GetMapping("/test")
     public String test(@SessionAttribute(name="userId", required = false)String userId, Model model) {
@@ -175,6 +191,26 @@ public class UserController {
         userSignupService.joinUser(userVo);
 
         return "redirect:/login";
+    }
+    @GetMapping("/user/idCheck")
+    public String idCheckForm(){
+
+        return "jspp/idCheck";
+    }
+
+    @PostMapping("/user/idCheck")
+    public String idCheckEnd(Model model, @RequestParam(defaultValue = "")String userId){
+        if(userId.isBlank()){
+            return util.addMsgBack(model,"아이디를 입력해야 해요");
+        }
+        boolean isUse=userService.idCheck(userId);
+        String msg=(isUse)? userId+"는 사용 가능합니다":userId+"는 이미 사용 중 입니다";
+        String result=(isUse)?"ok":"fail";
+        model.addAttribute("msg",msg);
+        model.addAttribute("result",result);
+        model.addAttribute("uid",userId);
+
+        return "jspp/idCheckResult";
     }
 
     // 차단 등록

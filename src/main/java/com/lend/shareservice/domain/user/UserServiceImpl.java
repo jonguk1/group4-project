@@ -48,6 +48,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public boolean idCheck(String userId) {
+        int n=userMapper.idCheck(userId);
+
+        return (n>0)? false: true;
+    }
+
+    @Override
     public List<MyLenderAndMyLendyDTO> lenders(PagingDTO page, String userId) {
         Map<String,Object> map=new HashMap<>();
         map.put("userId",userId);
