@@ -4,7 +4,6 @@ import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.domain.user.UserService;
 
 import com.lend.shareservice.domain.user.service.UserSignupService;
-import com.lend.shareservice.domain.user.util.CommonUtil;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.User;
 import com.lend.shareservice.web.user.dto.MyDetailDTO;
@@ -46,8 +45,11 @@ public class UserController {
 
     private final AddressService addressService;
 
+
     @Autowired
     private CommonUtil util;
+
+
 
 
 
@@ -183,6 +185,7 @@ public class UserController {
         return "redirect:/login";
     }
 
+
     
     @GetMapping("/user/idCheck")
     public String idCheckForm(){
@@ -204,6 +207,8 @@ public class UserController {
 
         return "jspp/idCheckResult";
     }
+
+
 
 
     // 차단 등록

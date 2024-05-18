@@ -34,6 +34,9 @@ import java.util.List;
 public class AuctionServiceImpl implements AuctionService{
 
     private final AuctionMapper auctionMapper;
+    private final NotificationService notificationService;
+    private final NotificationMapper notificationMapper;
+    private final BoardService boardService;
 
     @Override
     public int getAuctionCount(String userId) {
@@ -70,24 +73,24 @@ public class AuctionServiceImpl implements AuctionService{
 
 
     @Override
-    public int updateCurrentPrice(int auctionId, int currentPrice,String userId) {
+    public int updateCurrentPrice(int auctionId, int currentPrice, String userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("currentPrice",currentPrice);
         map.put("auctionId",auctionId);
         map.put("userId",userId);
+
+        String message = userId + "님이 " + currentPrice + "로 경매가를 올렸습니다";
+        notificationService.sendMessageAuctionUsers(auctionId, message);
+
         return auctionMapper.updateCurrentPrice(map);
     }
-
-    private final NotificationMapper notificationMapper;
-    private final NotificationService notificationService;
-    private final BoardService boardService;
 
     @Override
     @Transactional
     public int paticipateAuction(String userId, Integer boardId) {
 
         Auction findAuction = auctionMapper.selectAuctionByBoardId(boardId);
-        log.info("findAuction = {}", findAuction);
+
         // 아직 생성된 적 없음 -> 생성
         if (findAuction == null) {
 
@@ -122,6 +125,7 @@ public class AuctionServiceImpl implements AuctionService{
                 notification.setContent("경매가 시작되었습니다");
                 notification.setUserId(boardService.findPostById(boardId).getWriter());
                 notification.setIsRead(false);
+                notification.setBoardId(boardId);
                 notificationMapper.insertNotification(notification);
 
 
@@ -129,10 +133,16 @@ public class AuctionServiceImpl implements AuctionService{
 
                 // 경매 참여자에게 전달
                 for (String id : ids) {
+
+                    log.info("start = {}", id);
                     notification.setUserId(id);
                     notificationMapper.insertNotification(notification);
-                    notificationService.sendToClient(id, "경매가 시작되었습니다^^");
+                    notificationService.sendToClient(id, "경매가 시작되었습니다");
                 }
+
+                notificationService.sendToClient(userId, "경매가 시작되었습니다");
+                notification.setUserId(userId);
+                notificationMapper.insertNotification(notification);
             } else if (findParticipantCnt > 1) {
                 // 글쓴이에게 전달
                 notificationService.sendToClient(boardService.findPostById(boardId).getWriter(), userId + "님이 경매에 참여하였습니다.");
@@ -141,16 +151,23 @@ public class AuctionServiceImpl implements AuctionService{
                 notification.setContent(userId + "님이 경매에 참여하였습니다.");
                 notification.setUserId(boardService.findPostById(boardId).getWriter());
                 notification.setIsRead(false);
+                notification.setBoardId(boardId);
                 notificationMapper.insertNotification(notification);
 
                 List<String> ids = auctionMapper.selectIdsByAuctionId(findAuctionId.getAuctionId());
 
                 // 경매 참여자에게 전달
                 for (String id : ids) {
+
                     notification.setUserId(id);
                     notificationMapper.insertNotification(notification);
                     notificationService.sendToClient(id, userId + "님이 경매에 참여하였습니다.");
                 }
+
+                // 본인에게 전달
+                notificationService.sendToClient(userId, userId + "님이 경매에 참여하였습니다.");
+                notification.setUserId(userId);
+                notificationMapper.insertNotification(notification);
             }
 
             Participant_Auction participantAuction = new Participant_Auction();

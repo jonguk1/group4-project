@@ -147,6 +147,7 @@ public class AuctionController {
         return ResponseEntity.ok("no");
     }
 
+    // 경매 참여
     @PostMapping("/auction/{boardId}")
     public ResponseEntity<String> auction(HttpServletRequest request, @PathVariable("boardId") Integer boardId) {
 
