@@ -28,8 +28,6 @@ public interface UserService {
 
     int blockUser(String userId);
 
-    int updateUser(String userId,UpdateUserDTO updateUserDTO);
-
     boolean idCheck(String userId);
 
     User findUserById(String userId);
