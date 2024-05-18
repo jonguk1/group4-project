@@ -13,11 +13,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +29,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,28 +40,6 @@ import java.util.List;
 public class AuctionController {
 
     private final AuctionService auctionService;
-
-    @GetMapping(value = "/time/{user_id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @ResponseBody
-    public SseEmitter serverTime() {
-        SseEmitter emitter = new SseEmitter();
-
-        // 시간 데이터를 비동기적으로 보내기 위한 쓰레드 생성
-        Thread thread = new Thread(() -> {
-            try {
-                while (true) {
-                    String isoTimeString = Instant.now().toString(); // 현재 시간을 ISO 8601 형식의 문자열로 변환
-                    emitter.send(isoTimeString);
-                    Thread.sleep(1000); // 1초마다 보냄
-                }
-            } catch (Exception e) {
-                emitter.completeWithError(e); // 에러가 발생하면 에러를 보냄
-            }
-        });
-        thread.start();
-
-        return emitter;
-    }
 
     @GetMapping("/auction/{userId}")
     public String myAuctionList(Model model,

@@ -7,8 +7,7 @@ $(document).ready(function() {
         // 알림 메시지 표시
         document.getElementById("notificationMessage").style.display = "block";
 
-        // 알림 컨테이너에 메시지 추가
-        addMessage(message);
+
 
         setTimeout(function() {
             document.getElementById("notificationMessage").style.display = "none";
@@ -21,6 +20,7 @@ $(document).ready(function() {
             return;
         }
         showNotification(event.data);
+
     });
 
     $.ajax({
@@ -35,11 +35,7 @@ $(document).ready(function() {
 
                 var message =  "<div class='row'><div class='col-md-2'></div><div class='col-md-8'>" + notification.notiRegDate + "</div><div class='col-md-2'><img src='/images/icon/xIcon.png' id='" + notification.notiId + "' style='width:15px; height:15px;' class='xIcon' ></div></div>" + notification.content + "<br> <a href='/board/83'><img src='/images/icon/rightDirectionIcon.png' style='width:20px; height:20px;'> 해당 글로 가기</a>  <hr>  "; // 각각의 속성 사이에 <br> 태그 추가// 각각의 속성 사이에 줄바꿈 추가
                 addMessage(message);
-                addMessage(message);
-                addMessage(message);
-                addMessage(message);
-                addMessage(message);addMessage(message);addMessage(message);
-                addMessage(message);addMessage(message);addMessage(message);
+
             });
         },
         error: function(xhr, status, error) {
@@ -54,6 +50,7 @@ $(document).ready(function() {
     }
 
     document.getElementById('notificationIcon').addEventListener('click', function() {
+        loadNotifications();
         var messageContainer = document.getElementById('messageContainer');
         if (messageContainer.style.display === 'block') {
             messageContainer.style.display = 'none';
@@ -61,8 +58,6 @@ $(document).ready(function() {
             messageContainer.style.display = 'block';
         }
     });
-
-
 
     // 새로운 메시지를 추가하는 함수
     function addMessage(message) {
@@ -120,4 +115,3 @@ $(document).ready(function() {
         });
     }
 });
-
