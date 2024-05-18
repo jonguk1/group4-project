@@ -8,6 +8,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
@@ -16,28 +17,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <style>
-        #map {
-            width: 100%;
-            height: 400px;
-        }
-
-       #messageContainer {
-           position: absolute;
-           top: 20px;
-           left: 20px;
-           right: 240px;
-           background-color: #f8f9fa;
-           border: 1px solid #ced4da;
-           border-radius: 8px;
-           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-           padding: 10px;
-           max-height: 150px;
-           overflow-y: auto;
-           z-index: 9999;
-       }
-
-    </style>
+    <script src="/js/notification.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/notification.css">
 
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
 </head>
@@ -71,6 +52,7 @@
                                             <c:if test="${loggedIn}">
                                             <a class="nav-link" href="#" id="notificationIcon">
                                                 <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                             </a>
                                             </c:if>
                                         </li>
@@ -82,15 +64,17 @@
 
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                            <a class="nav-link" href="#">
-                                                <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
-                                            </a>
+                                                <a class="nav-link" href="#">
+                                                    <img id="notificationIcon" src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
+
+                                                </a>
                                             </c:if>
                                         </li>
+
                                          <li class="nav-item">
 
                                              <c:if test="${loggedIn}">
-                                                 <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
+                                                 <a class="nav-link" href="/user/${userId}" style="color: black;">${userId}님</a>
                                              </c:if>
                                          </li>
                                         <li class="nav-item">
@@ -222,22 +206,6 @@
 
 <script>
     $(document).ready(function() {
-
-        $.ajax({
-            url: "/notification",
-            type: "GET",
-            dataType: "json",
-            success: function(response) {
-                response.forEach(function(notification) {
-                    addMessage(notification.notiRegDate);
-                    addMessage(notification.content);
-
-                });
-            },
-            error: function(xhr, status, error) {
-
-            }
-        });
 
         $.ajax({
             url: "/board/board-category",
@@ -525,29 +493,9 @@
 
     }
 
-    // 새로운 메시지를 추가하는 함수
-    function addMessage(message) {
-        var messageContainer = document.getElementById('messageContainer');
-        var newMessage = document.createElement('div');
-        newMessage.textContent = message;
-        messageContainer.appendChild(newMessage);
-        scrollToBottom();
-    }
 
-    // 새로운 메시지가 추가될 때마다 스크롤을 아래로 이동하는 함수
-    function scrollToBottom() {
-        var messageContainer = document.getElementById('messageContainer');
-        messageContainer.scrollTop = messageContainer.scrollHeight;
-    }
 
-    document.getElementById('notificationIcon').addEventListener('click', function() {
-        var messageContainer = document.getElementById('messageContainer');
-        if (messageContainer.style.display === 'block') {
-            messageContainer.style.display = 'none';
-        } else {
-            messageContainer.style.display = 'block';
-        }
-    });
+
 
 </script>
 
