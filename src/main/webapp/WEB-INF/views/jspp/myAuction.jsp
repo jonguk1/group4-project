@@ -297,7 +297,7 @@
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
-                                                <img src="/images/${auction.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 100px;">
+                                                <img src="/postimage/${auction.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 100px;">
                                             </p>
                                         </div>
                                         <div class="card-footer">
