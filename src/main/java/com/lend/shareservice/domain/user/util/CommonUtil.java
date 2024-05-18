@@ -22,4 +22,5 @@ public class CommonUtil {
         m.addAttribute("mode", "popup");
         return "message";
     }
+
 }
