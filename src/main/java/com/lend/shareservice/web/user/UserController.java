@@ -182,6 +182,8 @@ public class UserController {
 
         return "redirect:/login";
     }
+
+    
     @GetMapping("/user/idCheck")
     public String idCheckForm(){
 
