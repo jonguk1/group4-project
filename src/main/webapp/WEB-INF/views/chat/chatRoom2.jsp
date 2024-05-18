@@ -295,7 +295,7 @@
         let chat_id = 67; <!-- 테스트를 위한 임시 채팅방 아이디 -->
         let socket = null;
         let stompClient = null;
-        //let writer = "<c:out value='${chatItem.writer}'/>"//jstl 표현식으로 글작성자 받아오기 성공
+        let writer = "<c:out value='${chatItem.writer}'/>"//jstl 표현식으로 글작성자 받아오기 성공
         let user1  = "<c:out value='${userId}'/>"; // 연결된 사용자의 이름
 
         // ======================================= UI 제어 =======================================
@@ -321,6 +321,7 @@
             //stomp 이용해서 서버에 연결
             stompClient.connect({}, function(frame)
             {
+                //alert("글 작성자는: "+writer);
                 alert('연결됨: ' + frame);
                 setConnected(true); // UI 보여 주기
                 $('#inputMsg').focus(); // 대화 내용 입력 박스에 포커스 추가

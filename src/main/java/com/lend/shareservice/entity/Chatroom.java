@@ -15,7 +15,7 @@ public class Chatroom {
 
     // 글번호 (FK)
     @NotNull
-    private Integer writingNo;
+    private Integer boardId;
 
     // 구매자 (FK)
     @NotNull
@@ -37,6 +37,5 @@ public class Chatroom {
 
     // 예약날짜
     private Date ReservationDate;
-
 
 }
