@@ -278,6 +278,19 @@ public class UserController {
 
     }
 
+    @PutMapping("/user/{userId}/charge")
+    public ResponseEntity<String> ChargeMoney(@PathVariable("userId")String userId,
+                                              @RequestParam("money") Integer money){
+
+        int n=userService.updateMoney(userId,money);
+
+        if(n>0){
+            return ResponseEntity.ok("ok");
+        }else{
+            return ResponseEntity.ok("no");
+        }
+    }
+
 }
 
 

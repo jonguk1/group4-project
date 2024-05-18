@@ -39,4 +39,6 @@ public interface UserMapper {
 
     int deleteUser(String userId);
 
+    int updateMoney(User user);
+
 }

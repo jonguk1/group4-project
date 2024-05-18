@@ -33,6 +33,14 @@ public class UserServiceImpl implements UserService{
         return userMapper.deleteUser(userId);
     }
 
+    @Override
+    public int updateMoney(String userId,Integer money) {
+        User user=new User();
+        user.setUserId(userId);
+        user.setMoney(money);
+        return userMapper.updateMoney(user);
+    }
+
 
     @Override
     public int blockUser(String userId) {

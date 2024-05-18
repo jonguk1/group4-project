@@ -116,4 +116,14 @@
         </where>
     </delete>
 
+    <update id="updateMoney" parameterType="com.lend.shareservice.entity.User">
+        update user
+        set
+            money=money+#{money}
+        <where>
+            userId=#{userId}
+        </where>
+
+    </update>
+
 </mapper>

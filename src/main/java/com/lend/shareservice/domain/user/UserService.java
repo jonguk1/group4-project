@@ -36,4 +36,6 @@ public interface UserService {
 
     int deleteUser(String userId);
 
+    int updateMoney(String userId,Integer money);
+
 }
