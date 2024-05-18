@@ -41,6 +41,13 @@ public class UserServiceImpl implements UserService{
         return userMapper.updateUser(updateUserDTO);
     }
 
+    @Override
+    public boolean idCheck(String userId) {
+        int n=userMapper.idCheck(userId);
+
+        return (n>0)? false: true;
+    }
+
 
     @Override
     public MyDetailDTO findByUserDetail(String userId) {

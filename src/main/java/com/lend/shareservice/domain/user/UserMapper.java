@@ -32,12 +32,9 @@ public interface UserMapper {
 
     int updateUser(UpdateUserDTO updateUserDTO);
 
-
-    MyDetailDTO findByUserDetail(String userId);
-
-    int updateUser(UpdateUserDTO updateUserDTO);
-
+    int idCheck(String userId);
 
     User selectUserById(String userId);
+
 
 }
