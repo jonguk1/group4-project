@@ -34,4 +34,6 @@ public interface UserService {
 
     User findUserById(String userId);
 
+    int deleteUser(String userId);
+
 }

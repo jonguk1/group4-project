@@ -12,6 +12,8 @@
      <script src="/js/menuControl.js"></script>
      <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
      <link rel="stylesheet" href="/css/bootstrap.min.css">
+     <script src="/js/notification.js"></script>
+     <link rel="stylesheet" type="text/css" href="/css/notification.css">
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
@@ -152,6 +154,28 @@
 
                }
             });
+
+             $('#deleteUserBtn').click(function() {
+                if (confirm('탈퇴하시겠습니까?')) {
+                    var userId = '${userId}';
+
+                    $.ajax({
+                        url: '/user/' + userId,
+                        type: 'DELETE',
+                        success: function(response) {
+                            if (response === 'ok') {
+                                alert('탈퇴가 완료되었습니다.');
+                                window.location.href = '/login';
+                            } else {
+                                alert('탈퇴에 실패했습니다.');
+                            }
+                        },
+                        error: function() {
+                            alert('서버와 통신 중 오류가 발생했습니다.');
+                        }
+                    });
+                }
+             });
         });
     </script>
 </head>
@@ -181,10 +205,17 @@
                              <div class="container-fluid">
                                  <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
                                      <ul class="navbar-nav">
+
+                                        <li>
+                                            <div id="messageContainer" style="display: none;">
+
+                                            </div>
+                                        </li>
+                                        <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                          <li class="nav-item">
                                              <c:if test="${loggedIn}">
                                                  <a class="nav-link" href="#">
-                                                     <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                     <img src="/images/icon/notificationIcon.png" id="notificationIcon" style="width:30px; height:30px;">
                                                  </a>
                                              </c:if>
                                          </li>
@@ -198,7 +229,7 @@
                                          </li>
                                          <li class="nav-item">
                                              <c:if test="${loggedIn}">
-                                                 <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
+                                                 <a class="nav-link" href="/user/${userId}" style="color: black;">${userId}님</a>
                                              </c:if>
                                          </li>
                                          <li class="nav-item">
@@ -358,7 +389,7 @@
                    </div>
                    <div class="col-md-6 text-end">
                        <div class="form-group">
-                           <button type="submit" class="btn btn-primary">
+                           <button type="submit" class="btn btn-primary" id="deleteUserBtn">
                                회원탈퇴
                            </button>
                        </div>

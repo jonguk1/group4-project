@@ -257,15 +257,25 @@ public class UserController {
 
         int n= userService.updateUserAddress(userId,latitude,longitude);
 
-        System.out.println("n: "+n);
-
         if(n>0){
-            System.out.println("n1: "+n);
             return ResponseEntity.ok("ok");
         }else{
-            System.out.println("n2: "+n);
             return ResponseEntity.ok("no");
         }
+    }
+
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<String> DeleteUser(@PathVariable("userId")String userId, HttpSession session){
+
+        int n=userService.deleteUser(userId);
+
+        if(n>0){
+            session.invalidate();
+            return ResponseEntity.ok("ok");
+        }else{
+            return ResponseEntity.ok("no");
+        }
+
     }
 
 }

@@ -10,8 +10,6 @@
         <head>
 
             <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
-
-
             <link rel="stylesheet" href="/css/bootstrap.min.css">
 
             <meta charset="UTF-8">
@@ -74,7 +72,7 @@
                                         </li>
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
+                                                <a class="nav-link" href="/user" style="color: black;">내정보</a>
                                             </c:if>
                                         </li>
                                         <li class="nav-item">

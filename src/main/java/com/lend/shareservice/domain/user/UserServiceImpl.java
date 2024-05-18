@@ -28,6 +28,11 @@ public class UserServiceImpl implements UserService{
         return userMapper.selectUserById(userId);
     }
 
+    @Override
+    public int deleteUser(String userId) {
+        return userMapper.deleteUser(userId);
+    }
+
 
     @Override
     public int blockUser(String userId) {

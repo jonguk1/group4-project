@@ -10,7 +10,11 @@ public interface NotificationService {
 
     void noti(String id, Object data);
 
-    public void sendToClient(String id, Object data);
+    void sendToClient(String id, Object data);
 
     List<NotificationDTO> findNotificationByUserId(String userId);
+
+    void sendMessageAuctionUsers(Integer auctionId, String message);
+
+    int deleteNotification(Integer notiId);
 }

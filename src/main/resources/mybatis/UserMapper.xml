@@ -109,4 +109,11 @@
         </where>
     </update>
 
+    <delete id="deleteUser" parameterType="String">
+        delete from user
+        <where>
+            userId=#{value}
+        </where>
+    </delete>
+
 </mapper>

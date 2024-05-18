@@ -21,7 +21,7 @@ public class CustomInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         HttpSession session = request.getSession();
         String userId = (String) session.getAttribute("userId");
-        log.info("userId = {}", userId);
+
         if (modelAndView != null) {
             if (userId != null) {
                 // 로그인한 경우

@@ -37,4 +37,6 @@ public interface UserMapper {
 
     User selectUserById(String userId);
 
+    int deleteUser(String userId);
+
 }
