@@ -13,13 +13,14 @@ import java.util.Date;
 public interface ChatService {
     ChatItemDTO selectItem(Integer boardId);
 
-    void enterChatRoom(int chatId);
+    void createRoom(String userId, Integer boardId, String writer, String time);
+
+    Integer selectChatRoom(String userId, Integer boardId, String writer);
 
     ChannelTopic getTopic(int chatId);
 
-    void createRoom(String userId, Integer boardId, String writer, String time);
+    void enterChatRoom(int chatId);
 
-//    void saveMessage(ChatDTO chatDTO);
+    void saveMessage(ChatDTO chatDTO);
 
-   
 }

@@ -56,7 +56,12 @@
     <!------------------------------- style ----------------------------------->
 </head>
 <body>
-
+<%
+    // 현재 시간을 구해서 request 속성으로 설정
+    java.util.Date now = new java.util.Date();
+    request.setAttribute("time", now);
+%>
+<fmt:formatDate pattern="yy-MM-dd HH:mm:ss" value="${time}" var="sendTime" />
 <div class="container bg-green text-center">
                 <div class="row">
                     <div class="col" >
@@ -245,10 +250,14 @@
                                </div>
                            </div>
                             <div class="col-md-10">
+                                <!-- 현재 날짜 시간 값 출력 -->
+                                <p>현재 날짜 시간은 : <c:out value="${sendTime}" /></p>
                                 <!-- boardId 값 출력 -->
                                 <p>boardId: ${boardId}</p>
                                 <!-- userId 출력 -->
                                 <p>userId: ${userId}</p>
+                                <!-- 채팅방번호 출력 -->
+                                <p>채팅방번호: ${chatId}</p>
                                 <button id="chatButton" class="btn btn-primary chatButton" OnClick="chat_connect()">로그인</button>
                 <!-- 예약하기 클릭시 달력 나타나기 -->
                                 <form id="reservForm">
@@ -292,11 +301,12 @@
     </script>
     <!------------------------------- script ----------------------------------->
     <script language="javascript" type="text/javascript">
-        let chat_id = 67; <!-- 테스트를 위한 임시 채팅방 아이디 -->
+        let chatId = "<c:out value='${chatId}'/>"; <!-- 테스트를 위한 임시 채팅방 아이디 -->
         let socket = null;
         let stompClient = null;
-        let writer = "<c:out value='${chatItem.writer}'/>"//jstl 표현식으로 글작성자 받아오기 성공
-        let user1  = "<c:out value='${userId}'/>"; // 연결된 사용자의 이름
+        let lender = "<c:out value='${chatItem.writer}'/>"//jstl 표현식으로 글작성자 받아오기 성공
+        let lendy  = "<c:out value='${userId}'/>"; // 연결된 사용자의 이름
+        let sendTime = "<c:out value='${sendTime}'/>";
 
         // ======================================= UI 제어 =======================================
         function setConnected(connected) // 연결 여부에 따라 UI 제어
@@ -321,7 +331,7 @@
             //stomp 이용해서 서버에 연결
             stompClient.connect({}, function(frame)
             {
-                //alert("글 작성자는: "+writer);
+                //alert("글 작성자는: "+lender);
                 alert('연결됨: ' + frame);
                 setConnected(true); // UI 보여 주기
                 $('#inputMsg').focus(); // 대화 내용 입력 박스에 포커스 추가
@@ -330,7 +340,7 @@
                     console.log('subscribe topic → ', msg);
                     // alert(msg.body); // msg.body → json 형태의 문자열
                     let jsonMsg = JSON.parse(msg.body); // 문자열을 JSON 객체로 만들기
-                    // alert(jsonMsg.text);
+                    alert(jsonMsg.text);
                     showChatMessage(jsonMsg);
                 }); // subscribe end -------
                 // 연결 상태에 따라 버튼 텍스트 변경
@@ -338,7 +348,7 @@
                 document.getElementById("chatButton").setAttribute("onclick", "chat_disconnect()");
 
                 // 연결 메시지 출력
-                let connectMessage = user1 + " 님과 연결되었습니다."
+                let connectMessage = lendy + " 님과 연결되었습니다."
                 alert(connectMessage);
                 document.getElementById("connectionStatus").innerText = connectMessage;
                 document.getElementById("loginMessage").style.display = "none"; // 로그인 메시지 감추기
@@ -364,14 +374,18 @@
         }
         // ======================================= 소켓 연결 해제 =======================================
         // ======================================= enter =======================================
-        function sendInput(mymsg)
+        function sendInput(content)
         {
             // alert(event.keyCode); // 이건 잘됨
+            //alert(lender);
+            //alert(lendy);
+            //alert(content);
+            //alert(sendTime);
             if(event.keyCode == 13) // 전송도 잘됨!
             {
-                if(mymsg != '')
+                if(content != '')
                 {
-                    sendMessage(user1, 'all', mymsg); // 서버로 메시지 전송
+                    sendMessage(lendy, lender, content,chatId,sendTime); // 서버로 메시지 전송
                     $('#inputMsg').val(''); // jquery
                     // document.getElementById('inputMsg').value = ''; // javascript
                 }
@@ -379,44 +393,45 @@
         } // sendInput() ----------
         // ======================================= enter =======================================
         // ======================================= 서버로 메시지 보내기 =======================================
-        function sendMessage(sender, target, content)
+        function sendMessage(lendy, lender, content, chatId, sendTime)
         {
             let obj =
             {
-                    sender:sender,
-                    target:target,
+                    lendy:lendy,
+                    lender:lender,
                     content:content,
-                    mode:'all'
+                    chatId:chatId,
+                    sendTime: sendTime
             }
             stompClient.send('/app/chat', {}, JSON.stringify(obj)); // json 객체를 직렬화
         } // ---------------------------------
         // ======================================= 서버로 메시지 보내기 =======================================
         // ======================================= 대화 내용 출력 함수 =======================================
         function showChatMessage(obj) { // 대화 내용을 출력해 주는 함수
-            if(obj.sender == user1) { // 내가 보낸 메시지라면
+            if(obj.lendy == user1) { // 내가 보낸 메시지라면
                 let str = `
                 <p>
-                <label class='badge badge-success'>\${obj.sender}</label>
+                <label class='badge badge-success'>\${obj.lendy}</label>
                 &nbsp;&nbsp;&nbsp;
                 \${obj.content}
                 </p>
                 `;
-                addMessage('self', str, obj.time);
+                addMessage('self', str, obj.sendTime);
             } else { // 다른 사람이 보낸 메시지라면
                 let str = `
                     <p>
-                    <label class='badge badge-danger'>\${obj.sender}</label>
+                    <label class='badge badge-danger'>\${obj.lender}</label>
                     &nbsp;&nbsp;&nbsp;
                     \${obj.content}
                     </p>
                 `;
-                addMessage('other', str, obj.time);
+                addMessage('other', str, obj.sendTime);
             }
             // $('#taMsg').append(str);
         } // showChatMessage() -----------
         // ======================================= 대화 내용 출력 함수 =======================================
         // ======================================= 메시지 추가 =======================================
-        function addMessage(who, msg, time)
+        function addMessage(who, msg, sendTime)
         {
             let img = "<img src='/images/me.png'>";
             if(who == 'other')
@@ -464,7 +479,7 @@
             let chatId = document.createElement("input");
             chatId.setAttribute("type", "hidden");
             chatId.setAttribute("name", "chatId");
-            chatId.setAttribute("value", chat_id);
+            chatId.setAttribute("value", chatId);
             form.appendChild(chatId);
 
             // hiddenButton에 onclick 이벤트 추가
