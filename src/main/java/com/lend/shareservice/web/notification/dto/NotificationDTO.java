@@ -14,6 +14,7 @@ public class NotificationDTO {
     private String content;
     private Date notiRegDate;
 
-
+    // FK
+    private Integer boardID;
 
 }

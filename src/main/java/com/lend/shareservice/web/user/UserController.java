@@ -4,7 +4,6 @@ import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.domain.user.UserService;
 
 import com.lend.shareservice.domain.user.service.UserSignupService;
-import com.lend.shareservice.domain.user.util.CommonUtil;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.User;
 import com.lend.shareservice.web.user.dto.MyDetailDTO;
@@ -31,9 +30,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @AllArgsConstructor
@@ -44,22 +43,7 @@ public class UserController {
 
     private final UserSignupService userSignupService;
 
-    @Autowired
-    private CommonUtil util;
-
-
-    @GetMapping("/user")
-    public String userList(Model model){
-
-        List<User> userList = userService.userList();
-
-        model.addAttribute("userList",userList);
-
-        return "jspp/myDetail";
-
-    }
-
-
+    private final AddressService addressService;
 
     @GetMapping("/test")
     public String test(@SessionAttribute(name="userId", required = false)String userId, Model model) {
@@ -192,26 +176,6 @@ public class UserController {
 
         return "redirect:/login";
     }
-    @GetMapping("/user/idCheck")
-    public String idCheckForm(){
-
-        return "jspp/idCheck";
-    }
-
-    @PostMapping("/user/idCheck")
-    public String idCheckEnd(Model model, @RequestParam(defaultValue = "")String userId){
-        if(userId.isBlank()){
-            return util.addMsgBack(model,"아이디를 입력해야 해요");
-        }
-        boolean isUse=userService.idCheck(userId);
-        String msg=(isUse)? userId+"는 사용 가능합니다":userId+"는 이미 사용 중 입니다";
-        String result=(isUse)?"ok":"fail";
-        model.addAttribute("msg",msg);
-        model.addAttribute("result",result);
-        model.addAttribute("uid",userId);
-
-        return "jspp/idCheckResult";
-    }
 
     // 차단 등록
     @PostMapping("/user/{userId}/block")
@@ -263,28 +227,55 @@ public class UserController {
     }
 
     @PutMapping("/user/{userId}")
-    public ResponseEntity<String> updateUser(@PathVariable("userId") String userId,
+    public ResponseEntity<Map<String, String>> updateUser(@PathVariable("userId") String userId,
                                              @Valid @RequestBody UpdateUserDTO updateUserDTO,
                                              BindingResult bindingResult){
-        // 만약 유효성 검사에서 오류가 발생한 경우
         if (bindingResult.hasErrors()) {
-            // 각 필드에 대한 오류 메시지를 응답으로 반환
-            StringBuilder errorMessage = new StringBuilder("입력한 데이터가 유효하지 않습니다:\n");
+            Map<String, String> errors = new HashMap<>();
             for (FieldError error : bindingResult.getFieldErrors()) {
-                errorMessage.append(error.getDefaultMessage()).append("\n");
+                errors.put(error.getField(), error.getDefaultMessage());
             }
-            return ResponseEntity.badRequest().body(errorMessage.toString());
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-        System.out.println(updateUserDTO.getName());
-
 
         int n=userService.updateUser(userId,updateUserDTO);
 
-        if(n>0){
-            return ResponseEntity.ok("ok");
+        Map<String, String> response = new HashMap<>();
+        if (n > 0) {
+            response.put("message", "ok");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
-        return ResponseEntity.ok("no");
+        response.put("message", "no");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/user/{userId}/address")
+    public ResponseEntity<String> updateUserAddress(@PathVariable("userId") String userId,
+                                                    @RequestParam("latitude") Double latitude,
+                                                    @RequestParam("longitude") Double longitude){
+
+        int n= userService.updateUserAddress(userId,latitude,longitude);
+
+        if(n>0){
+            return ResponseEntity.ok("ok");
+        }else{
+            return ResponseEntity.ok("no");
+        }
+    }
+
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<String> DeleteUser(@PathVariable("userId")String userId, HttpSession session){
+
+        int n=userService.deleteUser(userId);
+
+        if(n>0){
+            session.invalidate();
+            return ResponseEntity.ok("ok");
+        }else{
+            return ResponseEntity.ok("no");
+        }
+
     }
 
 }

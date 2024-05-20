@@ -41,6 +41,4 @@ public class UserSignupService {
     public UserVo getUserAccount(String userId) {
         return userMapper.getUserAccount(userId);
     }
-
-
 }

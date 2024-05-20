@@ -6,12 +6,18 @@
         <selectKey keyProperty="notiId" resultType="java.lang.Integer" order="AFTER" keyColumn="notiId">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        INSERT INTO NOTIFICATION (userId, content, isRead, notiRegDate)
-        VALUES(#{userId}, #{content}, #{isRead}, NOW())
+        INSERT INTO NOTIFICATION (userId, content, isRead, notiRegDate, boardId)
+        VALUES(#{userId}, #{content}, #{isRead}, NOW(), #{boardId})
     </insert>
 
     <select id="selectNotificationsByUserId" parameterType="string" resultType="com.lend.shareservice.entity.Notification">
         SELECT * FROM NOTIFICATION
         WHERE userId = #{userId}
     </select>
+
+    <!-- 알림 삭제 byId   -->
+    <delete id="deleteNotification" parameterType="_int">
+        DELETE FROM notification
+        WHERE notiId = #{notiId}
+    </delete>
 </mapper>

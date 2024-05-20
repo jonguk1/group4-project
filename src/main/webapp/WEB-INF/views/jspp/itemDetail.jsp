@@ -10,8 +10,6 @@
         <head>
 
             <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
-
-
             <link rel="stylesheet" href="/css/bootstrap.min.css">
 
             <meta charset="UTF-8">

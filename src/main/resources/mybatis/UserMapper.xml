@@ -80,13 +80,6 @@
         </where>
     </select>
 
-    <select id="idCheck" resultType="_int" parameterType="string">
-        select count(userId) from user
-        <where>
-            userId=#{userId}
-        </where>
-    </select>
-
     <select id="findByUserDetail" parameterType="String" resultType="com.lend.shareservice.web.user.dto.MyDetailDTO">
         select userId,name,pw,phoneNumber,point,money,latitude,longitude,regDate
         from user
@@ -106,5 +99,21 @@
             userId=#{userId}
         </where>
     </update>
+
+    <update id="updateUserAddress" parameterType="com.lend.shareservice.web.user.dto.UpdateUserAddressDTO">
+        update user
+        set latitude=#{latitude},
+        longitude=#{longitude}
+        <where>
+            userId=#{userId}
+        </where>
+    </update>
+
+    <delete id="deleteUser" parameterType="String">
+        delete from user
+        <where>
+            userId=#{value}
+        </where>
+    </delete>
 
 </mapper>

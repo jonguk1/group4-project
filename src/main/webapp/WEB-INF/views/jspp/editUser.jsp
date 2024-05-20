@@ -11,6 +11,9 @@
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <script src="/js/menuControl.js"></script>
      <link rel="stylesheet" href="/css/bootstrap.min.css">
+     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
+     <script src="/js/notification.js"></script>
+     <link rel="stylesheet" type="text/css" href="/css/notification.css">
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
@@ -20,6 +23,10 @@
         .form-group p,
         .form-group span {
             font-size: 1.1em; /* 글꼴 크기 조정 */
+        }
+        #map {
+            width: 100%;
+            height: 400px;
         }
     </style>
 </head>
