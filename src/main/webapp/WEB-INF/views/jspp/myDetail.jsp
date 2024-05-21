@@ -10,6 +10,7 @@
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <script src="/js/menuControl.js"></script>
+     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
      <link rel="stylesheet" href="/css/bootstrap.min.css">
      <script src="/js/notification.js"></script>
      <link rel="stylesheet" type="text/css" href="/css/notification.css">
@@ -23,7 +24,160 @@
         .form-group span {
             font-size: 1.1em; /* 글꼴 크기 조정 */
         }
+        #map {
+            width: 100%;
+            height: 400px;
+        }
     </style>
+    <script>
+        var map;
+        var marker;
+        var selectedAddress = '';
+        var lat, lng;
+
+        $(document).ready(function(){
+            $('#mapModal').on('shown.bs.modal', function () {
+                // 모달 body의 크기를 가져옴
+                var modalBody = $(this).find('.modal-body');
+                var width = modalBody.width();
+
+                // 지도의 크기를 동적으로 설정
+                $('#map').css({
+                    width: width
+                });
+
+                // 네이버 지도 초기화
+                var mapOptions = {
+                    center: new naver.maps.LatLng(37.3595704, 127.105399),
+                    zoom: 17,
+                    zoomControl: true,
+                    zoomControlOptions: {
+                        position: naver.maps.Position.TOP_RIGHT
+                    },
+                    mapDataControl: false
+                };
+
+                // 네이버 지도 객체 생성
+                map = new naver.maps.Map('map', mapOptions);
+
+                // 이전에 저장된 위치가 있으면 마커를 생성하여 표시
+                var savedLat = parseFloat($('#latitude').val());
+                var savedLng = parseFloat($('#longitude').val());
+                if (savedLat && savedLng) {
+                    var savedPosition = new naver.maps.LatLng(savedLat, savedLng);
+                    marker = new naver.maps.Marker({
+                        position: savedPosition,
+                        map: map
+                    });
+                    map.setCenter(savedPosition);
+                }
+
+                // 지도 클릭 이벤트 추가
+                naver.maps.Event.addListener(map, 'click', function(e) {
+                    var latlng = e.coord; // 클릭한 위치의 경도와 위도
+
+                    // 기존 마커가 있으면 제거
+                    if (marker) {
+                        marker.setMap(null);
+                    }
+
+                    // 새로운 마커 생성
+                    marker = new naver.maps.Marker({
+                        position: latlng,
+                        map: map
+                    });
+
+                    lat=latlng.lat();
+                    lng=latlng.lng();
+                });
+            });
+
+            // 버튼 클릭 시 모달 창 열기
+            $("#openMapBtn").click(function(){
+                $("#mapModal").modal("show");
+            });
+
+            function askForConfirmation() {
+                return confirm("수정하시겠습니까?");
+            }
+
+             // 완료 버튼 클릭 시 모달 창 닫기
+            $("#completeBtn").click(function(){
+                console.log(lat);
+                console.log(lng);
+             if (askForConfirmation()) {
+                $.ajax({
+                    url: "/user/${userId}/address",
+                    type: "PUT",
+                    data: {
+                        latitude: lat,
+                        longitude: lng
+                    },
+                    dataType: "text",
+                    success: function(response) {
+                        if (response === 'ok') {
+                            alert('동네 변경이 완료되었습니다');
+                            location.reload();
+                        } else if (response === 'no') {
+                            alert('동네 변경 실패!');
+                            return;
+                        } else {
+                            alert('알 수 없는 응답: ' + response);
+                            return;
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                }).done(function() {
+                    // 사용자 주소 업데이트 후 주소 정보 가져오기
+                    $.ajax({
+                        url: "/address?latitude=" + lat + "&longitude=" + lng,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(response) {
+                            console.log(response);
+                            var selectedAddress = response.address.replace(/^"(.*)"$/, '$1');
+
+                            // 주소 정보를 화면에 표시
+                            $('#latitude').val(lat);
+                            $('#longitude').val(lng);
+                            $("#myAroundHome").val(selectedAddress);
+                            $("#mapModal").modal("hide");
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                });
+               } else {
+
+               }
+            });
+
+             $('#deleteUserBtn').click(function() {
+                if (confirm('탈퇴하시겠습니까?')) {
+                    var userId = '${userId}';
+
+                    $.ajax({
+                        url: '/user/' + userId,
+                        type: 'DELETE',
+                        success: function(response) {
+                            if (response === 'ok') {
+                                alert('탈퇴가 완료되었습니다.');
+                                window.location.href = '/login';
+                            } else {
+                                alert('탈퇴에 실패했습니다.');
+                            }
+                        },
+                        error: function() {
+                            alert('서버와 통신 중 오류가 발생했습니다.');
+                        }
+                    });
+                }
+             });
+        });
+    </script>
 </head>
 
 <body>
@@ -198,11 +352,28 @@
                           </div>
                           <div class="col-md-4 text-start">
                               <div class="form-group">
-                                  <button type="submit" class="btn btn-primary">
-                                      위치검색
+                                  <button type="submit" class="btn btn-primary" id="openMapBtn">
+                                      동네변경
                                   </button>
                               </div>
                           </div>
+                          <div id="mapModal" class="modal fade" tabindex="-1" role="dialog">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">지도</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="map"></div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" id="completeBtn">등록하기</button>
+                                        </div>
+                                    </div>
+                                </div>
+                          </div>
+                          <input type="hidden" name="latitude" id="latitude" value="${details.latitude}">
+                          <input type="hidden" name="longitude" id="longitude" value="${details.longitude}">
                       </div>
                    </div>
                <br>
@@ -218,7 +389,7 @@
                    </div>
                    <div class="col-md-6 text-end">
                        <div class="form-group">
-                           <button type="submit" class="btn btn-primary">
+                           <button type="submit" class="btn btn-primary" id="deleteUserBtn">
                                회원탈퇴
                            </button>
                        </div>

@@ -55,18 +55,10 @@
                             <div class="container-fluid">
                                 <div class="collapse navbar-collapse justify-content-end" id="navbarColor03">
                                     <ul class="navbar-nav">
-
-                                        <li>
-                                            <div id="messageContainer" style="display: none;">
-
-                                            </div>
-                                        </li>
-                                        <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
                                                 <a class="nav-link" href="#">
-                                                    <img id="notificationIcon" src="/images/icon/notificationIcon.png" style="width:37px; height:37px;">
-
+                                                    <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
                                                 </a>
                                             </c:if>
                                         </li>
@@ -80,7 +72,7 @@
                                         </li>
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="/user/${userId}" style="color: black;">${userId}님</a>
+                                                <a class="nav-link" href="/user" style="color: black;">내정보</a>
                                             </c:if>
                                         </li>
                                         <li class="nav-item">
@@ -241,9 +233,9 @@
                     </div>
                     <div class="col-md-6">
                             <span>
-                                 <a href="/user/${postById.writer}"><img src="/images/people.png" alt="대체_텍스트" style="width: 50px;"></a>
+                                 <img src="/images/people.png" alt="대체_텍스트" style="width: 50px;">
                             </span>
-                                <a href="/user/${postById.writer}"><span>${postById.writer}</span></a>
+                                <a href="/user"><span>${postById.writer}</span></a>
                             <span>
 
                                 <button type="button" class="btn btn-primary" onclick="chat()">채팅</button>
@@ -1026,240 +1018,252 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <div id="postById" style="display: none;">${postById}</div>
-            <script src="/js/notification.js"></script>
-            <link rel="stylesheet" type="text/css" href="/css/notification.css">
 
- <script>
-     $(document).ready(function() {
+            <script>
 
-         var userId = document.getElementById("userId").value;
-         var dataString = document.getElementById("postById").textContent;
-         var boardIdMatch = dataString.match(/boardId=([^,]+)/);
+                $(document).ready(function() {
 
-         // 현재 유저가 경매중 확인
-         $.ajax({
-             url: "/auction/is/" + userId,
-             type: "GET",
-             dataType: "text",
-             success: function(response) {
-                 if (response === "ok") {
-                     document.getElementById('auctionButton').textContent = '경매참여중';
-                 } else if (response === "no") {
-                     document.getElementById('auctionButton').textContent = '경매참여';
-                 }
-             }
-         });
+                    const eventSource = new EventSource('http://localhost:8081/subscribe');
 
-         var boardId = {
-             boardId: boardIdMatch ? boardIdMatch[1] : null,
-         };
+                    eventSource.addEventListener('auction', event => {
 
-         $.ajax({
-             url: "/favorite/is/" + boardId.boardId,
-             type: "GET",
-             dataType: "text",
-             success: function(response) {
-                 if (response === "ok") {
-                     document.getElementById('interestButton').textContent = '관심 해제';
-                 } else if (response === "no") {
-                     document.getElementById('interestButton').textContent = '관심';
-                 }
-             }
-         });
+                    });
 
-         $.ajax({
-             url: "/board/board-category",
-             type: "GET",
-             dataType: "json",
-             success: function(response) {
-                 console.log(response);
+                     var userId = document.getElementById("userId").value;
+                     var dataString = document.getElementById("postById").textContent;
+                     var boardIdMatch = dataString.match(/boardId=([^,]+)/);
 
-                 $.each(response, function(index, value) {
-                     $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                     $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                     $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>")
-                 });
-             }
-         });
+                     // 현재 유저가 경매중 확인
+                     $.ajax({
+                         url: "/auction/is/" + userId,
+                         type: "GET",
+                         dataType: "text",
+                         success: function(response) {
 
-         var latitude = document.getElementById("latitude").value;
-         var longitude = document.getElementById("longitude").value;
+                             if (response === "ok") {
+                                 document.getElementById('auctionButton').textContent = '경매참여중';
+                             } else if (response === "no") {
+                                 document.getElementById('auctionButton').textContent = '경매참여';
+                             }
+                         }
+                     });
 
-         $.ajax({
-             url: "/address?latitude=" + latitude + "&longitude=" + longitude,
-             type: "GET",
-             dataType: "json",
-             success: function(response) {
-                 console.log(response);
-                 var html = '<img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;"> ' + response.address.replace(/^"(.*)"$/, '$1');
-                 $("#address").html(html);
-             },
-             error: function(xhr, status, error) {
-                 console.error(xhr.responseText);
-             }
-         });
+                     var boardId = {
+                        boardId: boardIdMatch ? boardIdMatch[1] : null,
+                     };
 
-         $('#carousel-340598').carousel({
-             interval: 2000
-         });
-     });
+                     $.ajax({
+                         url: "/favorite/is/" + boardId.boardId,
+                         type: "GET",
+                         dataType: "text",
+                         success: function(response) {
+                            if (response === "ok") {
+                                document.getElementById('interestButton').textContent = '관심 해제';
+                            } else if (response === "no") {
+                                document.getElementById('interestButton').textContent = '관심';
+                            }
+                         }
+                     });
 
-     document.getElementById('blockUserLink').addEventListener('click', function(event) {
-         event.preventDefault();
+                    $.ajax({
+                        url: "/board/board-category",
+                        type: "GET",
+                        dataType: "json",
+                        success: function(response) {
+                            console.log(response);
 
-         if (${loggedIn}) {
-             $('#confirmModal').modal('show');
-         } else {
-             showAlert();
-         }
-     });
+                            $.each(response, function(index, value) {
+                                $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                                $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                                $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>")
+                            });
+                        }
+                    });
 
-     document.getElementById('cancelButton').addEventListener('click', function(event) {
-         event.preventDefault();
-         $('#confirmModal').modal('hide');
-     });
+                    var latitude = document.getElementById("latitude").value;
+                    var longitude = document.getElementById("longitude").value;
 
-     document.getElementById('confirmButton').addEventListener('click', function(event) {
-         event.preventDefault();
+                    $.ajax({
+                        url: "/address?latitude=" + latitude + "&longitude=" + longitude,
+                        type: "GET",
 
-         var dataString = document.getElementById("postById").textContent;
-         var writerMatch = dataString.match(/writer=([^,]+)/);
+                        dataType: "json",
+                        success: function(response) {
+                            console.log(response);
+                            var html = '<img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;"> ' + response.address.replace(/^"(.*)"$/, '$1');
+                            $("#address").html(html);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
 
-         var writer = {
-             writer: writerMatch ? writerMatch[1] : null,
-         };
+                    $('#carousel-340598').carousel({
+                        interval: 2000
+                    });
+                });
 
-         $.ajax({
-             url: '/user/' + writer.writer + '/block',
-             type: 'POST',
-             success: function(response) {
-                 console.log('Success:', response);
+                  document.getElementById('blockUserLink').addEventListener('click', function(event) {
+                      event.preventDefault();
 
-                 $('#confirmModal').modal('hide');
-             },
-             error: function(xhr, status, error) {
-                 console.error('Error:', error);
-                 $('#confirmModal').modal('hide');
-             }
-         });
-     });
+                      if (${loggedIn}) {
+                          $('#confirmModal').modal('show');
+                      } else {
+                          showAlert();
+                      }
+                  });
 
-     function showAlert() {
-         document.getElementById("myAlert").style.display = "block";
-     }
+                  document.getElementById('cancelButton').addEventListener('click', function(event) {
+                      event.preventDefault();
+                      $('#confirmModal').modal('hide');
+                  });
 
-     function closeAlert() {
-         document.getElementById("myAlert").style.display = "none";
-     }
+                  document.getElementById('confirmButton').addEventListener('click', function(event) {
+                      event.preventDefault();
 
-     var dataString = document.getElementById("postById").textContent;
-     var boardIdMatch = dataString.match(/boardId=([^,]+)/);
+                      var dataString = document.getElementById("postById").textContent;
+                      var writerMatch = dataString.match(/writer=([^,]+)/);
 
-     var boardId = {
-         boardId: boardIdMatch ? boardIdMatch[1] : null,
+                      var writer = {
+                          writer: writerMatch ? writerMatch[1] : null,
+                      };
 
-     };
-     document.getElementById('interestButton').addEventListener('click', function(event) {
+                      $.ajax({
+                          url: '/user/' + writer.writer + '/block',
+                          type: 'POST',
+                          success: function(response) {
+                              console.log('Success:', response);
 
-         if (${loggedIn}) {
+                              $('#confirmModal').modal('hide');
+                          },
+                          error: function(xhr, status, error) {
+                              console.error('Error:', error);
+                              $('#confirmModal').modal('hide');
+                          }
+                      });
+                  });
 
-             var buttonText = document.getElementById('interestButton').textContent;
-             if (buttonText == '관심') {
-                 // ajax 요청 보내서 관심 등록 후 버튼을 관심 취소로 바꾸기
-                 $.ajax({
-                     url: '/board/' + boardId.boardId + '/favorite',
-                     type: 'POST',
-                     success: function(response) {
-                         var interestCntElement = document.getElementById('interestCnt');
-                         interestCntElement.innerHTML = '<img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + response;
-                         var button = document.getElementById('interestButton');
-                         button.textContent = '관심 해제';
-                     }
-                 });
-             } else if (buttonText == '관심 해제') {
-                 // ajax 요청 보내서 관심 취소 후 버튼을 관심으로 바꾸기
-                 $.ajax({
-                     url: '/board/' + boardId.boardId + '/favorite',
-                     type: 'DELETE',
-                     success: function(response) {
-                         var interestCntElement = document.getElementById('interestCnt');
-                         interestCntElement.innerHTML = '<img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + response;
-                         var button = document.getElementById('interestButton');
-                         button.textContent = '관심';
-                     }
-                 });
-             }
-         } else {
-             // 로그인 되어 있지 않을 때
+                    function showAlert() {
+                      document.getElementById("myAlert").style.display = "block";
+                    }
 
-             showAlert();
-         }
+                    function closeAlert() {
+                      document.getElementById("myAlert").style.display = "none";
+                    }
+
+                   var dataString = document.getElementById("postById").textContent;
+                   var boardIdMatch = dataString.match(/boardId=([^,]+)/);
+
+                   var boardId = {
+                       boardId: boardIdMatch ? boardIdMatch[1] : null,
+
+                   };
+                   document.getElementById('interestButton').addEventListener('click', function(event) {
+
+                       if (${loggedIn}) {
+
+                           var buttonText = document.getElementById('interestButton').textContent;
+                           if (buttonText == '관심') {
+                               // ajax 요청 보내서 관심 등록 후 버튼을 관심 취소로 바꾸기
+                               $.ajax({
+                                   url: '/board/' + boardId.boardId + '/favorite',
+                                   type: 'POST',
+                                   success: function(response) {
+                                       var interestCntElement = document.getElementById('interestCnt');
+                                       interestCntElement.innerHTML = '<img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + response;
+                                       var button = document.getElementById('interestButton');
+                                       button.textContent = '관심 해제';
+                                   }
+                               });
+                           } else if (buttonText == '관심 해제') {
+                               // ajax 요청 보내서 관심 취소 후 버튼을 관심으로 바꾸기
+                               $.ajax({
+                                   url: '/board/' + boardId.boardId + '/favorite',
+                                   type: 'DELETE',
+                                   success: function(response) {
+                                       var interestCntElement = document.getElementById('interestCnt');
+                                       interestCntElement.innerHTML = '<img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + response;
+                                       var button = document.getElementById('interestButton');
+                                       button.textContent = '관심';
+                                   }
+                               });
+                           }
+                       } else {
+                           // 로그인 되어 있지 않을 때
+
+                           showAlert();
+                       }
 
 
-     })
+                   })
 
-     document.getElementById('auctionButton').addEventListener('click', function(event) {
-         var buttonText = this.textContent.trim();
+                   document.getElementById('auctionButton').addEventListener('click', function(event) {
+                       var buttonText = this.textContent.trim();
 
-         if (${loggedIn}) {
-             if (buttonText !== '경매참여중') {
-                 var dataString = document.getElementById("postById").textContent;
-                 var boardIdMatch = dataString.match(/boardId=([^,]+)/);
+                       if (${loggedIn}) {
+                           if (buttonText !== '경매참여중') {
+                               var dataString = document.getElementById("postById").textContent;
+                               var boardIdMatch = dataString.match(/boardId=([^,]+)/);
 
-                 var boardId = {
-                     boardId: boardIdMatch ? boardIdMatch[1] : null,
-                 };
+                               var boardId = {
+                                   boardId: boardIdMatch ? boardIdMatch[1] : null,
+                               };
 
-                 $.ajax({
-                     url: '/auction/' + boardId.boardId,
-                     type: 'POST',
-                     success: function(response) {
-                         document.getElementById('auctionButton').textContent = '경매참여중';
-                     },
-                     error: function(xhr, status, error) {
-                         // 에러 처리 로직
-                     }
-                 });
-             } else {
-                 alert('경매 참여중');
-             }
-         } else {
-             showAlert();
-         }
-     });
+                               $.ajax({
+                                   url: '/auction/' + boardId.boardId,
+                                   type: 'POST',
+                                   success: function(response) {
+                                       document.getElementById('auctionButton').textContent = '경매참여중';
+                                   },
+                                   error: function(xhr, status, error) {
+                                       // 에러 처리 로직
+                                   }
+                               });
+                           } else {
+                               alert('경매 참여중');
+                           }
+                       } else {
+                           showAlert();
+                       }
+                   });
 
-     // 글 상세 번호 채팅에 넘겨주기 위한 함수
-     function chat() {
-         if (${loggedIn}) {
-             //alert("글 상세번호 : " + "${postById.boardId}");
-             var boardId2 = parseInt("${postById.boardId}"); // 글 상세 번호
-             var form = document.createElement("form");
-             form.setAttribute("method", "post");
-             form.setAttribute("action", "/chat/chat2");
 
-             var hiddenField = document.createElement("input");
-             hiddenField.setAttribute("type", "hidden");
-             hiddenField.setAttribute("name", "boardId2");
-             hiddenField.setAttribute("value", boardId2);
-             form.appendChild(hiddenField);
 
-             document.body.appendChild(form);
-             form.submit();
-         } else {
-             showAlert();
-         }
-     };
+                // 글 상세 번호 채팅에 넘겨주기 위한 함수
+                function chat() {
+                    if (${loggedIn}) {
+                        //alert("글 상세번호 : " + "${postById.boardId}");
+                        var boardId2 = parseInt("${postById.boardId}"); // 글 상세 번호
+                        var form = document.createElement("form");
+                        form.setAttribute("method", "post");
+                        form.setAttribute("action", "/chat/chat2");
 
-     function sendEditRequest() {
-         let boardId = ${postById.boardId};
+                        var hiddenField = document.createElement("input");
+                        hiddenField.setAttribute("type", "hidden");
+                        hiddenField.setAttribute("name", "boardId2");
+                        hiddenField.setAttribute("value", boardId2);
+                        form.appendChild(hiddenField);
 
-         var dataToSend = {
-             boardId: boardId,
-         };
+                        document.body.appendChild(form);
+                        form.submit();
+                    } else {
+                        showAlert();
+                    }
+                };
 
-         var queryString = $.param(dataToSend);
 
-         window.location.href = "/board/editForm?" + queryString;
-     }
- </script>
- </body>
+
+                  function sendEditRequest() {
+                      let boardId = ${postById.boardId};
+
+                      var dataToSend = {
+                              boardId: boardId,
+                      };
+
+                      var queryString = $.param(dataToSend);
+
+                      window.location.href = "/board/editForm?" + queryString;
+                  }
+            </script>
+
+        </body>

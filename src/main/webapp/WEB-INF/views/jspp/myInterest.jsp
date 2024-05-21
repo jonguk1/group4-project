@@ -154,7 +154,7 @@
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
-                                                <img src="/images/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
+                                                <img src="/postimage/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
                                             </p>
                                         </div>
                                         <div class="card-footer">
@@ -212,7 +212,7 @@
                                 </h5>
                                 <div class="card-body">
                                     <p class="card-text">
-                                        <img src="/images/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
+                                        <img src="/postimage/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
                                     </p>
                                 </div>
                                 <div class="card-footer">

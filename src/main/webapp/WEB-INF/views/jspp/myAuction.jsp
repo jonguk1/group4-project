@@ -29,7 +29,7 @@
     let currentServerTime = null;
 
         function displayServerTime() {
-            const eventSource = new EventSource('/time/${userId}');
+            const eventSource = new EventSource('/time');
 
             eventSource.onmessage = function(event) {
                 currentServerTime = new Date(event.data);
@@ -38,6 +38,15 @@
                 for (const deadlineElement of deadlineElements) {
                     const deadline = new Date(deadlineElement.dataset.deadline);
                     const timeDifference = deadline.getTime() - currentServerTime.getTime();
+
+                    console.log(deadline);
+                    console.log(currentServerTime);
+                    console.log(timeDifference);
+
+                    if(timeDifference == 0){
+                        alert('경매시간이 종료되었습니다');
+                        location.reload();
+                    }
 
                     if (timeDifference <= 0) {
                         deadlineElement.innerText = "경매시간이 종료되었습니다";
@@ -306,7 +315,7 @@
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
-                                                <img src="/images/${auction.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 100px;">
+                                                <img src="/postimage/${auction.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 100px;">
                                             </p>
                                         </div>
                                         <div class="card-footer">
