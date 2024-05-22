@@ -18,7 +18,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
-
     private final UserMapper userMapper;
 
 
@@ -54,7 +53,7 @@ public class UserServiceImpl implements UserService{
 
         return (n>0)? false: true;
     }
-  
+
     public int updateUserAddress(String userId, Double latitude, Double longitude) {
         UpdateUserAddressDTO updateUserAddressDTO = new UpdateUserAddressDTO();
         updateUserAddressDTO.setUserId(userId);

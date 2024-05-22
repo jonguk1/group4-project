@@ -6,6 +6,8 @@ import com.lend.shareservice.entity.Message;
 import com.lend.shareservice.web.chat.dto.ChatDTO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface ChatMapper {
 
@@ -16,4 +18,8 @@ public interface ChatMapper {
     void createRoom(Chatroom chatroom);
 
     Integer selectChatId(Chatroom chatroom);
+
+    List<Message> findChatList(String userId);
+
+    List<ChatDTO> loadMessage(int chatId);
 }
