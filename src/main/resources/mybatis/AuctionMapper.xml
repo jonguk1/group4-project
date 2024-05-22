@@ -222,5 +222,24 @@
         </where>
     </select>
 
+    <select id="findByAuctionUserId" resultType="String">
+        select userId
+        from auction
+        <where>
+            userId=#{userId}
+            and auctionId=#{auctionId}
+        </where>
+    </select>
+
+    <select id="findByMoney" parameterType="String" resultType="_int">
+        select money
+        from user u
+        inner join Participant_Auction p
+        on u.userId=p.userId
+        <where>
+            u.userId=#{value}
+        </where>
+        group by u.userId
+    </select>
 
 </mapper>

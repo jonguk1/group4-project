@@ -52,4 +52,9 @@ public interface AuctionMapper {
     List<AuctionDTO> getDeadlineList();
 
     Date getDeadline(int auctionId);
+
+    String findByAuctionUserId(String userId,int auctionId);
+
+    int findByMoney(String userId);
+
 }

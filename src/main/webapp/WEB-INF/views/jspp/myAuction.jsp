@@ -131,10 +131,12 @@
                     data: formData,
                     success: function(response) {
                         const messages = {
-                                'emptyCurrentPrice': '금액을 입력하세요.',
+                                'emptyCurrentPrice': '입찰가을 입력하세요.',
                                 'maxCurrentPrice': '상한가를 넘게 입력하셧습니다. 다시 입력하세요.',
-                                'lowCurrentPrice': '현재 등록된 금액보다 낮게 입력하셧습니다. 다시 입력하세요.',
+                                'lowCurrentPrice': '현재 등록된 입찰가보다 낮게 입력하셧습니다. 다시 입력하세요.',
                                 'overDate':'경매 마감시간이 지났습니다.',
+                                'noMoney':'충전된 돈이 입력하신 금액에 비해 부족합니다.',
+                                'duplicateUserId':'이미 입찰금액을 등록하셨습니다.',
                                 'ok': '경매 등록 성공!',
                                 'no': '경매 등록 실패!'
                             };
@@ -377,7 +379,7 @@
                                                     <h6>경매 마감 : <span class="deadline" data-deadline="${auction.boards[0].deadline}">
                                                     </span></h6>
                                                     <c:if test="${auction.boards[0].isAuction eq 1}">
-                                                        <h6>현재 경매 가격 : <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원</h6>
+                                                        <h6>현재 입찰 가격 : <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원</h6>
                                                         <h6>상한가 : <fmt:formatNumber value="${auction.maxPrice}" pattern="#,###"/>원</h6>
                                                     </c:if>
                                                 </div>

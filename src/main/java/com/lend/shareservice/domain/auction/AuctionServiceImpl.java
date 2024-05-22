@@ -2,6 +2,8 @@ package com.lend.shareservice.domain.auction;
 
 
 import com.lend.shareservice.domain.notification.EmitterRepository;
+import com.lend.shareservice.domain.user.UserMapper;
+import com.lend.shareservice.entity.User;
 import com.lend.shareservice.web.auction.dto.AuctionBoardDTO;
 import com.lend.shareservice.web.auction.dto.AuctionDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
@@ -79,36 +81,53 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     @Transactional
     public String updateCurrentPrice(int auctionId, int currentPrice, String userId) {
-
+        // 현재 가격이 0일 경우
         if (currentPrice == 0) {
             return "emptyCurrentPrice";
         }
 
+        // 최대 가격, 현재 가격, 마감일, 현재 시각, 사용자 돈 조회
         int maxPrice = auctionMapper.getMaxPrice(auctionId);
         int getCurrentPrice = auctionMapper.getCurrentPrice(auctionId);
         Date deadline = auctionMapper.getDeadline(auctionId);
         Instant currentInstant = Instant.now();
-        Instant deadlineInstant = deadline.toInstant();
+        Instant deadlineInstant = (deadline != null) ? deadline.toInstant() : null;
+        int money = auctionMapper.findByMoney(userId);
 
+        // 경매 마감 여부 확인
+        if (deadlineInstant != null && currentInstant.isAfter(deadlineInstant)) {
+            return "overDate";
+        }
+
+        // 현재 가격이 최대 가격보다 크거나 같은 경우
         if (currentPrice > maxPrice) {
             return "maxCurrentPrice";
         }
 
+        // 현재 가격이 이미 최고 가격보다 낮은 경우
         if (currentPrice <= getCurrentPrice) {
             return "lowCurrentPrice";
         }
 
-        if(currentInstant.isAfter(deadlineInstant)){
-            return "overDate";
+        // 사용자의 돈이 현재 가격보다 적은 경우
+        if (money < currentPrice) {
+            return "noMoney";
         }
 
+        // 중복 입찰 여부 확인
+        String duplicateUserId = auctionMapper.findByAuctionUserId(userId, auctionId);
+        if (duplicateUserId != null) {
+            return "duplicateUserId";
+        }
+
+        // 경매 정보 업데이트
         Map<String, Object> map = new HashMap<>();
         map.put("currentPrice", currentPrice);
         map.put("auctionId", auctionId);
         map.put("userId", userId);
-
         int updateResult = auctionMapper.updateCurrentPrice(map);
 
+        // 업데이트 결과에 따른 처리
         if (updateResult > 0) {
             String message = userId + "님이 " + currentPrice + "로 경매가를 올렸습니다";
             notificationService.sendMessageAuctionUsers(auctionId, message);
@@ -117,6 +136,7 @@ public class AuctionServiceImpl implements AuctionService{
             return "no";
         }
     }
+
 
     @Override
     @Transactional
