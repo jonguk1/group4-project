@@ -1,24 +1,27 @@
 package com.lend.shareservice.entity;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
 import java.util.Date;
 
 // 메시지
-@Builder
 @Data
 public class Message {
 
-    // 메세지 번호 (ID)
-    @NotNull
-    private Integer messageId;
-
-    // 채팅방번호 (FK)
+    // 채팅방번호 (ID)
     @NotNull
     private Integer chatId;
+
+    // 구매자 (FK)
+    @NotNull
+    private String lendy;
+
+    // 판매자 (FK)
+    @NotNull
+    private String lender;
 
     // 메세지 내용
     private String content;

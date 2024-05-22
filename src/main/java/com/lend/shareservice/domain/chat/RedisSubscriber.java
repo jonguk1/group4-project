@@ -18,18 +18,21 @@ public class RedisSubscriber implements MessageListener {
     private final RedisTemplate<String, Object> redisTemplate;
     private final SimpMessageSendingOperations messagingTemplate;
 
-    // 2. Redis 에서 메시지가 발행(publish)되면, listener 가 해당 메시지를 읽어서 처리
+    // Redis 에서 메시지가 발행(publish)되면, listener 가 해당 메시지를 읽어서 처리
     @Override
-    public void onMessage(Message message, byte[] pattern) {		// 3.
+    // onMessage : Redis의 pub/sub 구독자로부터 메세지 수신할때마다 호출됨
+    public void onMessage(Message message, byte[] pattern) {//pattern : Redis 에서 메시지를 수신한 패턴(특정 채널 이름)
         try {
             // redis 에서 발행된 데이터를 받아 역직렬화
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
 
-            // 4. 해당 객체를 MessageDto 객체로 맵핑
+            // 해당 객체를 ChatDto 객체로 맵핑
+            // objectMapper : JSON 데이터를 Java 객체로 변환
             ChatDTO chatDTO = objectMapper.readValue(publishMessage, ChatDTO.class);
 
-            // 5. Websocket 구독자에게 채팅 메시지 전송
-            messagingTemplate.convertAndSend("/sub/chat/room/" + chatDTO.getChatId(), chatDTO);
+            // Websocket 구독자에게 채팅 메시지 전송
+            //@SendTo의 경로와 일치해야함
+            messagingTemplate.convertAndSend("/topic/messages/", chatDTO);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
