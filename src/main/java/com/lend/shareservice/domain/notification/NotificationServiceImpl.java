@@ -75,6 +75,7 @@ public class NotificationServiceImpl implements NotificationService{
 
         List<String> auctionMembers = auctionMapper.selectIdsByAuctionId(auctionId);
 
+        // 특정 경매방에 참여자들에게 실시간 메시지를 보냄
         for (String auctionMember : auctionMembers) {
             sendToClient(auctionMember, message);
         }

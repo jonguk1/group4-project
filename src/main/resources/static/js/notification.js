@@ -32,9 +32,11 @@ $(document).ready(function() {
                 addMessage("알림이 존재하지 않습니다");
             }
             response.forEach(function(notification) {
+                alert(notification.boardId + 'ha..');
+                alert(notification.content + 'ha..');
+                var message = "<div class='row'><div class='col-md-2'></div><div class='col-md-8'>" + notification.notiRegDate + "</div><div class='col-md-2'><img src='/images/icon/xIcon.png' id='" + notification.notiId + "' style='width:15px; height:15px;' class='xIcon'></div></div>" + notification.content + "<br> <a href='/board/" + notification.boardId + "'><img src='/images/icon/rightDirectionIcon.png' style='width:20px; height:20px;'> 해당 글로 가기</a> <hr>";
 
-                var message =  "<div class='row'><div class='col-md-2'></div><div class='col-md-8'>" + notification.notiRegDate + "</div><div class='col-md-2'><img src='/images/icon/xIcon.png' id='" + notification.notiId + "' style='width:15px; height:15px;' class='xIcon' ></div></div>" + notification.content + "<br> <a href='/board/83'><img src='/images/icon/rightDirectionIcon.png' style='width:20px; height:20px;'> 해당 글로 가기</a>  <hr>  "; // 각각의 속성 사이에 <br> 태그 추가// 각각의 속성 사이에 줄바꿈 추가
-                addMessage(message);
+                addMessage(me   ssage);
 
             });
         },
@@ -105,7 +107,8 @@ $(document).ready(function() {
                 }
                 // 새로운 알림 추가
                 response.forEach(function(notification) {
-                    var message = "<div class='row'><div class='col-md-2'></div><div class='col-md-8'>" + notification.notiRegDate + "</div><div class='col-md-2'><img src='/images/icon/xIcon.png' id='" + notification.notiId + "' style='width:15px; height:15px;' class='xIcon' ></div></div>" + notification.content + "<br> <a href='/board/83'><img src='/images/icon/rightDirectionIcon.png' style='width:20px; height:20px;'> 해당 글로 가기</a>  <hr>  ";
+                    alert(notification.boardId)
+                    var message = "<div class='row'><div class='col-md-2'></div><div class='col-md-8'>" + notification.notiRegDate + "</div><div class='col-md-2'><img src='/images/icon/xIcon.png' id='" + notification.notiId + "' style='width:15px; height:15px;' class='xIcon'></div></div>" + notification.content + "<br> <a href='/board/" + notification.boardId + "'><img src='/images/icon/rightDirectionIcon.png' style='width:20px; height:20px;'> 해당 글로 가기</a> <hr>";
                     addMessage(message);
                 });
             },

@@ -57,10 +57,17 @@
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="#">
-                                                    <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                <a class="nav-link" href="#" id="notificationIcon">
+                                                    <img src="/images/icon/notificationIcon.png"  style="width:30px; height:30px;">
+                                                    <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                                 </a>
                                             </c:if>
+                                        </li>
+
+                                        <li>
+                                            <div id="messageContainer" style="display: none;">
+
+                                            </div>
                                         </li>
 
                                         <li class="nav-item">
@@ -72,7 +79,7 @@
                                         </li>
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                                <a class="nav-link" href="/user/${userId}" style="color: black;">${userId}님</a>
                                             </c:if>
                                         </li>
                                         <li class="nav-item">
@@ -235,7 +242,7 @@
                             <span>
                                  <img src="/images/people.png" alt="대체_텍스트" style="width: 50px;">
                             </span>
-                                <a href="/user"><span>${postById.writer}</span></a>
+                                <a href="/user/${postById.writer}"><span>${postById.writer}</span></a>
                             <span>
 
                                 <button type="button" class="btn btn-primary" onclick="chat()">채팅</button>
@@ -1018,16 +1025,11 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <div id="postById" style="display: none;">${postById}</div>
-
+            <script src="/js/notification.js"></script>
+            <link rel="stylesheet" type="text/css" href="/css/notification.css">
             <script>
 
                 $(document).ready(function() {
-
-                    const eventSource = new EventSource('http://localhost:8081/subscribe');
-
-                    eventSource.addEventListener('auction', event => {
-
-                    });
 
                      var userId = document.getElementById("userId").value;
                      var dataString = document.getElementById("postById").textContent;

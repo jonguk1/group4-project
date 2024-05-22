@@ -14,11 +14,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tags.shaded.org.apache.xpath.operations.Mod;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,7 +51,7 @@ public class BoardController {
 
     // 글 등록 요청
     @PostMapping
-    public String postRegister(@Valid @ModelAttribute PostRegistrationDTO postRegistrationDTO, BindingResult bindingResult, Model model) throws ParseException {
+    public String postRegister(HttpServletRequest request, @Valid @ModelAttribute PostRegistrationDTO postRegistrationDTO, BindingResult bindingResult, Model model) throws ParseException {
 
         if (postRegistrationDTO.getFileInput().get(0).getSize() == 0 &&
                 postRegistrationDTO.getFileInput().get(1).getSize() == 0 &&
@@ -57,12 +60,15 @@ public class BoardController {
         }
         if (bindingResult.hasErrors()) {
 
-
+            HttpSession session = request.getSession();
+            String userId = (String) session.getAttribute("userId");
+            User userById = userService.findUserById(userId);
+            log.info("userById = {}", userById);
+            LatiLongDTO latiLongDTO = new LatiLongDTO(userById.getLatitude(), userById.getLongitude());
             model.addAttribute("postRegistrationBindingResult", bindingResult);
-
+            model.addAttribute("latiAndLong", latiLongDTO);
             return "jspp/writingRegisterForm";
         }
-
 
         boardService.savePost(postRegistrationDTO);
 
@@ -312,13 +318,38 @@ public class BoardController {
     }
 
     @PostMapping("/edit")
-    public String editPost(Model model, @Valid @ModelAttribute PostEditDTO postEditDTO, BindingResult bindingResult) {
-
+    public ResponseEntity<String> editPost(Model model, @Valid @ModelAttribute PostEditDTO postEditDTO, BindingResult bindingResult) {
+        log.info("postEditDTO = {}", postEditDTO);
+        // 에러 체크
         if (bindingResult.hasErrors()) {
-            model.addAttribute("postRegistrationBindingResult", bindingResult);
-            return "jspp/writingEditForm";
-        }
+            // 에러가 있는 경우
+            JSONObject errorJson = new JSONObject();
+            errorJson.put("status", "error");
+            errorJson.put("message", "Validation failed");
 
-        return null;
+            // 필드 에러 추가
+            JSONArray fieldErrors = new JSONArray();
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                JSONObject fieldErrorJson = new JSONObject();
+                fieldErrorJson.put("field", fieldError.getField());
+                fieldErrorJson.put("message", fieldError.getDefaultMessage());
+                fieldErrors.put(fieldErrorJson);
+            }
+            errorJson.put("errors", fieldErrors);
+
+            // JSON 형식의 응답 반환
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorJson.toString());
+        } else {
+            // 에러가 없는 경우
+            int editNum = boardService.editPost(postEditDTO);
+
+            if (editNum > 0) {
+                // 성공 응답 반환
+                return ResponseEntity.ok("{\"status\": \"ok\"}");
+            } else {
+                // 실패 응답 반환
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"status\": \"error\", \"message\": \"Failed to edit post\"}");
+            }
+        }
     }
 }
