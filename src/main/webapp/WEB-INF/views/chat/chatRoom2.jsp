@@ -51,7 +51,7 @@
         .other .messages {
             text-align: left;
         }
-    #detailImg {width: 100%;height: 100%; object-fit: cover;}
+    #detailImg {width: 250px;height: 250px; object-fit: cover;}
     </style>
     <!------------------------------- style ----------------------------------->
 </head>
@@ -95,7 +95,7 @@
 
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="#">
+                                                <a class="nav-link" href="/chat/chatList/${userId}">
                                                     <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
                                                 </a>
                                             </c:if>
@@ -163,52 +163,48 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="row">
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-success">
-                                    뒤로가기
+                            <div class="col-md-3">
+                                <button type="button" onclick="chatList()" class="btn btn-success">
+                                    채팅목록
                                 </button>
                             </div>
-                            <div class="col-md-10">
+                            <div class="col-md-9">
                                 <h3>
                                      ${chatItem.writer}님과의 대화
                                 </h3>
                             </div>
+
                         </div>
                         <div class="row">
-                            <div class="col-md-3"> <!-- 글 상세 이미지 출력 -->
+                            <div class="col-md-3 text-center" > <!-- 글 상세 이미지 출력 -->
                                 <a href="/board/${boardId}"><!-- 이미지 클릭 시 해당 상세글로 이동 -->
                                     <img alt="안갖고옴" src="${chatItem.images}" id="detailImg" />
                                 </a>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-9">
+                                <h1>${chatItem.title}</h1>
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <div>
-                                              <label for="exampleSelect1" class="form-label mt-4">대여여부</label>
-                                              <select class="form-select" id="exampleSelect1">
-                                                <option>대여전</option>
-                                                <option>대여중</option>
-                                                <option>대여완료</option>
-                                              </select>
-                                            </div>
-                                    </div>
                                     <div class="col-md-9">
-                                        <h3>
-                                            ${chatItem.title}
-                                        </h3>
+                                        <select class="form-select" id="exampleSelect1">
+                                            <option>대여전</option>
+                                            <option>대여중</option>
+                                            <option>대여완료</option>
+                                        </select>
+                                    </div>
+                                     <div class="col-md-3">
+                                        <div class="btn-group btn-group-md" role="group">
+                                            <button class="btn btn-secondary" type="button">
+                                                신고
+                                            </button>
+                                            <button class="btn btn-secondary" type="button">
+                                                차단
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
-                            <div class="col-md-2">
-                                <div class="btn-group btn-group-md" role="group">
-                                    <button class="btn btn-secondary" type="button">
-                                        신고
-                                    </button>
-                                    <button class="btn btn-secondary" type="button">
-                                        차단
-                                    </button>
-                                </div>
-                            </div>
+
                         </div>
                         <!-- 채팅폼 들어갈예정 -->
                         <div class="container">
@@ -218,17 +214,15 @@
                                 </div>
                                 <!-- 대화 입력 박스 / 대화 내용 박스 -->
                                 <!-- 연결상태 알림 -->
-                                <div class="alert alert-success my-4">
+                                <div class="alert alert-success my-4" style="display: none">
                                     <strong id="status">채팅을 연결후 사용하세요....</strong>
                                     <div id="connectionStatus"></div>
                                 </div>
                                 <div id="showChat" style="display: none">
                                     <!-- 메시지 입력 -->
+
                                     <div class="mb-3 mt-3">
-                                        <label for="inputMsg" class="form-label">메시지 : </label>
-                                        <input onkeyup="sendInput(this.value)"
-                                            type="text" class="form-control" id="inputMsg"
-                                            placeholder="메시지를 입력하세요." name="inputMsg">
+
                                     </div>
                                     <!-- 대화 내용 -->
                                     <div id="taMsg" class="discussion"></div>
@@ -237,7 +231,7 @@
                             <!-- .container end -->
                         <!-- 채팅폼 들어갈예정 -->
                         <div class="row">
-                           <div class="col-md-2">
+                           <div class="col-md-1">
                                <div class="dropdown">
                                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                                        <img src="/images/plus.png"/>
@@ -249,17 +243,12 @@
                                     </div>
                                </div>
                            </div>
-                            <div class="col-md-10">
-                                <!-- 현재 날짜 시간 값 출력 -->
-                                <p>현재 날짜 시간은 : <c:out value="${sendTime}" /></p>
-                                <!-- boardId 값 출력 -->
-                                <p>boardId: ${boardId}</p>
-                                <!-- userId 출력 -->
-                                <p>userId: ${userId}</p>
-                                <!-- 채팅방번호 출력 -->
-                                <p>채팅방번호: ${chatId}</p>
+                            <div class="col-md-11">
+                            <input onkeyup="sendInput(this.value)"
+                            type="text" class="form-control" id="inputMsg"
+                            placeholder="메시지를 입력하세요." name="inputMsg">
                                 <button id="chatButton" class="btn btn-primary chatButton" OnClick="chat_connect()">로그인</button>
-                <!-- 예약하기 클릭시 달력 나타나기 -->
+                                <!-- 예약하기 클릭시 달력 나타나기 -->
                                 <form id="reservForm">
                                     <input type="datetime-local" name="hiddenInput" id="hiddenInput" style="display:none">
                                     <input type="button" id="hiddenButton" value="완료" style="display:none">
@@ -277,6 +266,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
+
         chat_connect();
             $.ajax({
                        url: "/board/board-category",
@@ -335,13 +325,29 @@
                 alert('연결됨: ' + frame);
                 setConnected(true); // UI 보여 주기
                 $('#inputMsg').focus(); // 대화 내용 입력 박스에 포커스 추가
-                stompClient.subscribe('/topic/messages', function(msg)
+                let obj={
+                    lendy:lendy,
+                                        lender:lender,
+                                        content:'#100',
+                                        chatId:chatId,
+                                        sendTime: ''
+                }
+                alert('/app/chat/'+chatId);
+                 stompClient.send('/app/chat/'+chatId, {}, JSON.stringify(obj));
+
+                stompClient.subscribe('/topic/messages/'+chatId, function(msg)
                 {
                     console.log('subscribe topic → ', msg);
-                    // alert(msg.body); // msg.body → json 형태의 문자열
+                    //alert(msg.body); // msg.body → json 형태의 문자열
                     let jsonMsg = JSON.parse(msg.body); // 문자열을 JSON 객체로 만들기
-                    alert(jsonMsg.text);
-                    showChatMessage(jsonMsg);
+                    //alert(jsonMsg.length);
+                    if(!jsonMsg.length){
+                        showChatMessage(jsonMsg);
+                    }else{
+                        $.each(jsonMsg, function(i, msg){
+                         showChatMessage(msg);
+                        });
+                    }
                 }); // subscribe end -------
                 // 연결 상태에 따라 버튼 텍스트 변경
                 document.getElementById("chatButton").innerText = "로그아웃";
@@ -403,12 +409,17 @@
                     chatId:chatId,
                     sendTime: sendTime
             }
-            stompClient.send('/app/chat', {}, JSON.stringify(obj)); // json 객체를 직렬화
+            stompClient.send('/app/chat/'+chatId, {}, JSON.stringify(obj)); // json 객체를 직렬화
         } // ---------------------------------
         // ======================================= 서버로 메시지 보내기 =======================================
         // ======================================= 대화 내용 출력 함수 =======================================
         function showChatMessage(obj) { // 대화 내용을 출력해 주는 함수
-            if(obj.lendy == user1) { // 내가 보낸 메시지라면
+            console.log("obj****"+JSON.stringify(obj));
+            if(obj.content=='#100'){
+                $('#taMsg').html('');
+                return;
+            }
+            if(obj.lendy == lendy) { // 내가 보낸 메시지라면
                 let str = `
                 <p>
                 <label class='badge badge-success'>\${obj.lendy}</label>
@@ -445,7 +456,7 @@
                     </div>
                     <div class="messages">
                         <p>\${msg}</p>
-                        <time>\${time}</time>
+                        <time>\${sendTime}</time>
                     </div>
                 </li>
             `;
@@ -496,6 +507,13 @@
                 form.submit();
             };
         }// showReservationInput() end------------
+        // ======================================= chatList로 돌아가기 =======================================
+        function chatList()
+        {
+            // window.location.href = "chatList";
+            window.location.href = "/chat/chatList/"+"${userId}";
+        }
+        // ======================================= chatList로 돌아가기 =======================================
     </script>
     <!------------------------------- script ----------------------------------->
 </body>
