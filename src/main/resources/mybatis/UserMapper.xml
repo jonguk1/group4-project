@@ -71,7 +71,12 @@
         </where>
     </select>
 
-
+    <select id="idCheck" resultType="_int" parameterType="string">
+        select count(userId) from user
+        <where>
+            userId=#{userId}
+        </where>
+    </select>
 
     <select id="findByUserId" parameterType="String" resultType="com.lend.shareservice.domain.user.vo.UserVo">
         select userId from user
