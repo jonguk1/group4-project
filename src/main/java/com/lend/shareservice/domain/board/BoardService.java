@@ -1,5 +1,6 @@
 package com.lend.shareservice.domain.board;
 
+import com.lend.shareservice.domain.board.dto.BoardAuctionStateDTO;
 import com.lend.shareservice.web.board.dto.*;
 
 import java.text.ParseException;
@@ -40,4 +41,8 @@ public interface BoardService {
     List<PostDTO> sortForDistance(List<PostDTO> postDTOS);
 
     int calculateRoundedDistance(double lat1, double lon1, double lat2, double lon2);
+
+    int updateIsAuction(BoardAuctionStateDTO boardAuctionStateDTO);
+
+    int editPost(PostEditDTO postEditDTO);
 }

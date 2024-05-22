@@ -76,4 +76,50 @@
         FROM FAVORITE
         WHERE boardId = #{boardId}
     </select>
+
+    <update id="updateIsAuction" parameterType="com.lend.shareservice.domain.board.dto.BoardAuctionStateDTO">
+        UPDATE BOARD
+        SET isAuction = #{state}
+        WHERE boardId = #{boardId}
+    </update>
+
+    <update id="updatePost" parameterType="com.lend.shareservice.web.board.dto.PostEditDTO">
+        UPDATE BOARD
+        SET boardCategoryId = #{boardCategoryId},
+        title = #{title},
+        itemName = #{itemName},
+        price = #{intTypePrice},
+        itemCategoryId = #{itemCategoryId},
+        itemImage1 = #{image1},
+        itemImage2 = #{image2},
+        itemImage3 = #{image3},
+        content = #{content},
+        latitude = #{latitude},
+        longitude = #{longitude},
+        returnDate = #{dateTypeReturnDate}
+        WHERE boardId = #{boardId}
+    </update>
+
+
+    <select id="selectImage1">
+        SELECT itemImage1
+        FROM BOARD
+        WHERE boardId = #{boardId}
+    </select>
+    <select id="selectImage2">
+        SELECT itemImage2
+        FROM BOARD
+        WHERE boardId = #{boardId}
+    </select>
+    <select id="selectImage3">
+        SELECT itemImage3
+        FROM BOARD
+        WHERE boardId = #{boardId}
+    </select>
+
+    <select id="selectLatAndLong" parameterType="_int" resultType="com.lend.shareservice.web.board.dto.LatiLongDTO">
+        SELECT latitude, longitude
+        FROM board
+        WHERE boardId = #{boardId}
+    </select>
 </mapper>

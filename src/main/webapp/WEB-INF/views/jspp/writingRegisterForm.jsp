@@ -97,10 +97,6 @@
                        </div>
                    </div>
 
-
-
-
-
                    <div class="container d-flex justify-content-center">
                        <nav class="navbar navbar-expand-lg" data-bs-theme="light">
                            <ul class="navbar-nav me-auto">
@@ -196,6 +192,25 @@
                             </div>
 
                             <br>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center" id="existingProductImage1">상품 이미지1</div>
+                                <img src="/images/icon/noImage.png" class="changingImage1" style="width:320px; height:300px;">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center" id="existingProductImage2">상품 이미지2</div>
+                                <img src="/images/icon/noImage.png" class="changingImage2" style="width:320px; height:300px;">
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center" id="existingProductImage3">상품 이미지3</div>
+                                <img src="/images/icon/noImage.png" class="changingImage3" style="width:320px; height:300px;">
+
+                            </div>
+                        </div>
+
+                        <br>
 
                             <div class="mb-3">
                                 <label for="fileInput1" class="form-label">상품 이미지1</label>
@@ -307,167 +322,200 @@
 </div>
 
 
-    <script>
+<script>
 
-        $(document).ready(function() {
+    $(document).ready(function() {
 
-
-            var auctionCheckbox = document.getElementById('isAuction');
-
-
-            auctionCheckbox.addEventListener('change', function () {
-
-                if (auctionCheckbox.checked) {
-                    document.getElementById('auctionInput').style.display = 'block';
-                    document.getElementById('maxPriceButton').style.display = 'block';
-
-                } else {
-
-                    document.getElementById('auctionInput').style.display = 'none';
-                    document.getElementById('maxPriceButton').style.display = 'none';
-                }
-            });
-
-                    $.ajax({
-                        url: "/board/board-category",
-                        type: "GET",
-                        dataType: "json", // 응답 데이터 타입 (JSON, XML, HTML 등)
-                        success: function(response) {
-                            console.log(response);
-
-                            $.each(response, function(index, value) {
-                                    $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                                    $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                                    $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>")
-                                });
-                        },
-                        error: function(xhr, status, error) {
-
-                           console.error("요청 실패:", status, error);
-                        }
-                    });
-                });
-
-        // 경매 마감 날짜 입력란 비활성화
-        document.getElementById('deadline').disabled = true;
-
-        // 경매 스위치 체크 이벤트
-        document.getElementById('isAuction').addEventListener('change', function() {
-            // 경매 스위치가 활성화되었을 때
-            if (this.checked) {
-                // 경매 마감 날짜 입력란 활성화
-                document.getElementById('deadline').disabled = false;
+        $('input[type="file"]').change(function(e) {
+            var id = $(this).attr('id');
+            if (this.files.length > 0) {
+                // 파일이 선택되었을 때의 동작 수행
+                previewImage(this, id);
             } else {
-                // 경매 스위치가 비활성화되었을 때
-                // 경매 마감 날짜 입력란 비활성화 및 값 초기화
-                document.getElementById('deadline').disabled = true;
-                document.getElementById('deadline').value = '';
+                // 파일 선택이 취소되었을 때의 동작 수행
+                if (id == 'fileInput1') {
+                    var imgElement = document.querySelector('.changingImage1');
+                } else if (id == 'fileInput2') {
+                    var imgElement = document.querySelector('.changingImage1');
+                } else if (id == 'fileInput3') {
+                    var imgElement = document.querySelector('.changingImage1');
+                }
+                imgElement.src = "/images/icon/noImage.png";
             }
         });
 
-        function formatPrice() {
-            // 입력 필드에서 값을 가져옴
-            let input = document.getElementById('price').value;
-            let input2 = document.getElementById('maxPrice').value;
-            // 쉼표를 추가하여 형식 변환
-            let formattedPrice = input.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            let formattedPrice2 = input2.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            // 변환된 값을 다시 입력 필드에 설정
-            document.getElementById('price').value = formattedPrice;
-            document.getElementById('maxPrice').value = formattedPrice2;
+        function previewImage(input, id) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    if (id === 'fileInput1') {
+                        document.getElementById('existingProductImage1').innerText = '변경할 이미지1';
+                        var imgElement = document.querySelector('.changingImage1');
+                        imgElement.src = e.target.result;
+                    } else if (id === 'fileInput2') {
+                        document.getElementById('existingProductImage2').innerText = '변경할 이미지2';
+                        var imgElement = document.querySelector('.changingImage2');
+                        imgElement.src = e.target.result;
+                    } else if (id === 'fileInput3') {
+                        document.getElementById('existingProductImage3').innerText = '변경할 이미지3';
+                        var imgElement = document.querySelector('.changingImage3');
+                        imgElement.src = e.target.result;
+                    }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
-        // 지도를 표시할 영역을 설정
-        // 클릭한 위치의 위도와 경도를 저장할 변수
-        var clickedLatitude = null;
-        var clickedLongitude = null;
+        var auctionCheckbox = document.getElementById('isAuction');
 
-        var mapOptions = {
-            center: new naver.maps.LatLng(${latiAndLong.latitude}, ${latiAndLong.longitude}),
-            zoom: 17 // 초기 줌 레벨
-        };
+        auctionCheckbox.addEventListener('change', function () {
 
-        // 네이버 지도 생성
-        var map = new naver.maps.Map('map', mapOptions);
+            if (auctionCheckbox.checked) {
+                document.getElementById('auctionInput').style.display = 'block';
+                document.getElementById('maxPriceButton').style.display = 'block';
+            } else {
+                document.getElementById('auctionInput').style.display = 'none';
+                document.getElementById('maxPriceButton').style.display = 'none';
+            }
+        });
 
-        var marker = null; // 스탬프 마커
-        var marker2 = null;
+        $.ajax({
+            url: "/board/board-category",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
 
-        marker2 = new naver.maps.Marker({
-            position: mapOptions.center,
+                $.each(response, function(index, value) {
+                    $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                    $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                    $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>")
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("요청 실패:", status, error);
+            }
+        });
+    });
+
+    // 경매 마감 날짜 입력란 비활성화
+    document.getElementById('deadline').disabled = true;
+
+    // 경매 스위치 체크 이벤트
+    document.getElementById('isAuction').addEventListener('change', function() {
+        // 경매 스위치가 활성화되었을 때
+        if (this.checked) {
+            // 경매 마감 날짜 입력란 활성화
+            document.getElementById('deadline').disabled = false;
+        } else {
+            // 경매 스위치가 비활성화되었을 때
+            // 경매 마감 날짜 입력란 비활성화 및 값 초기화
+            document.getElementById('deadline').disabled = true;
+            document.getElementById('deadline').value = '';
+        }
+    });
+
+    function formatPrice() {
+        // 입력 필드에서 값을 가져옴
+        let input = document.getElementById('price').value;
+        let input2 = document.getElementById('maxPrice').value;
+        // 쉼표를 추가하여 형식 변환
+        let formattedPrice = input.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        let formattedPrice2 = input2.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        // 변환된 값을 다시 입력 필드에 설정
+        document.getElementById('price').value = formattedPrice;
+        document.getElementById('maxPrice').value = formattedPrice2;
+    }
+
+    // 지도를 표시할 영역을 설정
+    // 클릭한 위치의 위도와 경도를 저장할 변수
+    var clickedLatitude = null;
+    var clickedLongitude = null;
+
+    var mapOptions = {
+        center: new naver.maps.LatLng(${latiAndLong.latitude}, ${latiAndLong.longitude}),
+        zoom: 17 // 초기 줌 레벨
+    };
+
+    // 네이버 지도 생성
+    var map = new naver.maps.Map('map', mapOptions);
+
+    var marker = null; // 스탬프 마커
+    var marker2 = null;
+
+    marker2 = new naver.maps.Marker({
+        position: mapOptions.center,
+        map: map
+    });
+
+    // 정보 창 생성
+    var infowindow2 = new naver.maps.InfoWindow({
+        content: '<div style="padding:10px;">현재 위치</div>',
+        backgroundColor: '#fff',
+        borderColor: '#000',
+        anchorSize: new naver.maps.Size(0, 0),
+        anchorSkew: true
+    });
+    // 정보 창을 지도에 열어둠
+    infowindow2.open(map, marker2);
+
+    // 클릭 이벤트 핸들러 추가
+    naver.maps.Event.addListener(map, 'click', function(e) {
+        // 클릭한 위치의 좌표 가져오기
+        var latlng = e.coord;
+
+        // 이전에 찍은 스탬프 마커가 있으면 지우기
+        if (marker !== null) {
+            marker.setMap(null);
+        }
+
+        // 마커 생성
+        marker = new naver.maps.Marker({
+            position: latlng,
             map: map
         });
 
+        // 클릭한 위치의 위도와 경도를 변수에 저장
+        clickedLatitude = latlng.lat();
+        clickedLongitude = latlng.lng();
+
         // 정보 창 생성
-        var infowindow2 = new naver.maps.InfoWindow({
-            content: '<div style="padding:10px;">현재 위치</div>',
+        var infowindow = new naver.maps.InfoWindow({
+            content: '<div style="padding:10px;">거래 희망 위치</div>',
             backgroundColor: '#fff',
             borderColor: '#000',
             anchorSize: new naver.maps.Size(0, 0),
             anchorSkew: true
         });
-        // 정보 창을 지도에 열어둠
+
+        // 정보 창을 마커 위에 표시
+        infowindow.open(map, marker);
+
+        // 위도와 경도를 hidden 필드에 설정
+        document.getElementById('latitude').value = clickedLatitude;
+        document.getElementById('longitude').value = clickedLongitude;
+    });
+
+    // 마커를 클릭했을 때 정보 창 열기
+    naver.maps.Event.addListener(marker2, 'click', function() {
         infowindow2.open(map, marker2);
+    });
 
-        // 클릭 이벤트 핸들러 추가
-        naver.maps.Event.addListener(map, 'click', function(e) {
-            // 클릭한 위치의 좌표 가져오기
-            var latlng = e.coord;
+    // 마커를 클릭했을 때 정보 창 열기
+    naver.maps.Event.addListener(marker, 'click', function() {
+        infowindow.open(map, marker);
+    });
 
-            // 이전에 찍은 스탬프 마커가 있으면 지우기
-            if (marker !== null) {
-                marker.setMap(null);
-            }
+    // 지도를 클릭했을 때 정보 창이 닫히지 않도록 설정
+    naver.maps.Event.addListener(map, 'click', function() {
+        // 정보 창이 열려있을 때만 닫히도록 설정
+        if (infowindow2.getMap()) {
+            infowindow2.close();
+        }
+    });
 
-            // 마커 생성
-            marker = new naver.maps.Marker({
-                position: latlng,
-                map: map
-            });
+</script>
 
-            // 클릭한 위치의 위도와 경도를 변수에 저장
-            clickedLatitude = latlng.lat();
-            clickedLongitude = latlng.lng();
-
-            // 정보 창 생성
-            var infowindow = new naver.maps.InfoWindow({
-                content: '<div style="padding:10px;">거래 희망 위치</div>',
-                backgroundColor: '#fff',
-                borderColor: '#000',
-                anchorSize: new naver.maps.Size(0, 0),
-                anchorSkew: true
-            });
-
-            // 정보 창을 마커 위에 표시
-            infowindow.open(map, marker);
-
-             // 위도와 경도를 hidden 필드에 설정
-            document.getElementById('latitude').value = clickedLatitude;
-            document.getElementById('longitude').value = clickedLongitude;
-        });
-
-        // 마커를 클릭했을 때 정보 창 열기
-        naver.maps.Event.addListener(marker2, 'click', function() {
-            infowindow2.open(map, marker2);
-        });
-
-        // 마커를 클릭했을 때 정보 창 열기
-        naver.maps.Event.addListener(marker, 'click', function() {
-            infowindow.open(map, marker);
-        });
-
-        // 지도를 클릭했을 때 정보 창이 닫히지 않도록 설정
-        naver.maps.Event.addListener(map, 'click', function() {
-            // 정보 창이 열려있을 때만 닫히도록 설정
-            if (infowindow2.getMap()) {
-                infowindow2.close();
-            }
-        });
-
-
-
-
-    </script>
 </body>
 
 
