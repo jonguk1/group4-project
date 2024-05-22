@@ -31,26 +31,18 @@
         function displayServerTime() {
             const eventSource = new EventSource('/time');
 
+            let alertDisplayed = false;
+
             eventSource.onmessage = function(event) {
-                currentServerTime = new Date(event.data);
+                const currentServerTime = new Date(event.data);
                 const deadlineElements = document.querySelectorAll('.deadline');
 
-                for (const deadlineElement of deadlineElements) {
+                deadlineElements.forEach(deadlineElement => {
                     const deadline = new Date(deadlineElement.dataset.deadline);
                     const timeDifference = deadline.getTime() - currentServerTime.getTime();
 
-                    console.log(deadline);
-                    console.log(currentServerTime);
-                    console.log(timeDifference);
-
-                    if(timeDifference == 0){
-                        alert('경매시간이 종료되었습니다');
-                        location.reload();
-                    }
-
                     if (timeDifference <= 0) {
                         deadlineElement.innerText = "경매시간이 종료되었습니다";
-                        console.log(deadlineElement.innerText);
                         const auctionId = deadlineElement.closest('.auction-details').querySelector('input[name="auctionId"]').value;
                         updateAuctionStatus(auctionId);
                         const auctionDetails = deadlineElement.closest('.auction-details');
@@ -62,12 +54,16 @@
                         if (buttonElement) {
                             buttonElement.disabled = true;
                         }
-                        eventSource.close();
-                    }else{
+                        if (!alertDisplayed) {
+                            alert("경매가 종료되었습니다.");
+                            alertDisplayed = true;
+                            window.location.reload();
+                        }
+                    } else {
                         const formattedDifference = formatTimeDifference(timeDifference);
                         deadlineElement.innerText = formattedDifference;
                     }
-                }
+                });
             };
         }
 
@@ -134,29 +130,28 @@
                     method: 'PUT',
                     data: formData,
                     success: function(response) {
-                        if (response === 'emptyCurrentPrice') {
-                            alert('금액을 입력하세요.');
-                            return;
-                        }else if(response === 'maxCurrentPrice'){
-                            alert('상한가를 넘게 입력하셧습니다. 다시 입력하세요');
-                            return;
-                        }else if(response =='lowCurrentPrice'){
-                            alert('현재 등록된 금액보다 낮게 입력하셧습니다. 다시 입력하세요');
-                            return;
-                        }else if (response === 'ok') {
-                            alert('경매 등록 성공!');
-                            location.reload();
-                        } else if (response === 'no') {
-                            alert('경매 등록 실패!');
-                            return;
-                        } else {
-                            alert('알 수 없는 응답: ' + response);
+                        const messages = {
+                                'emptyCurrentPrice': '금액을 입력하세요.',
+                                'maxCurrentPrice': '상한가를 넘게 입력하셧습니다. 다시 입력하세요.',
+                                'lowCurrentPrice': '현재 등록된 금액보다 낮게 입력하셧습니다. 다시 입력하세요.',
+                                'overDate':'경매 마감시간이 지났습니다.',
+                                'ok': '경매 등록 성공!',
+                                'no': '경매 등록 실패!'
+                            };
+                        if (response in messages) {
+                            alert(messages[response]);
+                            if (response === 'ok') {
+                                location.reload();
+                            }
                             return;
                         }
+
+                        alert('알 수 없는 응답: ' + response);
+                        return;
                     },
                     error: function(xhr, status, error) {
                         console.error('경매 등록에 실패하였습니다:', error);
-                       alert("오류 발생");
+                        alert("오류 발생");
                     }
                 });
             });

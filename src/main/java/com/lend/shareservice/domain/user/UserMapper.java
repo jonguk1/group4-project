@@ -21,9 +21,9 @@ public interface UserMapper {
 
     int blockUser(Block block);
 
-    List<MyLenderAndMyLendyDTO> lenders(Map<String, Object> map);
+    List<MyLenderAndMyLendyDTO> findByLender(Map<String, Object> map);
 
-    List<MyLenderAndMyLendyDTO> lendys(Map<String, Object> map);
+    List<MyLenderAndMyLendyDTO> findByLendy(Map<String, Object> map);
 
     int getLenderCount(String userId);
 

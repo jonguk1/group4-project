@@ -71,21 +71,21 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<MyLenderAndMyLendyDTO> lenders(PagingDTO page, String userId) {
+    public List<MyLenderAndMyLendyDTO> findByLender(PagingDTO page, String userId) {
         Map<String,Object> map=new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return userMapper.lenders(map);
+        return userMapper.findByLender(map);
     }
 
     @Override
-    public List<MyLenderAndMyLendyDTO> lendys(PagingDTO page, String userId) {
+    public List<MyLenderAndMyLendyDTO> findByLendy(PagingDTO page, String userId) {
         Map<String,Object> map=new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return userMapper.lendys(map);
+        return userMapper.findByLendy(map);
     }
 
     @Override

@@ -24,7 +24,7 @@ public class UserSignupService {
     }
 
 
-    public UserVo logiin(final String userId, final String pw) {
+    public UserVo login(final String userId, final String pw) {
 
 
         UserVo readUser = userMapper.getUserAccount(userId);

@@ -2,6 +2,7 @@ package com.lend.shareservice.domain.auction;
 
 
 import com.lend.shareservice.domain.notification.EmitterRepository;
+import com.lend.shareservice.web.auction.dto.AuctionBoardDTO;
 import com.lend.shareservice.web.auction.dto.AuctionDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import com.lend.shareservice.domain.board.BoardService;
@@ -12,10 +13,13 @@ import com.lend.shareservice.entity.Notification;
 import com.lend.shareservice.entity.Participant_Auction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -73,16 +77,45 @@ public class AuctionServiceImpl implements AuctionService{
 
 
     @Override
-    public int updateCurrentPrice(int auctionId, int currentPrice, String userId) {
+    @Transactional
+    public String updateCurrentPrice(int auctionId, int currentPrice, String userId) {
+
+        if (currentPrice == 0) {
+            return "emptyCurrentPrice";
+        }
+
+        int maxPrice = auctionMapper.getMaxPrice(auctionId);
+        int getCurrentPrice = auctionMapper.getCurrentPrice(auctionId);
+        Date deadline = auctionMapper.getDeadline(auctionId);
+        Instant currentInstant = Instant.now();
+        Instant deadlineInstant = deadline.toInstant();
+
+        if (currentPrice > maxPrice) {
+            return "maxCurrentPrice";
+        }
+
+        if (currentPrice <= getCurrentPrice) {
+            return "lowCurrentPrice";
+        }
+
+        if(currentInstant.isAfter(deadlineInstant)){
+            return "overDate";
+        }
+
         Map<String, Object> map = new HashMap<>();
-        map.put("currentPrice",currentPrice);
-        map.put("auctionId",auctionId);
-        map.put("userId",userId);
+        map.put("currentPrice", currentPrice);
+        map.put("auctionId", auctionId);
+        map.put("userId", userId);
 
-        String message = userId + "님이 " + currentPrice + "로 경매가를 올렸습니다";
-        notificationService.sendMessageAuctionUsers(auctionId, message);
+        int updateResult = auctionMapper.updateCurrentPrice(map);
 
-        return auctionMapper.updateCurrentPrice(map);
+        if (updateResult > 0) {
+            String message = userId + "님이 " + currentPrice + "로 경매가를 올렸습니다";
+            notificationService.sendMessageAuctionUsers(auctionId, message);
+            return "ok";
+        } else {
+            return "no";
+        }
     }
 
     @Override
@@ -197,6 +230,11 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public int getCurrentPrice(int auctionId) {
         return auctionMapper.getCurrentPrice(auctionId);
+    }
+
+    @Override
+    public List<AuctionDTO> getDeadlineList() {
+        return auctionMapper.getDeadlineList();
     }
 
 

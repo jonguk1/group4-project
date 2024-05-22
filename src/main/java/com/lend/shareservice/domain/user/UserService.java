@@ -18,9 +18,9 @@ public interface UserService {
 
     MyDetailDTO findByUserDetail(String userId);
 
-    List<MyLenderAndMyLendyDTO> lenders(PagingDTO page, String userId);
+    List<MyLenderAndMyLendyDTO> findByLender(PagingDTO page, String userId);
 
-    List<MyLenderAndMyLendyDTO> lendys(PagingDTO page, String userId);
+    List<MyLenderAndMyLendyDTO> findByLendy(PagingDTO page, String userId);
 
     int getLenderCount(String userId);
 
