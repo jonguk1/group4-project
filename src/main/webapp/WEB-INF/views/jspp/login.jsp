@@ -107,17 +107,13 @@
                <div class="board">
                    <form id="loginForm" onsubmit="return false;" method="post">
                        <div class="form-group">
-                           <label for="exampleInputUserId1">
-                               아이디
-                           </label>
-                           <input type="text" name="userId" id="userId" class="form-control" id="userid1" />
+                           <label for="userId">아이디</label>
+                           <input type="text" name="userId" id="userId" class="form-control" />
                        </div>
                        <br>
                        <div class="form-group">
-                           <label th:for="exampleInputPassword">
-                               비밀번호
-                           </label>
-                           <input type="password" name="pw" id="pw" class="form-control" id="exampleInputPassword1" />
+                           <label for="exampleInputPassword1">비밀번호</label>
+                           <input type="password" name="pw" id="exampleInputPassword1" class="form-control" />
                        </div>
                        <br>
                        <label for="remember-check">
@@ -128,9 +124,7 @@
                        <div class="row">
                            <div class="col text-center">
                                <div class="form-group">
-                                   <button type="button" onclick="login();" class="btn btn-primary btn-block" style="width: 100%;">
-                                       login
-                                   </button>
+                                   <button type="button" id="loginBtn" class="btn btn-primary btn-block" style="width: 100%;">login</button>
                                </div>
                            </div>
                        </div>
@@ -138,9 +132,7 @@
                        <div class="row">
                            <div class="col-md text-center">
                                <div class="form-group">
-                                   <button type="button" onclick="location.href='user/signup'" class="btn btn-info" style="width: 100%;">
-                                       회원가입
-                                   </button>
+                                   <button type="button" onclick="location.href='user/signup'" class="btn btn-info" style="width: 100%;">회원가입</button>
                                </div>
                            </div>
                        </div>
@@ -166,6 +158,7 @@ window.onload = () => {
         })
     })
 
+
     $.ajax({
         url: "/board/board-category",
         type: "GET",
@@ -185,33 +178,53 @@ window.onload = () => {
     });
 }
 
+        document.addEventListener("DOMContentLoaded", function() {
+            var userIdInput = document.getElementById("userId");
+            var rememberCheck = document.getElementById("remember-check");
+            var loginBtn = document.getElementById("loginBtn");
 
+            // 세션저장소에 있으면 유저아이디 돌려줌
+            if (sessionStorage.getItem("savedUserId")) {
+                userIdInput.value = sessionStorage.getItem("savedUserId");
+                rememberCheck.checked = true;
+            }
+
+            //로그인 기능
 			function login() {
+                        const form = document.getElementById('loginForm');
 
-            			const form = document.getElementById('loginForm');
+                        if (!form.userId.value || !form.pw.value) {
+                            alert('아이디와 비밀번호를 모두 입력해 주세요.');
+                            form.userId.focus();
+                            return false;
+                        }
 
-            			if ( !form.userId.value || !form.pw.value ) {
-            				alert('아이디와 비밀번호를 모두 입력해 주세요.');
-            				form.userId.focus();
-            				return false;
-            			}
+                        $.ajax({
+                            url: '/login',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: {
+                                userId: form.userId.value,
+                                pw: form.pw.value
+                            },
+                            async: false,
+                            success: function(response) {
+                                // If the remember checkbox is checked, save userId to session storage
+                                if (rememberCheck.checked) {
+                                    sessionStorage.setItem("savedUserId", form.userId.value);
+                                } else {
+                                    sessionStorage.removeItem("savedUserId");
+                                }
 
-            			$.ajax({
-            				url : '/login',
-            				type : 'POST',
-            				dataType : 'json',
-            				data : {
-            					userId: form.userId.value,
-            					pw: form.pw.value
-            				},
-            				async : false,
-            				success : function (response) {
-            					location.href = '/board?boardCategoryId=1&itemCategoryId=1';
-            				},
-            				error : function (request, status, error) {
-            					alert('아이디와 비밀번호를 확인해 주세요.');
-            				}
-            			})
-            		}
-	</script>
+                                location.href = '/board?boardCategoryId=1&itemCategoryId=1';
+                            },
+                            error: function(request, status, error) {
+                                alert('아이디와 비밀번호를 확인해 주세요.');
+                            }
+                        });
+                    }
+
+                    loginBtn.addEventListener("click", login);
+                });
+            </script>
 </body>

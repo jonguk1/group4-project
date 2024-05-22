@@ -10,10 +10,9 @@ import lombok.Setter;
 public class ChatRoomDTO {
 
     private int chatId;//채팅방번호
-    private String lastMessage;//최근메세지
-    private String sendTime;//메세지 보낸 시간
-    private String target; //메세지 받는 사람
     private int boardId;//상세글번호
-
+    private String lendy; //메세지 보낸 사람
+    private String lender; //메세지 받는 사람
+    private String chatDate; //방 생성일
 
 }

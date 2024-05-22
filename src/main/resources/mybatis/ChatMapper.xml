@@ -11,6 +11,19 @@
             boardId = #{value}
         </where>
     </select>
-
+    <insert id="createRoom" parameterType="com.lend.shareservice.entity.Chatroom">
+        insert into Chatroom (chatId, boardId, lendy, lender, chatDate)
+        values(#{chatId},#{boardId},#{lendy},#{lender},#{chatDate})
+    </insert>
+    <select id="selectChatId" resultType="Integer" parameterType="com.lend.shareservice.entity.Chatroom">
+        select chatId from chatRoom
+        <where>
+            lendy=#{lendy} and lender=#{lender} and boardId=#{boardId}
+        </where>
+    </select>
+    <insert id="insertChat" parameterType="com.lend.shareservice.entity.Message">
+        insert into Message (chatId, lendy, lender, content, sendTime)
+        values(#{chatId},#{lendy},#{lender},#{content},#{sendTime})
+    </insert>
 
 </mapper>

@@ -30,9 +30,12 @@ public interface UserService {
 
     int updateUser(String userId,UpdateUserDTO updateUserDTO);
 
-    int updateUserAddress(String userId, Double latitude, Double longitude);
+
+    boolean idCheck(String userId);
 
     User findUserById(String userId);
+
+    int updateUserAddress(String userId, Double latitude, Double longitude);
 
     int deleteUser(String userId);
 

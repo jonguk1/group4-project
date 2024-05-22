@@ -57,6 +57,7 @@ public class RedisConfig {
         return redisTemplate;
     }
 
+    // Redis에 메세지 내역을 저장하기 위한 RedisTemplate 설정
     @Bean
     public RedisTemplate<String, ChatDTO> redisTemplateMessage(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, ChatDTO> redisTemplateMessage = new RedisTemplate<>();
@@ -66,20 +67,5 @@ public class RedisConfig {
         return redisTemplateMessage;
     }
 
-    @Bean
-    //Redis를 사용하여 캐시 관리를 위한 'CacheManager'를 설정하는 메서드
-    //Redis를 사용하여 스프링 애플리케이션에서 캐시를 관리하기 위한 설정을 제공
-    //이를 통해 캐시된 데이터를 Redis에 저장하고, 캐시된 데이터의 만료 시간을 설정하여 메모리를 효울적으로 관리 가능
-    public CacheManager cacheManager() {
-        //RedisCacheManager를 생성하는 빌더를 만든다   redisConnectionFactory()->Redis와의 연결을 설정하는데 사용된다.
-        RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(redisConnectionFactory());
-        //Redis 캐시 구성을 설정
-        RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())) // Value Serializer 변경
-                //캐시 항목의 만료 시간 설정
-                .entryTtl(Duration.ofMinutes(5)); // 캐시 수명 5분
-        builder.cacheDefaults(configuration);
-        return builder.build();
-    }
 
 }

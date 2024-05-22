@@ -33,6 +33,8 @@ public interface UserMapper {
 
     int updateUser(UpdateUserDTO updateUserDTO);
 
+    int idCheck(String userId);
+
     int updateUserAddress(UpdateUserAddressDTO updateUserAddressDTO);
 
     User selectUserById(String userId);
@@ -40,5 +42,6 @@ public interface UserMapper {
     int deleteUser(String userId);
 
     int updateMoney(User user);
+
 
 }
