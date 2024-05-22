@@ -10,6 +10,8 @@
         <head>
 
             <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
+
+
             <link rel="stylesheet" href="/css/bootstrap.min.css">
 
             <meta charset="UTF-8">
@@ -1232,22 +1234,27 @@
 
 
                 // 글 상세 번호 채팅에 넘겨주기 위한 함수
-                function chat() {
+                function chat() {//채팅방 열기
                     if (${loggedIn}) {
-                        //alert("글 상세번호 : " + "${postById.boardId}");
-                        var boardId2 = parseInt("${postById.boardId}"); // 글 상세 번호
-                        var form = document.createElement("form");
-                        form.setAttribute("method", "post");
-                        form.setAttribute("action", "/chat/chat2");
+                        if("${userId}"=="${postById.writer}"){//만약 유저아이디랑 글쓴이가 같다면
+                            window.location.href = "/chat/chatList/"+"${userId}";//채팅리스트로 이동
+                        } else {
+                            //alert("글 상세번호 : " + "${postById.boardId}");
+                            var boardId2 = parseInt("${postById.boardId}"); // 글 상세 번호
+                            var form = document.createElement("form");
+                            form.setAttribute("method", "post");
+                            form.setAttribute("action", "/chat/chat2");
 
-                        var hiddenField = document.createElement("input");
-                        hiddenField.setAttribute("type", "hidden");
-                        hiddenField.setAttribute("name", "boardId2");
-                        hiddenField.setAttribute("value", boardId2);
-                        form.appendChild(hiddenField);
+                            var hiddenField = document.createElement("input");
+                            hiddenField.setAttribute("type", "hidden");
+                            hiddenField.setAttribute("name", "boardId2");
+                            hiddenField.setAttribute("value", boardId2);
+                            form.appendChild(hiddenField);
 
-                        document.body.appendChild(form);
-                        form.submit();
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+
                     } else {
                         showAlert();
                     }

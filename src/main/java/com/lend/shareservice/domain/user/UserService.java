@@ -34,8 +34,6 @@ public interface UserService {
     boolean idCheck(String userId);
 
 
-
-
     int updateUserAddress(String userId, Double latitude, Double longitude);
 
     User findUserById(String userId);

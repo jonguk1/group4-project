@@ -1,9 +1,10 @@
 package com.lend.shareservice.web.chat.dto;
 //채팅 메시지 구현을 위한 DTO
 import lombok.*;
-
-@Getter
-@Setter
+//
+//@Getter
+//@Setter
+@Data
 public class ChatDTO {
 
     private String lendy; //메세지 보낸 사람

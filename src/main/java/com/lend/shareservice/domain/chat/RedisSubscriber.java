@@ -32,7 +32,7 @@ public class RedisSubscriber implements MessageListener {
 
             // Websocket 구독자에게 채팅 메시지 전송
             //@SendTo의 경로와 일치해야함
-            messagingTemplate.convertAndSend("/topic/messages/", chatDTO);
+            messagingTemplate.convertAndSend("/topic/messages/"+chatDTO.getChatId(), chatDTO);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
