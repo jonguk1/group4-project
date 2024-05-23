@@ -1,6 +1,7 @@
 package com.lend.shareservice.domain.board;
 
 import com.lend.shareservice.domain.address.AddressService;
+import com.lend.shareservice.domain.board.dto.BoardAuctionStateDTO;
 import com.lend.shareservice.domain.user.UserMapper;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.Board;
@@ -214,7 +215,7 @@ public class BoardServiceImpl implements BoardService{
         }
         board.setWriter(postRegistrationDTO.getWriter());
         board.setLendDate(null);
-        log.info("save!!! = {}", board);
+
         boardMapper.insertBoard(board);
     }
 
@@ -230,7 +231,7 @@ public class BoardServiceImpl implements BoardService{
             return null;
         }
 
-        log.info("board = {}", board);
+
 
         ItemDetailDTO itemDetailDTO = new ItemDetailDTO();
 
@@ -372,5 +373,84 @@ public class BoardServiceImpl implements BoardService{
         return -1;
     }
 
+    public int updateIsAuction(BoardAuctionStateDTO boardAuctionStateDTO) {
+        return boardMapper.updateIsAuction(boardAuctionStateDTO);
+    }
+
+    public int editPost(PostEditDTO postEditDTO) {
+
+        List<MultipartFile> fileInput = postEditDTO.getFileInput();
+
+        int currentIndex = 0;
+
+        if (fileInput != null) {
+            for (MultipartFile multipartFile : fileInput) {
+
+                if (multipartFile.getOriginalFilename().isEmpty()) {
+                    if (currentIndex == 0) {
+                        String image = boardMapper.selectImage1(postEditDTO.getBoardId());
+                        postEditDTO.setImage1(image);
+                    } else if (currentIndex == 1) {
+                        String image = boardMapper.selectImage2(postEditDTO.getBoardId());
+                        postEditDTO.setImage2(image);
+                    } else if (currentIndex == 2) {
+                        String image = boardMapper.selectImage3(postEditDTO.getBoardId());
+                        postEditDTO.setImage3(image);
+                    }
+
+                    currentIndex++;
+                    continue;
+                }
+
+                String fileUUID = UUID.randomUUID().toString();
+                String originalFilename = multipartFile.getOriginalFilename();
+                String[] split = originalFilename.split("\\.");
+
+                String ext = split[1];
+
+                try {
+                    byte[] bytes = multipartFile.getBytes();
+                    String fileName = multipartFile.getOriginalFilename();
+                    BufferedOutputStream stream = new BufferedOutputStream(
+                            new FileOutputStream(new File(url + fileUUID + "." + ext)));
+                    stream.write(bytes);
+                    stream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (postEditDTO.getImage1() == null) {
+                    postEditDTO.setImage1(fileUUID + "." + ext);
+                } else if (postEditDTO.getImage2() == null) {
+                    postEditDTO.setImage2(fileUUID + "." + ext);
+                } else if (postEditDTO.getImage3() == null) {
+                    postEditDTO.setImage2(fileUUID + "." + ext);
+                }
+
+                currentIndex++;
+            }
+        } else {
+            String image = boardMapper.selectImage1(postEditDTO.getBoardId());
+            postEditDTO.setImage1(image);
+        }
+
+        if (postEditDTO.getReturnDate() != null) {
+            postEditDTO.setDateTypeReturnDate(Date.valueOf(postEditDTO.getReturnDate()));
+        }
+
+        try {
+            postEditDTO.setIntTypePrice(Integer.valueOf(NumberFormat.getInstance(Locale.KOREA).parse(postEditDTO.getPrice()).intValue()));
+        } catch (Exception e) {
+
+        }
+
+        if (postEditDTO.getLatitude() == null || postEditDTO.getLongitude() == null) {
+            LatiLongDTO latiLongDTO = boardMapper.selectLatAndLong(postEditDTO.getBoardId());
+            postEditDTO.setLatitude(latiLongDTO.getLatitude());
+            postEditDTO.setLongitude(latiLongDTO.getLongitude());
+        }
+
+        return boardMapper.updatePost(postEditDTO);
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.lend.shareservice.domain.auction;
 
 
+import com.lend.shareservice.domain.board.dto.BoardAuctionStateDTO;
 import com.lend.shareservice.domain.notification.EmitterRepository;
 import com.lend.shareservice.domain.user.UserMapper;
 import com.lend.shareservice.entity.User;
@@ -129,14 +130,13 @@ public class AuctionServiceImpl implements AuctionService{
 
         // 업데이트 결과에 따른 처리
         if (updateResult > 0) {
-            String message = userId + "님이 " + currentPrice + "로 경매가를 올렸습니다";
+            String message = userId + "님이 " + currentPrice + "로 입찰가를 올렸습니다";
             notificationService.sendMessageAuctionUsers(auctionId, message);
             return "ok";
         } else {
             return "no";
         }
     }
-
 
     @Override
     @Transactional
@@ -150,6 +150,7 @@ public class AuctionServiceImpl implements AuctionService{
             Auction auction = new Auction();
             auction.setBoardId(boardId);
             auction.setCurrentPrice(0);
+
             // 경매방 생성
             Auction findMaxPrice = auctionMapper.selectMaxPrice(auction);
             auction.setMaxPrice(findMaxPrice.getMaxPrice());
@@ -159,6 +160,8 @@ public class AuctionServiceImpl implements AuctionService{
             Participant_Auction participantAuction = new Participant_Auction();
             participantAuction.setAuctionId(findAuctionId.getAuctionId());
             participantAuction.setUserId(userId);
+
+
             // 경매방_참여 등록
             return auctionMapper.insertAuctionParticipant(participantAuction);
 
@@ -179,6 +182,7 @@ public class AuctionServiceImpl implements AuctionService{
                 notification.setUserId(boardService.findPostById(boardId).getWriter());
                 notification.setIsRead(false);
                 notification.setBoardId(boardId);
+
                 notificationMapper.insertNotification(notification);
 
 
@@ -192,6 +196,8 @@ public class AuctionServiceImpl implements AuctionService{
                     notificationMapper.insertNotification(notification);
                     notificationService.sendToClient(id, "경매가 시작되었습니다");
                 }
+
+                boardService.updateIsAuction(new BoardAuctionStateDTO(boardId, AuctionState.PROGRESS.getState()));
 
                 notificationService.sendToClient(userId, "경매가 시작되었습니다");
                 notification.setUserId(userId);

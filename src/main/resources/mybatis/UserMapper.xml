@@ -96,10 +96,10 @@
     <update id="updateUser" parameterType="com.lend.shareservice.web.user.dto.UpdateUserDTO">
         update user
         set name=#{name},
-            pw=#{pw},
-            phoneNumber=#{phoneNumber},
-            latitude=#{latitude},
-            longitude=#{longitude}
+        pw=#{pw},
+        phoneNumber=#{phoneNumber},
+        latitude=#{latitude},
+        longitude=#{longitude}
         <where>
             userId=#{userId}
         </where>
