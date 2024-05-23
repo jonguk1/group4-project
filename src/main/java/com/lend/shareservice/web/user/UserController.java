@@ -31,14 +31,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-import java.util.HashMap;
+
+
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @AllArgsConstructor
 public class UserController {
-
 
     private final UserService userService;
 
@@ -46,13 +45,8 @@ public class UserController {
 
     private final AddressService addressService;
 
-
     @Autowired
     private CommonUtil util;
-
-
-
-
 
     @GetMapping("/test")
     public String test(@SessionAttribute(name="userId", required = false)String userId, Model model) {
@@ -203,9 +197,6 @@ public class UserController {
 
         return "redirect:/login";
     }
-
-
-    
     @GetMapping("/user/idCheck")
     public String idCheckForm(){
 
@@ -226,9 +217,6 @@ public class UserController {
 
         return "jspp/idCheckResult";
     }
-
-
-
 
     // 차단 등록
     @PostMapping("/user/{userId}/block")
@@ -280,55 +268,28 @@ public class UserController {
     }
 
     @PutMapping("/user/{userId}")
-    public ResponseEntity<Map<String, String>> updateUser(@PathVariable("userId") String userId,
+    public ResponseEntity<String> updateUser(@PathVariable("userId") String userId,
                                              @Valid @RequestBody UpdateUserDTO updateUserDTO,
                                              BindingResult bindingResult){
+        // 만약 유효성 검사에서 오류가 발생한 경우
         if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
+            // 각 필드에 대한 오류 메시지를 응답으로 반환
+            StringBuilder errorMessage = new StringBuilder("입력한 데이터가 유효하지 않습니다:\n");
             for (FieldError error : bindingResult.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
+                errorMessage.append(error.getDefaultMessage()).append("\n");
             }
-            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(errorMessage.toString());
         }
+        System.out.println(updateUserDTO.getName());
+
 
         int n=userService.updateUser(userId,updateUserDTO);
 
-        Map<String, String> response = new HashMap<>();
-        if (n > 0) {
-            response.put("message", "ok");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-
-        response.put("message", "no");
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PutMapping("/user/{userId}/address")
-    public ResponseEntity<String> updateUserAddress(@PathVariable("userId") String userId,
-                                                    @RequestParam("latitude") Double latitude,
-                                                    @RequestParam("longitude") Double longitude){
-
-        int n= userService.updateUserAddress(userId,latitude,longitude);
-
         if(n>0){
             return ResponseEntity.ok("ok");
-        }else{
-            return ResponseEntity.ok("no");
-        }
-    }
-
-    @DeleteMapping("/user/{userId}")
-    public ResponseEntity<String> DeleteUser(@PathVariable("userId")String userId, HttpSession session){
-
-        int n=userService.deleteUser(userId);
-
-        if(n>0){
-            session.invalidate();
-            return ResponseEntity.ok("ok");
-        }else{
-            return ResponseEntity.ok("no");
         }
 
+        return ResponseEntity.ok("no");
     }
 
     @PutMapping("/user/{userId}/charge")

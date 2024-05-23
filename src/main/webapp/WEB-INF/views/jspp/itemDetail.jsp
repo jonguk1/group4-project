@@ -10,6 +10,8 @@
         <head>
 
             <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
+
+
             <link rel="stylesheet" href="/css/bootstrap.min.css">
 
             <meta charset="UTF-8">
@@ -57,10 +59,17 @@
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="#">
-                                                    <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                <a class="nav-link" href="#" id="notificationIcon">
+                                                    <img src="/images/icon/notificationIcon.png"  style="width:30px; height:30px;">
+                                                    <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                                 </a>
                                             </c:if>
+                                        </li>
+
+                                        <li>
+                                            <div id="messageContainer" style="display: none;">
+
+                                            </div>
                                         </li>
 
                                         <li class="nav-item">
@@ -72,7 +81,7 @@
                                         </li>
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                                <a class="nav-link" href="/user/${userId}" style="color: black;">${userId}님</a>
                                             </c:if>
                                         </li>
                                         <li class="nav-item">
@@ -235,7 +244,7 @@
                             <span>
                                  <img src="/images/people.png" alt="대체_텍스트" style="width: 50px;">
                             </span>
-                                <a href="/user"><span>${postById.writer}</span></a>
+                                <a href="/user/${postById.writer}"><span>${postById.writer}</span></a>
                             <span>
 
                                 <button type="button" class="btn btn-primary" onclick="chat()">채팅</button>
@@ -1018,16 +1027,11 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <div id="postById" style="display: none;">${postById}</div>
-
+            <script src="/js/notification.js"></script>
+            <link rel="stylesheet" type="text/css" href="/css/notification.css">
             <script>
 
                 $(document).ready(function() {
-
-                    const eventSource = new EventSource('http://localhost:8081/subscribe');
-
-                    eventSource.addEventListener('auction', event => {
-
-                    });
 
                      var userId = document.getElementById("userId").value;
                      var dataString = document.getElementById("postById").textContent;
@@ -1230,22 +1234,27 @@
 
 
                 // 글 상세 번호 채팅에 넘겨주기 위한 함수
-                function chat() {
+                function chat() {//채팅방 열기
                     if (${loggedIn}) {
-                        //alert("글 상세번호 : " + "${postById.boardId}");
-                        var boardId2 = parseInt("${postById.boardId}"); // 글 상세 번호
-                        var form = document.createElement("form");
-                        form.setAttribute("method", "post");
-                        form.setAttribute("action", "/chat/chat2");
+                        if("${userId}"=="${postById.writer}"){//만약 유저아이디랑 글쓴이가 같다면
+                            window.location.href = "/chat/chatList/"+"${userId}";//채팅리스트로 이동
+                        } else {
+                            //alert("글 상세번호 : " + "${postById.boardId}");
+                            var boardId2 = parseInt("${postById.boardId}"); // 글 상세 번호
+                            var form = document.createElement("form");
+                            form.setAttribute("method", "post");
+                            form.setAttribute("action", "/chat/chat2");
 
-                        var hiddenField = document.createElement("input");
-                        hiddenField.setAttribute("type", "hidden");
-                        hiddenField.setAttribute("name", "boardId2");
-                        hiddenField.setAttribute("value", boardId2);
-                        form.appendChild(hiddenField);
+                            var hiddenField = document.createElement("input");
+                            hiddenField.setAttribute("type", "hidden");
+                            hiddenField.setAttribute("name", "boardId2");
+                            hiddenField.setAttribute("value", boardId2);
+                            form.appendChild(hiddenField);
 
-                        document.body.appendChild(form);
-                        form.submit();
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+
                     } else {
                         showAlert();
                     }

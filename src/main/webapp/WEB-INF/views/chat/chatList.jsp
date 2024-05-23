@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <%@ page language = "java" contentType = "text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
     <title>Navigation Bar</title>
@@ -47,14 +51,14 @@
 
                                             <li class="nav-item">
                                                 <c:if test="${loggedIn}">
-                                                    <a class="nav-link" href="#">
+                                                    <a class="nav-link" href="/chat/chatList/${userId}">
                                                         <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
                                                     </a>
                                                 </c:if>
                                             </li>
                                             <li class="nav-item">
                                                 <c:if test="${loggedIn}">
-                                                    <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
+                                                    <a class="nav-link" href="/user" style="color: black;">내정보</a>
                                                 </c:if>
                                             </li>
                                             <li class="nav-item">
@@ -114,82 +118,30 @@
     			<div class="row">
     				<div class="col-md-2">
     				</div>
-    				<div class="col-md-4">
-    					<h2>
-    						상세
-    					</h2>
-    					<img alt="Bootstrap Image Preview" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg" />
-                        <img alt="Bootstrap Image Preview" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg" />
-                        <img alt="Bootstrap Image Preview" src="https://www.layoutit.com/img/sports-q-c-140-140-3.jpg" />
-                        <br>
-                        <br>
-    					<button type="button" class="btn btn-md btn-success">닉네임</button>
-    					<button type="button" class="btn btn-success">채팅</button>
-    					<button type="button" class="btn btn-success">가격</button>
-                        <br>
-                        <br>
-                        <h3>자전거 빌려 드립니다.</h3>
-                        <p>상세 내용 ㅇㅁㄹㅇㅁㄴㄻㅇㄴㄹㅇㅁㄴㄻㅇㄴㄻㅇㄴㄻㄴㅇㄹㅇㄴㅁㄹ
-                            ㅇㄻㅇㄴㄻㄴㅇㄻㄴㅇㄹㅇㄴㅇㅁㄻㅇㄴㄻㄴㅇㄹ
-                            ㅇㄹㅇㅁㄴㄻㅇㄴㄻㄴㅇㄹㅇㅁㄴㄹㅇㅁㄴ리망너리;ㅏ멍ㄴ;리ㅓㅁㅇ;니ㅏ러;ㅣㅏㅇㅁ너리;ㅏ멍ㄴ리;ㅏ
-                        </p>
-    				</div>
-    				<div class="col-md-4">
+    				<div class="col-md-8">
     					<h3>
-    						채팅
+    						${userId}님의 채팅
     					</h3>
-
-                        <ul class="list-group">
-                            <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
-                                user 이름1
-                                <span class="badge bg-primary rounded-pill">2024.04.26</span>
-                            </li>
-
-                            <a href="#"><li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                                ㅈㅅ
-                                <span class="badge bg-primary rounded-pill"></span>
-                              </li></a>
-
-
-                            <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
-                                user 이름2
-
-                                <span class="badge bg-primary rounded-pill">2024.04.26</span>
-                            </li>
-                            <a href="#"><li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                                네고되냐고 네고되냐고 네고되냐고 네고되냐고 네고되냐고 네고되냐고
-                                <span class="badge bg-primary rounded-pill">8</span>
-                              </li></a>
-
-
-                            <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
-                                user 이름3
-                                <span class="badge bg-primary rounded-pill">2024.04.26</span>
-                            </li>
-
-                            <a href="#"><li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                                자니...?
-                                <span class="badge bg-primary rounded-pill">1</span>
-                              </li></a>
-
-
-                            <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
-                                user 이름4
-                                <span class="badge bg-primary rounded-pill">2024.04.26</span>
-                            </li>
-
-                            <a href="a"><li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                                하이용
-                                <span class="badge bg-primary rounded-pill">1</span>
-                            </li></a>
-
-                            <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                                썸띵랜드 채팅입니당~
-                            </li>
-                        </ul>
+                         <div id="chatList">
+                             <ul class="list-group">
+                                 <c:forEach var="chat" items="${chatList}">
+                                    <a href="/chat/chat/{chatList.chatId}">
+                                        <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
+                                              <c:out value="${chat.lendy}"/>
+                                             <span class="badge bg-primary rounded-pill"><fmt:formatDate pattern="yy-MM-dd HH:mm:ss" value="${chat.sendTime}"/></span>
+                                        </li>
+                                        <a href="#">
+                                            <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
+                                                 <c:out value="${chat.content}"/>
+                                                 <span class="badge bg-primary rounded-pill"></span>
+                                           </li>
+                                        </a>
+                                    </a>
+                                </c:forEach>
+                             </ul>
+                         </div>
                     </div>
     				<div class="col-md-2">
-
     				</div>
     			</div>
     		</div>
@@ -206,25 +158,27 @@
     <script>
         $(document).ready(function() {
             $.ajax({
-                       url: "/board/board-category",
-                       type: "GET",
-                       dataType: "json",
-                       success: function(response) {
-                           console.log(response);
+               url: "/board/board-category",
+               type: "GET",
+               dataType: "json",
+               success: function(response) {
+                   console.log(response);
 
-                           $.each(response, function(index, value) {
-                               $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                               $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                               $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
-                           });
-
-
-                       },
-                       error: function(xhr, status, error) {
-                           console.error("요청 실패:", status, error);
-                       }
+                   $.each(response, function(index, value) {
+                       $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                       $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                       $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
                    });
+
+
+               },
+               error: function(xhr, status, error) {
+                   console.error("요청 실패:", status, error);
+               }
+            });
+
         });
+
     </script>
 
 
