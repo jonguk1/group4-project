@@ -73,8 +73,11 @@
 
                                          <li class="nav-item">
 
-                                             <c:if test="${loggedIn}">
+                                             <c:if test="${loggedIn &&  !authorization}">
                                                  <a class="nav-link" href="/user/${userId}" style="color: black;">${userId}님</a>
+                                             </c:if>
+                                             <c:if test="${loggedIn &&  authorization}">
+                                                <a class="nav-link" href="/report" style="color: black;">${userId}님</a>
                                              </c:if>
                                          </li>
                                         <li class="nav-item">

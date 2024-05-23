@@ -191,5 +191,55 @@
         </where>
     </select>
 
+    <select id="getDeadlineList" resultMap="auctionMap">
+        select
+        a.auctionId,b.deadline
+        from auction a
+        inner join board b
+        on a.boardId=b.boardId
+        inner join participant_Auction p
+        on a.auctionId=p.auctionId
+        <where>
+            b.isAuction=1
+            and a.currentPrice = (
+            select
+            currentPrice
+            from auction a2
+            where a2.auctionId=a.auctionId
+            group by auctionId )
+        </where>
+        order by b.deadline
+    </select>
+
+    <select id="getDeadline" parameterType="_int" resultType="date">
+        select b.deadline
+        from board b
+        inner join auction a
+        on b.boardId=a.boardId
+        <where>
+            a.auctionId=#{value}
+            and b.isAuction=1
+        </where>
+    </select>
+
+    <select id="findByAuctionUserId" resultType="String">
+        select userId
+        from auction
+        <where>
+            userId=#{userId}
+            and auctionId=#{auctionId}
+        </where>
+    </select>
+
+    <select id="findByMoney" parameterType="String" resultType="_int">
+        select money
+        from user u
+        inner join Participant_Auction p
+        on u.userId=p.userId
+        <where>
+            u.userId=#{value}
+        </where>
+        group by u.userId
+    </select>
 
 </mapper>

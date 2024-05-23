@@ -21,9 +21,9 @@ public interface UserMapper {
 
     int blockUser(Block block);
 
-    List<MyLenderAndMyLendyDTO> lenders(Map<String, Object> map);
+    List<MyLenderAndMyLendyDTO> findByLender(Map<String, Object> map);
 
-    List<MyLenderAndMyLendyDTO> lendys(Map<String, Object> map);
+    List<MyLenderAndMyLendyDTO> findByLendy(Map<String, Object> map);
 
     int getLenderCount(String userId);
 
@@ -33,11 +33,20 @@ public interface UserMapper {
 
     int updateUser(UpdateUserDTO updateUserDTO);
 
+
+    int idCheck(String userId);
+
+
     int updateUserAddress(UpdateUserAddressDTO updateUserAddressDTO);
 
 
 
+
+    int updateMoney(User user);
+
+
     int deleteUser(String userId);
+
 
     int idCheck(String userId);
 }

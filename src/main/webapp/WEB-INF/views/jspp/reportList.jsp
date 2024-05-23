@@ -45,6 +45,29 @@
 
                 fetchReportsWriterPage(writer, pageNum);
             });
+
+            $('.btn-primary').click(function(event) {
+                event.preventDefault();
+                var writer = $(this).closest('tr').find('.test').data('writer');
+
+                if (confirm(writer + "님을 영구적으로 정지하시겠습니까?")) {
+                    $.ajax({
+                        url: '/report/' + writer + '/ban',
+                        method: 'PUT',
+                        success: function(response) {
+                            if (response === "ok") {
+                                alert(writer+"님을 영구적으로 정지하였습니다");
+                                location.reload();
+                            } else {
+                                alert("정지에 실패하였습니다");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX request failed:', error);
+                        }
+                    });
+                }
+            });
         });
 
         function fetchReportsWriter(writer) {

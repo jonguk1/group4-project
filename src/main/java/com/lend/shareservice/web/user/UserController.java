@@ -77,7 +77,7 @@ public class UserController {
         //1.회원정보 조회
         String userId = request.getParameter("userId");
         String pw = request.getParameter("pw");
-        UserVo user = userSignupService.logiin(userId,pw);
+        UserVo user = userSignupService.login(userId,pw);
 
         //2. 세션에 회원정보 저장 , 세션 유지 시간 설정
         if(user != null){
@@ -85,6 +85,8 @@ public class UserController {
             HttpSession session = request.getSession(true);  // Session이 없으면 생성
             // 세션에 userId를 넣어줌
             session.setAttribute("userId", user.getUserId());
+            session.setAttribute("authorization",user.getAuthorization());
+            session.setAttribute("ban",user.getBan());
             session.setMaxInactiveInterval(1800); // Session이 30분동안 유지
         }
 
@@ -120,7 +122,15 @@ public class UserController {
 
         page.init();
 
-        List<MyLenderAndMyLendyDTO> lenders= userService.lenders(page,userId);
+        List<MyLenderAndMyLendyDTO> lenders= userService.findByLender(page,userId);
+
+        for(MyLenderAndMyLendyDTO dto:lenders){
+            if (dto.getLongitude() != null && dto.getLatitude() != null) {
+                dto.setAddress(addressService.getAddressFromLatLng(dto.getLatitude(), dto.getLongitude()));
+            } else {
+                dto.setAddress("");
+            }
+        }
 
         String loc ="/user/"+userId+"/lender";
 
@@ -149,7 +159,15 @@ public class UserController {
 
         page.init();
 
-        List<MyLenderAndMyLendyDTO> lendys= userService.lendys(page,userId);
+        List<MyLenderAndMyLendyDTO> lendys= userService.findByLendy(page,userId);
+
+        for(MyLenderAndMyLendyDTO dto:lendys){
+            if (dto.getLongitude() != null && dto.getLatitude() != null) {
+                dto.setAddress(addressService.getAddressFromLatLng(dto.getLatitude(), dto.getLongitude()));
+            } else {
+                dto.setAddress("");
+            }
+        }
 
         String loc ="/user/"+userId+"/lendy";
 
@@ -272,6 +290,19 @@ public class UserController {
         }
 
         return ResponseEntity.ok("no");
+    }
+
+    @PutMapping("/user/{userId}/charge")
+    public ResponseEntity<String> ChargeMoney(@PathVariable("userId")String userId,
+                                              @RequestParam("money") Integer money){
+
+        int n=userService.updateMoney(userId,money);
+
+        if(n>0){
+            return ResponseEntity.ok("ok");
+        }else{
+            return ResponseEntity.ok("no");
+        }
     }
 
 }

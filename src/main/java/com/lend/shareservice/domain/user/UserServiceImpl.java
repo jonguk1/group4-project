@@ -32,6 +32,14 @@ public class UserServiceImpl implements UserService{
         return userMapper.deleteUser(userId);
     }
 
+    @Override
+    public int updateMoney(String userId,Integer money) {
+        User user=new User();
+        user.setUserId(userId);
+        user.setMoney(money);
+        return userMapper.updateMoney(user);
+    }
+
 
     @Override
     public int blockUser(String userId) {
@@ -70,21 +78,21 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<MyLenderAndMyLendyDTO> lenders(PagingDTO page, String userId) {
+    public List<MyLenderAndMyLendyDTO> findByLender(PagingDTO page, String userId) {
         Map<String,Object> map=new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return userMapper.lenders(map);
+        return userMapper.findByLender(map);
     }
 
     @Override
-    public List<MyLenderAndMyLendyDTO> lendys(PagingDTO page, String userId) {
+    public List<MyLenderAndMyLendyDTO> findByLendy(PagingDTO page, String userId) {
         Map<String,Object> map=new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return userMapper.lendys(map);
+        return userMapper.findByLendy(map);
     }
 
     @Override

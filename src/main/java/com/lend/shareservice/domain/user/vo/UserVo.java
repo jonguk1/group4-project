@@ -32,11 +32,7 @@ public class UserVo  {
     // 주소
     private String address;
 
+    private Boolean authorization;
 
-
-
-
-
-
-
+    private Boolean ban;
 }

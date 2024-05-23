@@ -33,10 +33,10 @@
         VALUES (#{blockedUserId}, #{blockUserId})
     </insert>
 
-    <select id="lenders" parameterType="map" resultMap="MyLenderAndMyLendyMap">
+    <select id="findByLender" parameterType="map" resultMap="MyLenderAndMyLendyMap">
         select
         writer,title,content,price,isAuction,isLend,interestCnt,hits,
-        itemName,itemImage1
+        itemName,itemImage1,regDate,returnDate,b.latitude,b.longitude,b.boardId
         from chatroom c inner join board b
         on c.boardId=b.boardId
         <where>
@@ -45,10 +45,10 @@
         order by b.boardId desc limit #{limit} offset #{offset}
     </select>
 
-    <select id="lendys" parameterType="map" resultMap="MyLenderAndMyLendyMap">
+    <select id="findByLendy" parameterType="map" resultMap="MyLenderAndMyLendyMap">
         select
         writer,title,content,price,isAuction,isLend,interestCnt,hits,
-        itemName,itemImage1
+        itemName,itemImage1,regDate,returnDate,b.latitude,b.longitude,b.boardId
         from chatroom c inner join board b
         on c.boardId=b.boardId
         <where>
@@ -120,5 +120,15 @@
             userId=#{value}
         </where>
     </delete>
+
+    <update id="updateMoney" parameterType="com.lend.shareservice.entity.User">
+        update user
+        set
+            money=money+#{money}
+        <where>
+            userId=#{userId}
+        </where>
+
+    </update>
 
 </mapper>

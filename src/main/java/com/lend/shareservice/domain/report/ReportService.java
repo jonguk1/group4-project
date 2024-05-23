@@ -15,4 +15,6 @@ public interface ReportService {
 
     int getReportWriterCount(String writer);
 
+    int updateBanUser(String writer);
+
 }

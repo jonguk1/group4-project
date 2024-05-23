@@ -3,6 +3,9 @@ package com.lend.shareservice.domain.auction;
 
 import com.lend.shareservice.domain.board.dto.BoardAuctionStateDTO;
 import com.lend.shareservice.domain.notification.EmitterRepository;
+import com.lend.shareservice.domain.user.UserMapper;
+import com.lend.shareservice.entity.User;
+import com.lend.shareservice.web.auction.dto.AuctionBoardDTO;
 import com.lend.shareservice.web.auction.dto.AuctionDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import com.lend.shareservice.domain.board.BoardService;
@@ -13,10 +16,13 @@ import com.lend.shareservice.entity.Notification;
 import com.lend.shareservice.entity.Participant_Auction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -74,18 +80,72 @@ public class AuctionServiceImpl implements AuctionService{
 
 
     @Override
-    public int updateCurrentPrice(int auctionId, int currentPrice, String userId) {
+    @Transactional
+    public String updateCurrentPrice(int auctionId, int currentPrice, String userId) {
+        // 현재 가격이 0일 경우
+        if (currentPrice == 0) {
+            return "emptyCurrentPrice";
+        }
+
+        // 최대 가격, 현재 가격, 마감일, 현재 시각, 사용자 돈 조회
+        int maxPrice = auctionMapper.getMaxPrice(auctionId);
+        int getCurrentPrice = auctionMapper.getCurrentPrice(auctionId);
+        Date deadline = auctionMapper.getDeadline(auctionId);
+        Instant currentInstant = Instant.now();
+        Instant deadlineInstant = (deadline != null) ? deadline.toInstant() : null;
+        int money = auctionMapper.findByMoney(userId);
+
+        // 경매 마감 여부 확인
+        if (deadlineInstant != null && currentInstant.isAfter(deadlineInstant)) {
+            return "overDate";
+        }
+
+        // 현재 가격이 최대 가격보다 크거나 같은 경우
+        if (currentPrice > maxPrice) {
+            return "maxCurrentPrice";
+        }
+
+        // 현재 가격이 이미 최고 가격보다 낮은 경우
+        if (currentPrice <= getCurrentPrice) {
+            return "lowCurrentPrice";
+        }
+
+
+        // 사용자의 돈이 현재 가격보다 적은 경우
+        if (money < currentPrice) {
+            return "noMoney";
+        }
+
+        // 중복 입찰 여부 확인
+        String duplicateUserId = auctionMapper.findByAuctionUserId(userId, auctionId);
+        if (duplicateUserId != null) {
+            return "duplicateUserId";
+        }
+
+        // 경매 정보 업데이트
         Map<String, Object> map = new HashMap<>();
-        map.put("currentPrice",currentPrice);
-        map.put("auctionId",auctionId);
-        map.put("userId",userId);
+        map.put("currentPrice", currentPrice);
+        map.put("auctionId", auctionId);
+        map.put("userId", userId);
+        int updateResult = auctionMapper.updateCurrentPrice(map);
+
+        // 업데이트 결과에 따른 처리
+        if (updateResult > 0) {
+            String message = userId + "님이 " + currentPrice + "로 경매가를 올렸습니다";
+            notificationService.sendMessageAuctionUsers(auctionId, message);
+            return "ok";
+        } else {
+            return "no";
+        }
 
         String message = userId + "님이 " + currentPrice + "원으로 입찰가를 올렸습니다";
         notificationService.sendMessageAuctionUsers(auctionId, message);
 
 
         return auctionMapper.updateCurrentPrice(map);
+
     }
+
 
     @Override
     @Transactional
@@ -205,6 +265,11 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public int getCurrentPrice(int auctionId) {
         return auctionMapper.getCurrentPrice(auctionId);
+    }
+
+    @Override
+    public List<AuctionDTO> getDeadlineList() {
+        return auctionMapper.getDeadlineList();
     }
 
 

@@ -92,6 +92,46 @@
                 });
             });
 
+            $("#chargeBtn").click(function(){
+                $("#chargeModal").modal("show");
+            });
+
+            function askForChargeConfirmation() {
+                return confirm("충전하시겠습니까?");
+            }
+
+            $("#completeChangeBtn").click(function(){
+                var chargeAmount = $('#money').val();
+                if (askForChargeConfirmation()) {
+                    $.ajax({
+                        url: "/user/${userId}/charge",
+                        type: "PUT",
+                        data: {
+                            money: chargeAmount
+                        },
+                        dataType: "text",
+                        success: function(response) {
+                            if (response === 'ok') {
+                                alert('충전이 완료되었습니다');
+                                $("#chargeModal").modal("hide");
+                                location.reload();
+                            } else if (response === 'no') {
+                                alert('충전이 실패하셧습니다');
+                                return;
+                            } else {
+                                alert('알 수 없는 응답: ' + response);
+                                return;
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+               } else {
+
+               }
+            });
+
             // 버튼 클릭 시 모달 창 열기
             $("#openMapBtn").click(function(){
                 $("#mapModal").modal("show");
@@ -335,11 +375,30 @@
                        <label for="inputDefault">충전한 돈</label>
                        <div>
                            <span>&nbsp;<fmt:formatNumber value="${details.money}" pattern="#,###"/> 원</span>
-                           <button type="submit" class="btn btn-primary">
+                           <button type="submit" class="btn btn-primary" id="chargeBtn">
                                충전
                            </button>
                        <div>
                    </div>
+                   <div id="chargeModal" class="modal fade" tabindex="-1" role="dialog">
+                       <div class="modal-dialog modal-lg" role="document">
+                           <div class="modal-content">
+                               <div class="modal-header">
+                                   <h5 class="modal-title">충전하기</h5>
+                               </div>
+                               <div class="modal-body">
+                                   <div style="display: flex; align-items: center;">
+                                       <h5 style="margin-right: 10px;">충전할 금액:</h5>
+                                       <input type="text" class="form-control" id="money" style="width:300px;border: 1px solid;"/>
+                                       <h5 style="margin-left: 10px;">원</h5>
+                                   </div>
+                               </div>
+                               <div class="modal-footer">
+                                   <button type="button" class="btn btn-primary" id="completeChangeBtn">충전하기</button>
+                               </div>
+                           </div>
+                       </div>
+                 </div>
                    <div class="form-group">
                        <label for="inputDefault" style="margin-top:10px">
                            내 동네

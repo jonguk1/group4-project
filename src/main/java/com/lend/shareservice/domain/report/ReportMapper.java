@@ -17,4 +17,6 @@ public interface ReportMapper {
 
     int getReportWriterCount(String writer);
 
+    int updateBanUser(String writer);
+
 }

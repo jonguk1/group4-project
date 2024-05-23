@@ -18,6 +18,11 @@
         select count(*) as writerCnt,b.writer
         from report r inner join board b
         on r.boardId = b.boardId
+        inner join user u
+        on b.writer= u.userId
+        <where>
+            u.ban=false
+        </where>
         group by b.writer
         order by b.writer limit #{limit} offset #{offset}
     </select>
@@ -50,5 +55,20 @@
             b.writer=#{writer}
         </where>
     </select>
+
+    <update id="updateBanUser" parameterType="String">
+        UPDATE user
+        SET ban = true
+        <where>
+        userId = (
+            SELECT b.writer
+            FROM report r
+            INNER JOIN board b ON r.boardId = b.boardId
+            WHERE b.writer=#{value}
+            GROUP BY b.writer
+            HAVING COUNT(b.writer) >= 5
+        )
+        </where>
+    </update>
 
 </mapper>

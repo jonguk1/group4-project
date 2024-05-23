@@ -41,4 +41,10 @@ public class ReportServiceImpl implements ReportService{
     public int getReportWriterCount(String writer) {
         return reportMapper.getReportWriterCount(writer);
     }
+
+    @Override
+    public int updateBanUser(String writer) {
+        return reportMapper.updateBanUser(writer);
+    }
+
 }

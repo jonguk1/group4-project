@@ -1,6 +1,7 @@
 package com.lend.shareservice.domain.auction;
 
 
+import com.lend.shareservice.web.auction.dto.AuctionBoardDTO;
 import com.lend.shareservice.web.auction.dto.AuctionDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public interface AuctionService {
 
     int getMaxPrice(int auctionId);
 
-    int updateCurrentPrice(int auctionId,int currentPrice,String userId);
+    String updateCurrentPrice(int auctionId,int currentPrice,String userId);
 
     int paticipateAuction(String id, Integer boardId);
 
@@ -31,4 +32,6 @@ public interface AuctionService {
     int updateIsAuction(int auctionId);
 
     int getCurrentPrice(int auctionId);
+
+    List<AuctionDTO> getDeadlineList();
 }
