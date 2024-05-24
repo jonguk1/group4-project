@@ -3,10 +3,7 @@ package com.lend.shareservice.domain.user;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.Block;
 import com.lend.shareservice.entity.User;
-import com.lend.shareservice.web.user.dto.MyDetailDTO;
-import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
-import com.lend.shareservice.web.user.dto.UpdateUserAddressDTO;
-import com.lend.shareservice.web.user.dto.UpdateUserDTO;
+import com.lend.shareservice.web.user.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -33,20 +30,15 @@ public interface UserMapper {
 
     int updateUser(UpdateUserDTO updateUserDTO);
 
-
-    int idCheck(String userId);
-
-
     int updateUserAddress(UpdateUserAddressDTO updateUserAddressDTO);
-
-
-
 
     int updateMoney(User user);
 
-
     int deleteUser(String userId);
 
+    List<MyBoardDTO> findByMyBoard(Map<String, Object> map);
+
+    int getMyBoardCount(String userId);
 
     int idCheck(String userId);
 

@@ -36,7 +36,7 @@ $(document).ready(function() {
                 alert(notification.content + 'ha..');
                 var message = "<div class='row'><div class='col-md-2'></div><div class='col-md-8'>" + notification.notiRegDate + "</div><div class='col-md-2'><img src='/images/icon/xIcon.png' id='" + notification.notiId + "' style='width:15px; height:15px;' class='xIcon'></div></div>" + notification.content + "<br> <a href='/board/" + notification.boardId + "'><img src='/images/icon/rightDirectionIcon.png' style='width:20px; height:20px;'> 해당 글로 가기</a> <hr>";
 
-                addMessage(me   ssage);
+                addMessage(message);
 
             });
         },

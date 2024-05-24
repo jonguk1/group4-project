@@ -74,12 +74,6 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public int getMaxPrice(int auctionId) {
-        return auctionMapper.getMaxPrice(auctionId);
-    }
-
-
-    @Override
     @Transactional
     public String updateCurrentPrice(int auctionId, int currentPrice, String userId) {
         // 현재 가격이 0일 경우
@@ -122,7 +116,6 @@ public class AuctionServiceImpl implements AuctionService{
             return "duplicateUserId";
         }
 
-        // 경매 정보 업데이트
         Map<String, Object> map = new HashMap<>();
         map.put("currentPrice", currentPrice);
         map.put("auctionId", auctionId);
@@ -131,19 +124,12 @@ public class AuctionServiceImpl implements AuctionService{
 
         // 업데이트 결과에 따른 처리
         if (updateResult > 0) {
-            String message = userId + "님이 " + currentPrice + "로 경매가를 올렸습니다";
+            String message = userId + "님이 " + currentPrice + "로 입찰가를 올렸습니다";
             notificationService.sendMessageAuctionUsers(auctionId, message);
             return "ok";
         } else {
             return "no";
         }
-
-        String message = userId + "님이 " + currentPrice + "원으로 입찰가를 올렸습니다";
-        notificationService.sendMessageAuctionUsers(auctionId, message);
-
-
-        return auctionMapper.updateCurrentPrice(map);
-
     }
 
 
@@ -263,14 +249,8 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public int getCurrentPrice(int auctionId) {
-        return auctionMapper.getCurrentPrice(auctionId);
-    }
-
-    @Override
     public List<AuctionDTO> getDeadlineList() {
         return auctionMapper.getDeadlineList();
     }
-
 
 }

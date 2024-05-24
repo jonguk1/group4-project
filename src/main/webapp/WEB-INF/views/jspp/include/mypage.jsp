@@ -14,6 +14,7 @@
               <a href="/favorite/${userId}" class="list-group-item list-group-item-action">관심 목록</a>
               <a href="/user/${userId}/lender" class="list-group-item list-group-item-action">빌려준 목록</a>
               <a href="/user/${userId}/lendy" class="list-group-item list-group-item-action">빌린 목록</a>
+              <a href="/user/${userId}/board" class="list-group-item list-group-item-action">내가 쓴 글 목록</a>
               <a href="/review/${userId}/sent" class="list-group-item list-group-item-action">보낸 리뷰 목록</a>
               <a href="/review/${userId}/received" class="list-group-item list-group-item-action">받은 리뷰 목록</a>
               <a href="/user/${userId}/block" class="list-group-item list-group-item-action">차단 목록</a>

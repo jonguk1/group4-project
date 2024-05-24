@@ -21,8 +21,6 @@ public interface AuctionService {
 
     List<AuctionDTO> completeAuctions(PagingDTO page,String userId);
 
-    int getMaxPrice(int auctionId);
-
     String updateCurrentPrice(int auctionId,int currentPrice,String userId);
 
     int paticipateAuction(String id, Integer boardId);
@@ -30,8 +28,6 @@ public interface AuctionService {
     boolean findCurrentAuctionState(String userId);
 
     int updateIsAuction(int auctionId);
-
-    int getCurrentPrice(int auctionId);
 
     List<AuctionDTO> getDeadlineList();
 }
