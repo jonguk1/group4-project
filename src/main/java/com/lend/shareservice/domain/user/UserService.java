@@ -10,6 +10,7 @@ import com.lend.shareservice.web.user.dto.MyBoardDTO;
 import com.lend.shareservice.web.user.dto.MyDetailDTO;
 import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
 import com.lend.shareservice.web.user.dto.UpdateUserDTO;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
