@@ -55,13 +55,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-
     public boolean idCheck(String userId) {
         int n=userMapper.idCheck(userId);
 
         return (n>0)? false: true;
     }
 
+    @Override
     public int updateUserAddress(String userId, Double latitude, Double longitude) {
         UpdateUserAddressDTO updateUserAddressDTO = new UpdateUserAddressDTO();
         updateUserAddressDTO.setUserId(userId);

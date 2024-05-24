@@ -54,11 +54,7 @@
                         if (buttonElement) {
                             buttonElement.disabled = true;
                         }
-                        if (!alertDisplayed) {
-                            alert("경매가 종료되었습니다.");
-                            alertDisplayed = true;
-                            window.location.reload();
-                        }
+
                     } else {
                         const formattedDifference = formatTimeDifference(timeDifference);
                         deadlineElement.innerText = formattedDifference;

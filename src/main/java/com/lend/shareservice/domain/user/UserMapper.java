@@ -33,13 +33,13 @@ public interface UserMapper {
 
     int updateUser(UpdateUserDTO updateUserDTO);
 
-    int updateUserAddress(UpdateUserAddressDTO updateUserAddressDTO);
+    int idCheck(String userId);
 
-    int deleteUser(String userId);
+    int updateUserAddress(UpdateUserAddressDTO updateUserAddressDTO);
 
     int updateMoney(User user);
 
-    int idCheck(String userId);
+    int deleteUser(String userId);
 
     User selectUserById(String userId);
 }
