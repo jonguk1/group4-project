@@ -49,4 +49,6 @@ public interface UserMapper {
 
 
     int idCheck(String userId);
+
+    User selectUserById(String userId);
 }
