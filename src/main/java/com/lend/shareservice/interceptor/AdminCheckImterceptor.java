@@ -19,10 +19,10 @@ public class AdminCheckImterceptor implements HandlerInterceptor {
         String userId = (String)session.getAttribute("userId");
         Boolean authorization = (Boolean)session.getAttribute("authorization");
 
-        if(userId !=null && !authorization){
-            session.removeAttribute("userId");
-            response.sendRedirect("/login");
-        }
+//        if(userId !=null && !authorization){
+//            session.removeAttribute("userId");
+//            response.sendRedirect("/login");
+//        }
 
     }
 }

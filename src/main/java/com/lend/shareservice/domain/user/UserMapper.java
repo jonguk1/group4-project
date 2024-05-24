@@ -40,7 +40,9 @@ public interface UserMapper {
 
     int getMyBoardCount(String userId);
 
+
     int idCheck(String userId);
+
 
     User selectUserById(String userId);
 }

@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public int updateMoney(String userId,Integer money) {
-        User user=new User();
+        User user = new User();
         user.setUserId(userId);
         user.setMoney(money);
         return userMapper.updateMoney(user);
@@ -53,9 +53,8 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public int blockUser(String userId) {
-        Block block = new Block();
-        block.setBlockedUserId(userId);
+    public int blockUser(String userId, String writer) {
+        Block block = new Block(userId, writer);
         return userMapper.blockUser(block);
     }
 
@@ -115,5 +114,7 @@ public class UserServiceImpl implements UserService{
     public int getLendyCount(String userId) {
         return userMapper.getLendyCount(userId);
     }
+
+
 
 }

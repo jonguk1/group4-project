@@ -44,4 +44,6 @@ public interface BoardMapper {
     String selectImage3(Integer boardId);
 
     LatiLongDTO selectLatAndLong(Integer boardId);
+
+    void expireMegaphone();
 }

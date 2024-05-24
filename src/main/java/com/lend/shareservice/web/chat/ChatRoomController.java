@@ -34,7 +34,7 @@ public class ChatRoomController {
     @PostMapping("/chat")
     public String chatRoom2(@RequestParam("boardId2") Integer boardId,
                             HttpServletRequest request,
-                            Model model) {
+                                    Model model) {
         HttpSession session = request.getSession();
         String userId = (String) session.getAttribute("userId");
         //chatRoom2에 글상세번호 전달하기 위함
@@ -91,9 +91,11 @@ public class ChatRoomController {
         // 클라이언트의 채팅방 입장 및 대화를 위해 리스너와 연동, Redis구독을 위한 메소드
         chatService.enterChatRoom(chatDTO.getChatId());
         // Websocket 에 발행된 메시지를 redis 로 발행. 해당 쪽지방을 구독한 클라이언트에게 메시지가 실시간 전송됨 (1:N, 1:1 에서 사용 가능)
+
         // redisPublisher.publish(chatService.getTopic(chatDTO.getChatId()), chatDTO);
         if (chatDTO.getContent().startsWith("#100")) {
             log.info("아무거나 한번만");
+
             // 대화 조회
             List<ChatDTO> chatList = chatService.loadMessage(chatDTO.getChatId());
             if(chatList.size()==0){
