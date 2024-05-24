@@ -242,4 +242,9 @@
         group by u.userId
     </select>
 
+    <select id="selectBoardId" parameterType="_int">
+        SELECT boardId
+        FROM AUCTION
+        WHERE auctionId = #{auctionId}
+    </select>
 </mapper>

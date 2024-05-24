@@ -48,5 +48,5 @@ public interface UserMapper {
     int deleteUser(String userId);
 
 
-    int idCheck(String userId);
+    User selectUserById(String userId);
 }

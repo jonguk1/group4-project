@@ -21,6 +21,7 @@ public class NotificationServiceImpl implements NotificationService{
     private final NotificationMapper notificationMapper;
     private final EmitterRepository emitterRepository;
     private final AuctionMapper auctionMapper;
+
     public SseEmitter subscribe(String userId) {
         SseEmitter emitter = createEmitter(userId);
 
@@ -78,6 +79,11 @@ public class NotificationServiceImpl implements NotificationService{
         // 특정 경매방에 참여자들에게 실시간 메시지를 보냄
         for (String auctionMember : auctionMembers) {
             sendToClient(auctionMember, message);
+
+            // 알림 저장
+            Integer boardId = auctionMapper.selectBoardId(auctionId);
+            Notification notification = new Notification(auctionMember, message, false, boardId);
+            insertNotification(notification);
         }
 
     }
@@ -86,5 +92,11 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     public int deleteNotification(Integer notiId) {
         return notificationMapper.deleteNotification(notiId);
+    }
+
+    // 알림 등록
+    @Override
+    public int insertNotification(Notification notification) {
+        return notificationMapper.insertNotification(notification);
     }
 }

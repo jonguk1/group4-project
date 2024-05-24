@@ -7,6 +7,7 @@ import com.lend.shareservice.domain.user.service.UserSignupService;
 import com.lend.shareservice.domain.user.util.CommonUtil;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.User;
+import com.lend.shareservice.web.user.dto.BlockDTO;
 import com.lend.shareservice.web.user.dto.MyDetailDTO;
 import com.lend.shareservice.web.user.dto.UpdateUserDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import com.lend.shareservice.web.paging.dto.PagingDTO;
 import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
 import lombok.AllArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -221,8 +224,9 @@ public class UserController {
     // 차단 등록
     @PostMapping("/user/{userId}/block")
     @ResponseBody
-    public ResponseEntity<String> blockUser(@PathVariable("userId") String userId) {
-        if (userService.blockUser(userId) > 0) {
+    public ResponseEntity<String> blockUser(@PathVariable("userId") String userId, @RequestBody BlockDTO blockDTO) {
+
+        if (userService.blockUser(userId, blockDTO.getWriter()) > 0) {
             return ResponseEntity.ok("ok");
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to block user.");
@@ -303,6 +307,14 @@ public class UserController {
         }else{
             return ResponseEntity.ok("no");
         }
+    }
+
+    // 유저의 돈 조회
+    @GetMapping("/user/{userId}/money")
+    @ResponseBody
+    public ResponseEntity<Integer> getUserMoney(@PathVariable("userId") String userId) {
+        log.info("요청");
+        return ResponseEntity.ok(userService.findByUserDetail(userId).getMoney());
     }
 
 }

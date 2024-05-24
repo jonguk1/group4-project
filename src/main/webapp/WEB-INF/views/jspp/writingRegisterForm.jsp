@@ -154,10 +154,8 @@
                                     <div>
                                         <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('title').defaultMessage}</span>
                                     </div>
-                            </c:if>
+                                </c:if>
                                 <input type="input" class="form-control" id="title" name="title" placeholder="글 제목" autocomplete="off">
-
-
                             </div>
                             <div>
                                 <label for="item_name" class="form-label mt-4">상품명</label>
@@ -253,9 +251,30 @@
 
                             <fieldset class="row">
                                 <div class="col">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="isMegaphone" name="isMegaphone">
-                                        <label class="form-check-label" for="isMegaphone">확성기 사용</label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div style="position: relative;">
+                                                <div class="form-check form-switch" style="position: relative; z-index: 100;">
+                                                    <input class="form-check-input" type="checkbox" id="isMegaphone" name="isMegaphone">
+                                                    <label class="form-check-label" for="isMegaphone">
+                                                        <img src="/images/icon/megaphoneIcon.png" style="width: 15px; height: 15px;">&nbsp;확성기 사용
+                                                        <span class="badge rounded-pill bg-warning">₩300</span>
+                                                    </label>
+                                                </div>
+                                                <div id="alertDiv" class="alert alert-dismissible alert-info" style="display: none; position: absolute; top: -120px; left: 0; right: 0; z-index: 999;">
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" id="alertCancel"></button>
+                                                    <strong>확성기를 사용하면 사용자의 글이 항상 상단에 배치됩니다.</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="col-md-6 text-start" >
+                                            <div id="megaDiv" style="display: none;">
+                                                <span id="userMoney"></span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col">
@@ -263,8 +282,6 @@
                                         <input class="form-check-input" type="checkbox" id="isAuction" name="isAuction">
                                         <label class="form-check-label" for="isAuction">경매(경매 참여 인원이 2명 이상이 되면 경매가 자동 시작 됩니다)</label>
                                     </div>
-
-
                                 </div>
                             </fieldset>
 
@@ -326,6 +343,44 @@
 
     $(document).ready(function() {
 
+        // 확성기 스위치 on/off
+        $('#isMegaphone').on('change', function(event) {
+            var isChecked = this.checked;
+            var alertDiv = document.getElementById("alertDiv");
+
+            if (isChecked) {
+                alertDiv.style.display = "block";
+            } else {
+                alertDiv.style.display = "none";
+            }
+
+
+            if (this.checked) {
+                $.ajax({
+                    url: '/user/${userId}/money',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        document.getElementById('userMoney').innerText = '보유한 돈: ' + response;
+                        document.getElementById('megaDiv').style.display = 'block';
+
+                        if (response < 300) {
+                            alert('보유한 돈이 부족합니다');
+                            $('#isMegaphone').prop('checked', false).change();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('에러 발생:', error);
+                    }
+                });
+            } else {
+
+                document.getElementById('megaDiv').style.display = 'none';
+                console.log('확성기 사용이 비활성화되었습니다.');
+
+            }
+        });
+
         $('input[type="file"]').change(function(e) {
             var id = $(this).attr('id');
             if (this.files.length > 0) {
@@ -336,9 +391,9 @@
                 if (id == 'fileInput1') {
                     var imgElement = document.querySelector('.changingImage1');
                 } else if (id == 'fileInput2') {
-                    var imgElement = document.querySelector('.changingImage1');
+                    var imgElement = document.querySelector('.changingImage2');
                 } else if (id == 'fileInput3') {
-                    var imgElement = document.querySelector('.changingImage1');
+                    var imgElement = document.querySelector('.changingImage3');
                 }
                 imgElement.src = "/images/icon/noImage.png";
             }
@@ -517,9 +572,6 @@
 </script>
 
 </body>
-
-
-
 
 </html>
 

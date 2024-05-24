@@ -1,5 +1,6 @@
 package com.lend.shareservice.domain.report;
 
+import com.lend.shareservice.entity.Report;
 import com.lend.shareservice.web.report.dto.ReportDTO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -19,4 +20,5 @@ public interface ReportMapper {
 
     int updateBanUser(String writer);
 
+    int insertReport(Report report);
 }

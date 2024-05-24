@@ -20,4 +20,8 @@ public class Block {
     @NotNull
     private String blockedUserId;
 
+    public Block(String blockUserId, String blockedUserId) {
+        this.blockUserId = blockUserId;
+        this.blockedUserId = blockedUserId;
+    }
 }

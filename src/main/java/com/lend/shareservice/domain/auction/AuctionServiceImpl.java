@@ -131,21 +131,14 @@ public class AuctionServiceImpl implements AuctionService{
 
         // 업데이트 결과에 따른 처리
         if (updateResult > 0) {
-            String message = userId + "님이 " + currentPrice + "로 경매가를 올렸습니다";
+            String message = userId + "님이 " + currentPrice + "원으로 입찰가를 올렸습니다";
+            // 실시간 알림 메시지 전달
             notificationService.sendMessageAuctionUsers(auctionId, message);
             return "ok";
         } else {
             return "no";
         }
-
-        String message = userId + "님이 " + currentPrice + "원으로 입찰가를 올렸습니다";
-        notificationService.sendMessageAuctionUsers(auctionId, message);
-
-
-        return auctionMapper.updateCurrentPrice(map);
-
     }
-
 
     @Override
     @Transactional
@@ -170,11 +163,11 @@ public class AuctionServiceImpl implements AuctionService{
             participantAuction.setAuctionId(findAuctionId.getAuctionId());
             participantAuction.setUserId(userId);
 
-
             // 경매방_참여 등록
             return auctionMapper.insertAuctionParticipant(participantAuction);
 
         } else {
+
             Auction auction = new Auction();
             auction.setBoardId(boardId);
 

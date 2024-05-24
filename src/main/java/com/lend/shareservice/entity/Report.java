@@ -36,4 +36,11 @@ public class Report {
     // 등록일 (default = sysdate)
     @NotNull
     private Date regDate;
+
+    public Report(Integer boardId, String userId, String title, String content) {
+        this.boardId = boardId;
+        this.userId = userId;
+        this.title = title;
+        this.content = content;
+    }
 }

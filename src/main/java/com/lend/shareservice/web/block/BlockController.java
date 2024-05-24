@@ -35,7 +35,7 @@ public class BlockController {
 
         page.init();
 
-        List<BlockDTO> blocks=blockService.blocks(page,userId);
+        List<BlockDTO> blocks = blockService.blocks(page,userId);
         String loc ="/user/"+userId+"/block";
 
         String pageNavi=page.getPageNavi(loc);
@@ -47,7 +47,6 @@ public class BlockController {
         return "jspp/myBlock";
     }
 
-
     @DeleteMapping("/block/{blockedUserId}")
     public ResponseEntity<String> deleteBlockUser(@PathVariable("blockedUserId") String blockedUserId,Model model){
         int n = blockService.deleteBlock(blockedUserId);
@@ -57,5 +56,4 @@ public class BlockController {
             return ResponseEntity.ok("no");
         }
     }
-
 }

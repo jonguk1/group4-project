@@ -57,4 +57,5 @@ public interface AuctionMapper {
 
     int findByMoney(String userId);
 
+    Integer selectBoardId(int auctionId);
 }
