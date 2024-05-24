@@ -30,17 +30,17 @@ public interface UserMapper {
 
     int updateUser(UpdateUserDTO updateUserDTO);
 
-    int idCheck(String userId);
-
     int updateUserAddress(UpdateUserAddressDTO updateUserAddressDTO);
 
     int updateMoney(User user);
 
     int deleteUser(String userId);
 
-    User selectUserById(String userId);
-
     List<MyBoardDTO> findByMyBoard(Map<String, Object> map);
 
     int getMyBoardCount(String userId);
+
+    int idCheck(String userId);
+
+    User selectUserById(String userId);
 }

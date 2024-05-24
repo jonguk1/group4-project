@@ -4,6 +4,7 @@ import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.entity.Chatroom;
 import com.lend.shareservice.entity.Message;
 import com.lend.shareservice.web.chat.dto.ChatDTO;
+import com.lend.shareservice.web.chat.dto.ChatRoomDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -22,4 +23,6 @@ public interface ChatMapper {
     List<Message> findChatList(String userId);
 
     List<ChatDTO> loadMessage(int chatId);
+
+    ChatRoomDTO getChatRoomById(Integer chatId);
 }
