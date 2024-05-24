@@ -1,5 +1,6 @@
 package com.lend.shareservice.domain.notification;
 
+import com.lend.shareservice.entity.Notification;
 import com.lend.shareservice.web.notification.dto.NotificationDTO;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -17,4 +18,7 @@ public interface NotificationService {
     void sendMessageAuctionUsers(Integer auctionId, String message);
 
     int deleteNotification(Integer notiId);
+
+    // 알림 등록
+    int insertNotification(Notification notification);
 }

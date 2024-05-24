@@ -3,6 +3,7 @@ package com.lend.shareservice.domain.board;
 import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.domain.board.dto.BoardAuctionStateDTO;
 import com.lend.shareservice.domain.user.UserMapper;
+import com.lend.shareservice.domain.user.UserService;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.entity.Favorite;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +34,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardMapper boardMapper;
     private final AddressService addressService;
     private final UserMapper userMapper;
+    private final UserService userService;
     private static final double EARTH_RADIUS_KM = 6371;
     // 해당 상품 카테고리와 아이템 카테고리 글들 추출
     @Value("${file-url}")
@@ -212,6 +215,7 @@ public class BoardServiceImpl implements BoardService{
             board.setIsMegaphone(false);
         } else {
             board.setIsMegaphone(postRegistrationDTO.getIsMegaphone());
+            userService.updateMoney(postRegistrationDTO.getWriter(), -300);
         }
         board.setWriter(postRegistrationDTO.getWriter());
         board.setLendDate(null);
@@ -453,4 +457,9 @@ public class BoardServiceImpl implements BoardService{
         return boardMapper.updatePost(postEditDTO);
     }
 
+    // 확성기 만료 (일주일)
+    @Scheduled(fixedRate = 60000 * 60 * 24 * 5)
+    public void expireMegaphone() {
+        boardMapper.expireMegaphone();
+    }
 }

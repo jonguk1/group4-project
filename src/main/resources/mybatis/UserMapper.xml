@@ -132,7 +132,6 @@
         <where>
             userId=#{userId}
         </where>
-
     </update>
 
     <select id="findByMyBoard" resultMap="MyBoardDTOMap" parameterType="map">

@@ -122,4 +122,10 @@
         FROM board
         WHERE boardId = #{boardId}
     </select>
+
+    <update id="expireMegaphone">
+        UPDATE board
+        SET isMegaphone = false
+        WHERE isMegaphone = true AND TIMESTAMPDIFF(WEEK, regDate, NOW()) >= 1;
+    </update>
 </mapper>

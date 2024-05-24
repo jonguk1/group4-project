@@ -27,7 +27,7 @@ public interface UserService {
 
     int getLendyCount(String userId);
 
-    int blockUser(String userId);
+    int blockUser(String userId, String writer);
 
     int updateUser(String userId,UpdateUserDTO updateUserDTO);
 
@@ -40,6 +40,7 @@ public interface UserService {
     int deleteUser(String userId);
 
     int updateMoney(String userId,Integer money);
+
 
     List<MyBoardDTO> findByMyBoard(PagingDTO page, String userId);
 

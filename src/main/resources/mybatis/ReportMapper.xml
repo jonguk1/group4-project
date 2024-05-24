@@ -71,4 +71,9 @@
         </where>
     </update>
 
+    <insert id="insertReport" parameterType="com.lend.shareservice.entity.Report" useGeneratedKeys="true" keyProperty="reportId">
+        INSERT INTO REPORT (boardId, userId, title, content, regDate)
+        VALUES(#{boardId}, #{userId}, #{title}, #{content}, NOW())
+    </insert>
+
 </mapper>
