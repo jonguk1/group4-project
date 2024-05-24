@@ -3,12 +3,12 @@
 <mapper namespace="com.lend.shareservice.domain.favorite.FavoriteMapper">
 
     <resultMap type="com.lend.shareservice.web.favorite.dto.FavoriteDTO" id="FavoriteMap">
-        <id property="favorite_id" column="favoriteId" />
-        <result property="user_id" column="userId"/>
-        <result property="board_id" column="boardId"/>
+        <id property="favoriteId" column="favoriteId" />
+        <result property="userId" column="userId"/>
+        <result property="boardId" column="boardId"/>
         <collection property="boards" javaType="java.util.ArrayList"
                     ofType="com.lend.shareservice.entity.Board">
-            <result property="board_id" column="boardId"/>
+            <result property="boardId" column="boardId"/>
             <result property="content" column="content"/>
             <result property="title" column="title"/>
             <result property="itemImage1" column="itemImage1"/>
@@ -18,13 +18,18 @@
             <result property="hits" column="hits"/>
             <result property="isAuction" column="isAuction"/>
             <result property="isLend" column="isLend"/>
+            <result property="latitude" column="latitude"/>
+            <result property="longitude" column="longitude"/>
+            <result property="regDate" column="regDate"/>
+            <result property="returnDate" column="returnDate"/>
         </collection>
     </resultMap>
 
     <select id="favorites" parameterType="map" resultMap="FavoriteMap">
         select
         userId,writer,b.title,b.content,price,isAuction,isLend,
-        interestCnt,hits,itemName,itemImage1
+        interestCnt,hits,itemName,itemImage1,b.boardId,longitude,latitude
+        ,regDate,returnDate
         from favorite f inner join board b
         on f.boardId=b.boardId
         <where>

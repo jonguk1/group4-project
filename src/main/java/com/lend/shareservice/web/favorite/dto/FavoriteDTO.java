@@ -9,8 +9,9 @@ import java.util.List;
 @Data
 public class FavoriteDTO {
 
-    private Integer favorite_id;
-    private String user_id;
-    private Integer board_id;
+    private Integer favoriteId;
+    private String userId;
+    private Integer boardId;
     private List<Board> boards;
+    private String address;
 }

@@ -155,7 +155,9 @@
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
+                                            <a href="/board/${lenders.boardId}">
                                                 <img src="/postimage/${lenders.itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
+                                            </a>
                                             </p>
                                         </div>
                                         <div class="card-footer">
@@ -167,7 +169,7 @@
                                                     <span class="badge bg-danger">경매중</span>
                                                 </c:when>
                                                 <c:when test="${lenders.isAuction eq 2}">
-                                                    <span class="badge bg-danger">경매후</span>
+                                                    <span class="badge bg-danger">경매완료</span>
                                                 </c:when>
                                             </c:choose>
                                             <c:choose>
@@ -178,14 +180,22 @@
                                                     <span class="badge bg-success">대여중</span>
                                                 </c:when>
                                                 <c:when test="${lenders.isLend eq 2}">
-                                                    <span class="badge bg-success">대여후</span>
+                                                    <span class="badge bg-success">대여완료</span>
                                                 </c:when>
                                             </c:choose>
-                                            <div><c:out value="${lenders.itemName}"/></div>
-                                            <div>주소</div>
+                                            <div>
+                                            <img src="/images/icon/postRegDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
+                                            <c:out value="${lenders.regDate}"/>
+                                            </div>
+                                            <div><img src="/images/icon/mapIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
+                                            <c:out value="${lenders.address}"/></div>
                                             <div>
                                             <img src="/images/icon/moneyIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
-                                            <fmt:formatNumber value="${lenders.price}" pattern="#,###"/>원
+                                             <fmt:formatNumber value="${lenders.price}" pattern="#,###"/>원
+                                            <div>
+                                            <img src="/images/icon/returnDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
+                                            반납 희망일 : <c:out value="${lenders.returnDate}"/>
+                                            </div>
                                             </div>
                                             <div>
                                             <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${lenders.interestCnt}"/></span>
@@ -217,19 +227,21 @@
                                 </h5>
                                 <div class="card-body">
                                     <p class="card-text">
+                                    <a href="/board/${lenders.boardId}">
                                         <img src="/postimage/${lenders.itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
+                                    </a>
                                     </p>
                                 </div>
                                 <div class="card-footer">
                                     <c:choose>
                                         <c:when test="${lenders.isAuction eq 0}">
-                                            <p><span class="badge bg-danger">경매전</span>
+                                            <span class="badge bg-danger">경매전</span>
                                         </c:when>
                                         <c:when test="${lenders.isAuction eq 1}">
-                                            <p><span class="badge bg-danger">경매중</span>
+                                            <span class="badge bg-danger">경매중</span>
                                         </c:when>
                                         <c:when test="${lenders.isAuction eq 2}">
-                                            <p><span class="badge bg-danger">경매후</span>
+                                            <span class="badge bg-danger">경매완료</span>
                                         </c:when>
                                     </c:choose>
                                     <c:choose>
@@ -240,15 +252,29 @@
                                             <span class="badge bg-success">대여중</span>
                                         </c:when>
                                         <c:when test="${lenders.isLend eq 2}">
-                                            <span class="badge bg-success">대여후</span>
+                                            <span class="badge bg-success">대여완료</span>
                                         </c:when>
                                     </c:choose>
-                                    <p>
-                                        <c:out value="${lenders.itemName}"/>
+                                    <div>
+                                        <img src="/images/icon/postRegDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
+                                        <c:out value="${lenders.regDate}"/>
+                                    </div>
+                                    <div>
+                                        <img src="/images/icon/mapIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
+                                        <c:out value="${lenders.address}"/>
+                                    </div>
+                                    <div>
+                                        <img src="/images/icon/moneyIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
                                         <fmt:formatNumber value="${lenders.price}" pattern="#,###"/>원
-                                    </p>
-                                    <span>관심 <c:out value="${lenders.interestCnt}"/></span>
-                                    <span>조회 <c:out value="${lenders.hits}"/></span>
+                                    <div>
+                                        <img src="/images/icon/returnDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
+                                        반납 희망일 : <c:out value="${lenders.returnDate}"/>
+                                    </div>
+                                    </div>
+                                    <div>
+                                        <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${lenders.interestCnt}"/></span>
+                                        <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${lenders.hits}"/></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

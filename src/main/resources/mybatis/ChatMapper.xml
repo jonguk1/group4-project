@@ -17,13 +17,37 @@
     </insert>
     <select id="selectChatId" resultType="Integer" parameterType="com.lend.shareservice.entity.Chatroom">
         select chatId from chatRoom
-        <where>
-            lendy=#{lendy} and lender=#{lender} and boardId=#{boardId}
-        </where>
+       <where>
+           lendy=#{lendy} and lender=#{lender} and boardId=${boardId}
+       </where>
     </select>
     <insert id="insertChat" parameterType="com.lend.shareservice.entity.Message">
-        insert into Message (chatId, lendy, lender, content, sendTime)
-        values(#{chatId},#{lendy},#{lender},#{content},#{sendTime})
+        insert into Message (chatId, `from`, `to`, content, sendTime)
+        values(#{chatId},#{from},#{to},#{content},#{sendTime})
     </insert>
-
+    <select id="findChatList" resultType="com.lend.shareservice.entity.Message">
+        select m2.`to` as `to`, m2.`from` as `from`,
+        m2.chatId as chatId,m2.content as content,
+        m2.sendTime as sendTime,m2.isRead as isRead
+        from (
+        select m.chatId,max(m.sendTime) as maxSendTime
+        from message as m
+        group by m.chatId
+        ) as m1
+        inner JOIN message m2 on m1.chatId=m2.chatId and m1.maxSendTime=m2.sendTime
+        where `from`=#{userId} or `to`=#{userid}
+    </select>
+    <select id="loadMessage" parameterType="com.lend.shareservice.entity.Message">
+        select `from`, `to`, chatId, content, sendTime
+        from message
+        <where>
+            chatId = #{chatId}
+        </where>
+    </select>
+    <select id="getChatRoomById" parameterType="com.lend.shareservice.entity.Chatroom">
+        select * from chatRoom
+        <where>
+            chatId = #{chatId}
+        </where>
+    </select>
 </mapper>

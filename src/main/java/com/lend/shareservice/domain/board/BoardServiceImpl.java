@@ -1,7 +1,9 @@
 package com.lend.shareservice.domain.board;
 
 import com.lend.shareservice.domain.address.AddressService;
+import com.lend.shareservice.domain.board.dto.BoardAuctionStateDTO;
 import com.lend.shareservice.domain.user.UserMapper;
+import com.lend.shareservice.domain.user.UserService;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.entity.Favorite;
@@ -10,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +34,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardMapper boardMapper;
     private final AddressService addressService;
     private final UserMapper userMapper;
+    private final UserService userService;
     private static final double EARTH_RADIUS_KM = 6371;
     // 해당 상품 카테고리와 아이템 카테고리 글들 추출
     @Value("${file-url}")
@@ -211,10 +215,11 @@ public class BoardServiceImpl implements BoardService{
             board.setIsMegaphone(false);
         } else {
             board.setIsMegaphone(postRegistrationDTO.getIsMegaphone());
+            userService.updateMoney(postRegistrationDTO.getWriter(), -300);
         }
         board.setWriter(postRegistrationDTO.getWriter());
         board.setLendDate(null);
-        log.info("save!!! = {}", board);
+
         boardMapper.insertBoard(board);
     }
 
@@ -230,7 +235,7 @@ public class BoardServiceImpl implements BoardService{
             return null;
         }
 
-        log.info("board = {}", board);
+
 
         ItemDetailDTO itemDetailDTO = new ItemDetailDTO();
 
@@ -372,5 +377,89 @@ public class BoardServiceImpl implements BoardService{
         return -1;
     }
 
+    public int updateIsAuction(BoardAuctionStateDTO boardAuctionStateDTO) {
+        return boardMapper.updateIsAuction(boardAuctionStateDTO);
+    }
 
+    public int editPost(PostEditDTO postEditDTO) {
+
+        List<MultipartFile> fileInput = postEditDTO.getFileInput();
+
+        int currentIndex = 0;
+
+        if (fileInput != null) {
+            for (MultipartFile multipartFile : fileInput) {
+
+                if (multipartFile.getOriginalFilename().isEmpty()) {
+                    if (currentIndex == 0) {
+                        String image = boardMapper.selectImage1(postEditDTO.getBoardId());
+                        postEditDTO.setImage1(image);
+                    } else if (currentIndex == 1) {
+                        String image = boardMapper.selectImage2(postEditDTO.getBoardId());
+                        postEditDTO.setImage2(image);
+                    } else if (currentIndex == 2) {
+                        String image = boardMapper.selectImage3(postEditDTO.getBoardId());
+                        postEditDTO.setImage3(image);
+                    }
+
+                    currentIndex++;
+                    continue;
+                }
+
+                String fileUUID = UUID.randomUUID().toString();
+                String originalFilename = multipartFile.getOriginalFilename();
+                String[] split = originalFilename.split("\\.");
+
+                String ext = split[1];
+
+                try {
+                    byte[] bytes = multipartFile.getBytes();
+                    String fileName = multipartFile.getOriginalFilename();
+                    BufferedOutputStream stream = new BufferedOutputStream(
+                            new FileOutputStream(new File(url + fileUUID + "." + ext)));
+                    stream.write(bytes);
+                    stream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (postEditDTO.getImage1() == null) {
+                    postEditDTO.setImage1(fileUUID + "." + ext);
+                } else if (postEditDTO.getImage2() == null) {
+                    postEditDTO.setImage2(fileUUID + "." + ext);
+                } else if (postEditDTO.getImage3() == null) {
+                    postEditDTO.setImage2(fileUUID + "." + ext);
+                }
+
+                currentIndex++;
+            }
+        } else {
+            String image = boardMapper.selectImage1(postEditDTO.getBoardId());
+            postEditDTO.setImage1(image);
+        }
+
+        if (postEditDTO.getReturnDate() != null) {
+            postEditDTO.setDateTypeReturnDate(Date.valueOf(postEditDTO.getReturnDate()));
+        }
+
+        try {
+            postEditDTO.setIntTypePrice(Integer.valueOf(NumberFormat.getInstance(Locale.KOREA).parse(postEditDTO.getPrice()).intValue()));
+        } catch (Exception e) {
+
+        }
+
+        if (postEditDTO.getLatitude() == null || postEditDTO.getLongitude() == null) {
+            LatiLongDTO latiLongDTO = boardMapper.selectLatAndLong(postEditDTO.getBoardId());
+            postEditDTO.setLatitude(latiLongDTO.getLatitude());
+            postEditDTO.setLongitude(latiLongDTO.getLongitude());
+        }
+
+        return boardMapper.updatePost(postEditDTO);
+    }
+
+    // 확성기 만료 (일주일)
+    @Scheduled(fixedRate = 60000 * 60 * 24 * 5)
+    public void expireMegaphone() {
+        boardMapper.expireMegaphone();
+    }
 }

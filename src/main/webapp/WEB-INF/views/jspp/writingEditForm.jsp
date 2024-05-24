@@ -136,7 +136,7 @@
                 <div class="col-md-2">
                 </div>
                 <div class="col-md-8">
-                    <form action="/board/edit" enctype="multipart/form-data" method="post">
+                    <form action="/board/edit" enctype="multipart/form-data" method="post" id="editForm">
 
                         <fieldset>
                             <legend class="text-center">글 등록</legend> <br><br>
@@ -154,21 +154,13 @@
 
                             <div>
                                 <label for="title" class="form-label mt-4">제목</label>
-                                <c:if test="${postRegistrationBindingResult.hasFieldErrors('title')}">
-                                    <div>
-                                        <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('title').defaultMessage}</span>
-                                    </div>
-                            </c:if>
+                                <div id="title-error" style="display: none;"></div>
                                 <input type="input" class="form-control" id="title" name="title" value="${postById.title}" placeholder="글 제목" autocomplete="off">
 
                             </div>
                             <div>
                                 <label for="item_name" class="form-label mt-4">상품명</label>
-                                <c:if test="${postRegistrationBindingResult.hasFieldErrors('itemName')}">
-                                    <div>
-                                        <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('itemName').defaultMessage}</span>
-                                    </div>
-                                </c:if>
+                                <div id="itemName-error" style="display: none;"></div>
                                 <input type="text" class="form-control" id="itemName" name="itemName" value="${postById.itemName}" placeholder="상품명" autocomplete="off">
                                 <small id="itemNameHelp" class="form-text text-muted">상품명을 정확하게 입력해주세요 (예시 : 선풍기)</small>
 
@@ -176,9 +168,7 @@
 
                             <div>
                                 <label for="price" class="form-label mt-4">희망 가격</label>
-                                <c:if test="${postRegistrationBindingResult.hasFieldErrors('price')}">
-                                    <div><span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('price').defaultMessage}</span></div>
-                                </c:if>
+                                <div id="price-error" style="display: none;"></div>
                                 <div class="input-group mb-3">
                                 <span class="input-group-text">₩</span>
                                 <input type="input" class="form-control" id="price" name="price" value="${postById.price}" aria-label="Amount (to the nearest dollar)" oninput="formatPrice()" placeholder="희망 가격" autocomplete="off">
@@ -252,9 +242,7 @@
 
                             <div>
                                 <label for="exampleTextarea" class="form-label mt-4">자세한 설명</label>
-                                <c:if test="${postRegistrationBindingResult.hasFieldErrors('content')}">
-                                    <div><span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('content').defaultMessage}</span></div>
-                                </c:if>
+                                <div id="content-error" style="display: none;"></div>
                                 <textarea class="form-control" id="content" name="content"  rows="10">${postById.content}</textarea>
                             </div>
 
@@ -267,7 +255,7 @@
                             <div id="map"></div>
                             <input type="hidden" id="latitude" name="latitude" >
                             <input type="hidden" id="longitude" name="longitude" >
-                            <input type="hidden" id="longitude" name="writer" value="hong">
+
                             <br>
 
                             <div class="row">
@@ -302,211 +290,281 @@
 
 </div>
 
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
 
+        $('#editForm').submit(function(event) {
+            event.preventDefault();
 
-                    $('input[type="file"]').change(function(e){
-                        var id = $(this).attr('id');
-                        previewImage(this, id);
-                    });
+            var formData = new FormData(this);
+            var boardId = "${postById.boardId}";
 
-                    function previewImage(input, id) {
+            formData.append('boardId', boardId);
 
+            $.ajax({
+                type: 'POST',
+                url: '/board/edit',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    var jsonResponse = JSON.parse(response);
+                    if (jsonResponse.status === "ok") {
+                        alert("글수정 성공");
+                        window.location.href = "/board?boardCategoryId=${postById.boardCategoryId}&itemCategoryId=${postById.itemCategoryId}";
+                    }
+                },
+                error: function(xhr, status, error) {
+                    try {
+                        var jsonResponse = JSON.parse(xhr.responseText);
 
-                        if (input.files && input.files[0]) {
-                            var reader = new FileReader();
-                            reader.onload = function(e) {
-                                if (id === 'fileInput1') {
-                                    document.getElementById('existingProductImage1').innerText = '변경할 이미지1';
-                                    var imgElement = document.querySelector('.changingImage1');
-                                    imgElement.src = e.target.result;
+                        if (jsonResponse.status === "error") {
 
-                                } else if (id === 'fileInput2') {
-                                    document.getElementById('existingProductImage2').innerText = '변경할 이미지2';
-                                    var imgElement = document.querySelector('.changingImage2');
-                                    imgElement.src = e.target.result;
-                                } else if (id === 'fileInput3') {
-                                    document.getElementById('existingProductImage3').innerText = '변경할 이미지3';
-                                    var imgElement = document.querySelector('.changingImage3');
-                                    imgElement.src = e.target.result;
+                            alert('글수정 실패');
+                            var errors = jsonResponse.errors;
+                            for (var i = 0; i < errors.length; i++) {
+                                var fieldError = errors[i];
+                                var divElement = null;
+
+                                if (fieldError.field === 'itemName') {
+                                    divElement = document.getElementById("itemName-error");
+                                    var inputElement = document.getElementById("itemName");
+                                    inputElement.focus();
+                                } else if (fieldError.field === 'title') {
+                                    divElement = document.getElementById("title-error");
+                                    var inputElement = document.getElementById("title");
+                                    inputElement.focus();
+                                } else if (fieldError.field === 'content') {
+                                    divElement = document.getElementById("content-error");
+                                    var inputElement = document.getElementById("content");
+                                    inputElement.focus();
+                                } else if (fieldError.field === 'price') {
+                                    divElement = document.getElementById("price-error");
+                                    var inputElement = document.getElementById("price");
+                                    inputElement.focus();
+                                }
+
+                                if (divElement !== null) {
+                                    var spanElement = document.createElement("span");
+                                    spanElement.className = "badge bg-danger";
+                                    spanElement.textContent = fieldError.message;
+
+                                    while (divElement.firstChild) {
+                                        divElement.removeChild(divElement.firstChild);
+                                    }
+                                    divElement.appendChild(spanElement);
+
+                                    divElement.style.display = "block";
+                                    alert(fieldError.message);
                                 }
                             }
-                            reader.readAsDataURL(input.files[0]);
+                        } else {
+                            alert("알 수 없는 에러가 발생했습니다.");
                         }
+                    } catch (e) {
+                        alert("서버 응답을 처리하는 중 오류가 발생했습니다.");
                     }
+                }
 
-                    document.getElementById('updateExistingImage1').addEventListener('click', function() {
-                        document.getElementById('existingProductImage1').innerText = '기존 이미지1';
+            });
+        });
+
+        $('input[type="file"]').change(function(e) {
+            var id = $(this).attr('id');
+            previewImage(this, id);
+        });
+
+        function previewImage(input, id) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    if (id === 'fileInput1') {
+                        document.getElementById('existingProductImage1').innerText = '변경할 이미지1';
                         var imgElement = document.querySelector('.changingImage1');
-                        var fileInput = document.getElementById('fileInput1');
-                        if ("${postById.itemImage[0]}" === '' || "${postById.itemImage[0]}" === 'null') {
-                            imgElement.src = "/images/icon/noImage.png";
-                            fileInput.value = null;
-                        } else {
-                            imgElement.src = "${postById.itemImage[0]}";
-                            fileInput.value = null;
-                        }
-
-
-                    });
-
-                    document.getElementById('updateExistingImage2').addEventListener('click', function() {
-                        document.getElementById('existingProductImage2').innerText = '기존 이미지2';
+                        imgElement.src = e.target.result;
+                    } else if (id === 'fileInput2') {
+                        document.getElementById('existingProductImage2').innerText = '변경할 이미지2';
                         var imgElement = document.querySelector('.changingImage2');
-                        var fileInput = document.getElementById('fileInput2');
-                        if ("${postById.itemImage[1]}" === '' || "${postById.itemImage[1]}" === 'null') {
-                            imgElement.src = "/images/icon/noImage.png";
-                            fileInput.value = null;
-                        } else {
-                            imgElement.src = "${postById.itemImage[1]}";
-                            fileInput.value = null;
-                        }
-                    });
-                    document.getElementById('updateExistingImage3').addEventListener('click', function() {
-                        document.getElementById('existingProductImage3').innerText = '기존 이미지3';
+                        imgElement.src = e.target.result;
+                    } else if (id === 'fileInput3') {
+                        document.getElementById('existingProductImage3').innerText = '변경할 이미지3';
                         var imgElement = document.querySelector('.changingImage3');
-                        var fileInput = document.getElementById('fileInput3');
-                        if ("${postById.itemImage[2]}" === '' || "${postById.itemImage[2]}" === 'null') {
-                            imgElement.src = "/images/icon/noImage.png";
-                            fileInput.value = null;
-                        } else {
-                            imgElement.src = "${postById.itemImage[2]}";
-                            fileInput.value = null;
-                        }
-
-                    });
-
-                    $.ajax({
-                        url: "/board/board-category",
-                        type: "GET",
-                        dataType: "json",
-                        success: function(response) {
-                            console.log(response);
-
-                            $.each(response, function(index, value) {
-                                $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                                $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                                if (value.itemCategoryId === ${postById.itemCategoryId}) {
-                                    $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "' selected>" + value.itemCategoryName + "</option>");
-                                } else {
-                                    $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
-                                }
-                            });
-                        },
-                        error: function(xhr, status, error) {
-                           console.error("요청 실패:", status, error);
-                        }
-                    });
-                });
-
-         var boardCategoryId = "${postById.boardCategoryId}";
-
-         if (boardCategoryId === "1") {
-             document.getElementById("boardCategoryId1").checked = true;
-         } else if (boardCategoryId === "2") {
-             document.getElementById("boardCategoryId2").checked = true;
-         }
-
-        function formatPrice() {
-            // 입력 필드에서 값을 가져옴
-            let input = document.getElementById('price').value;
-
-            // 쉼표를 추가하여 형식 변환
-            let formattedPrice = input.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-            // 변환된 값을 다시 입력 필드에 설정
-            document.getElementById('price').value = formattedPrice;
+                        imgElement.src = e.target.result;
+                    }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
-        // 지도를 표시할 영역을 설정
-        // 클릭한 위치의 위도와 경도를 저장할 변수
-        var clickedLatitude = null;
-        var clickedLongitude = null;
+        document.getElementById('updateExistingImage1').addEventListener('click', function() {
+            document.getElementById('existingProductImage1').innerText = '기존 이미지1';
+            var imgElement = document.querySelector('.changingImage1');
+            var fileInput = document.getElementById('fileInput1');
+            if ("${postById.itemImage[0]}" === '' || "${postById.itemImage[0]}" === 'null') {
+                imgElement.src = "/images/icon/noImage.png";
+                fileInput.value = null;
+            } else {
+                imgElement.src = "${postById.itemImage[0]}";
+                fileInput.value = null;
+            }
+        });
 
-        var mapOptions = {
-            center: new naver.maps.LatLng(${postById.latitude}, ${postById.longitude}), // 서울의 좌표
-            zoom: 17 // 초기 줌 레벨
-        };
+        document.getElementById('updateExistingImage2').addEventListener('click', function() {
+            document.getElementById('existingProductImage2').innerText = '기존 이미지2';
+            var imgElement = document.querySelector('.changingImage2');
+            var fileInput = document.getElementById('fileInput2');
+            if ("${postById.itemImage[1]}" === '' || "${postById.itemImage[1]}" === 'null') {
+                imgElement.src = "/images/icon/noImage.png";
+                fileInput.value = null;
+            } else {
+                imgElement.src = "${postById.itemImage[1]}";
+                fileInput.value = null;
+            }
+        });
 
-        // 네이버 지도 생성
-        var map = new naver.maps.Map('map', mapOptions);
+        document.getElementById('updateExistingImage3').addEventListener('click', function() {
+            document.getElementById('existingProductImage3').innerText = '기존 이미지3';
+            var imgElement = document.querySelector('.changingImage3');
+            var fileInput = document.getElementById('fileInput3');
+            if ("${postById.itemImage[2]}" === '' || "${postById.itemImage[2]}" === 'null') {
+                imgElement.src = "/images/icon/noImage.png";
+                fileInput.value = null;
+            } else {
+                imgElement.src = "${postById.itemImage[2]}";
+                fileInput.value = null;
+            }
+        });
 
-        var marker = null; // 스탬프 마커
-        var marker2 = null;
+        $.ajax({
+            url: "/board/board-category",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
+                $.each(response, function(index, value) {
+                    $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                    $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                    if (value.itemCategoryId === ${postById.itemCategoryId}) {
+                        $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "' selected>" + value.itemCategoryName + "</option>");
+                    } else {
+                        $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("요청 실패:", status, error);
+            }
+        });
+    });
 
-        marker2 = new naver.maps.Marker({
-            position: new naver.maps.LatLng(${postById.latitude}, ${postById.longitude}),
+    var boardCategoryId = "${postById.boardCategoryId}";
+
+    if (boardCategoryId === "1") {
+        document.getElementById("boardCategoryId1").checked = true;
+    } else if (boardCategoryId === "2") {
+        document.getElementById("boardCategoryId2").checked = true;
+    }
+
+    function formatPrice() {
+        // 입력 필드에서 값을 가져옴
+        let input = document.getElementById('price').value;
+
+        // 쉼표를 추가하여 형식 변환
+        let formattedPrice = input.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        // 변환된 값을 다시 입력 필드에 설정
+        document.getElementById('price').value = formattedPrice;
+    }
+
+    // 지도를 표시할 영역을 설정
+    // 클릭한 위치의 위도와 경도를 저장할 변수
+    var clickedLatitude = null;
+    var clickedLongitude = null;
+
+    var mapOptions = {
+        center: new naver.maps.LatLng(${postById.latitude}, ${postById.longitude}), // 서울의 좌표
+        zoom: 17 // 초기 줌 레벨
+    };
+
+    // 네이버 지도 생성
+    var map = new naver.maps.Map('map', mapOptions);
+
+    var marker = null; // 스탬프 마커
+    var marker2 = null;
+
+    marker2 = new naver.maps.Marker({
+        position: new naver.maps.LatLng(${postById.latitude}, ${postById.longitude}),
+        map: map
+    });
+
+    // 정보 창 생성
+    var infowindow2 = new naver.maps.InfoWindow({
+        content: '<div style="padding:10px;">거래 위치</div>',
+        backgroundColor: '#fff',
+        borderColor: '#000',
+        anchorSize: new naver.maps.Size(0, 0),
+        anchorSkew: true
+    });
+
+    // 정보 창을 지도에 열어둠
+    infowindow2.open(map, marker2);
+
+    // 클릭 이벤트 핸들러 추가
+    naver.maps.Event.addListener(map, 'click', function(e) {
+        // 클릭한 위치의 좌표 가져오기
+        var latlng = e.coord;
+
+        // 이전에 찍은 스탬프 마커가 있으면 지우기
+        if (marker !== null) {
+            marker.setMap(null);
+        }
+
+        // 마커 생성
+        marker = new naver.maps.Marker({
+            position: latlng,
             map: map
         });
 
+        // 클릭한 위치의 위도와 경도를 변수에 저장
+        clickedLatitude = latlng.lat();
+        clickedLongitude = latlng.lng();
+
         // 정보 창 생성
-        var infowindow2 = new naver.maps.InfoWindow({
-            content: '<div style="padding:10px;">거래 위치</div>',
+        var infowindow = new naver.maps.InfoWindow({
+            content: '<div style="padding:10px;">거래 희망 위치 수정</div>',
             backgroundColor: '#fff',
             borderColor: '#000',
             anchorSize: new naver.maps.Size(0, 0),
             anchorSkew: true
         });
-        // 정보 창을 지도에 열어둠
+
+        // 정보 창을 마커 위에 표시
+        infowindow.open(map, marker);
+
+        // 위도와 경도를 hidden 필드에 설정
+        document.getElementById('latitude').value = clickedLatitude;
+        document.getElementById('longitude').value = clickedLongitude;
+    });
+
+    // 마커를 클릭했을 때 정보 창 열기
+    naver.maps.Event.addListener(marker2, 'click', function() {
         infowindow2.open(map, marker2);
+    });
 
-        // 클릭 이벤트 핸들러 추가
-        naver.maps.Event.addListener(map, 'click', function(e) {
-            // 클릭한 위치의 좌표 가져오기
-            var latlng = e.coord;
+    // 마커를 클릭했을 때 정보 창 열기
+    naver.maps.Event.addListener(marker, 'click', function() {
+        infowindow.open(map, marker);
+    });
 
-            // 이전에 찍은 스탬프 마커가 있으면 지우기
-            if (marker !== null) {
-                marker.setMap(null);
-            }
+    // 지도를 클릭했을 때 정보 창이 닫히지 않도록 설정
+    naver.maps.Event.addListener(map, 'click', function() {
+        // 정보 창이 열려있을 때만 닫히도록 설정
+        if (infowindow2.getMap()) {
+            infowindow2.close();
+        }
+    });
 
-            // 마커 생성
-            marker = new naver.maps.Marker({
-                position: latlng,
-                map: map
-            });
+</script>
 
-            // 클릭한 위치의 위도와 경도를 변수에 저장
-            clickedLatitude = latlng.lat();
-            clickedLongitude = latlng.lng();
-
-            // 정보 창 생성
-            var infowindow = new naver.maps.InfoWindow({
-                content: '<div style="padding:10px;">거래 희망 위치 수정</div>',
-                backgroundColor: '#fff',
-                borderColor: '#000',
-                anchorSize: new naver.maps.Size(0, 0),
-                anchorSkew: true
-            });
-
-            // 정보 창을 마커 위에 표시
-            infowindow.open(map, marker);
-
-             // 위도와 경도를 hidden 필드에 설정
-            document.getElementById('latitude').value = clickedLatitude;
-            document.getElementById('longitude').value = clickedLongitude;
-        });
-
-        // 마커를 클릭했을 때 정보 창 열기
-        naver.maps.Event.addListener(marker2, 'click', function() {
-            infowindow2.open(map, marker2);
-        });
-
-        // 마커를 클릭했을 때 정보 창 열기
-        naver.maps.Event.addListener(marker, 'click', function() {
-            infowindow.open(map, marker);
-        });
-
-        // 지도를 클릭했을 때 정보 창이 닫히지 않도록 설정
-        naver.maps.Event.addListener(map, 'click', function() {
-            // 정보 창이 열려있을 때만 닫히도록 설정
-            if (infowindow2.getMap()) {
-                infowindow2.close();
-            }
-        });
-
-
-    </script>
 </body>
 </html>

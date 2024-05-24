@@ -1,7 +1,9 @@
 package com.lend.shareservice.web.favorite;
 
+import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.domain.favorite.FavoriteService;
 import com.lend.shareservice.domain.user.UserService;
+import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.web.favorite.dto.FavoriteDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +25,8 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
 
+    private final AddressService addressService;
+
     @GetMapping("/favorite/{userId}")
     public String favoriteView(Model model,
                                PagingDTO page,
@@ -38,6 +42,18 @@ public class FavoriteController {
         page.init();
 
         List<FavoriteDTO> favorites=favoriteService.favorites(page,userId);
+
+        for (FavoriteDTO favoriteDTO : favorites) {
+            if (favoriteDTO.getBoards() != null && favoriteDTO.getBoards().size() > 0) {
+                for (Board board : favoriteDTO.getBoards()) {
+                    if (board.getLongitude() != null && board.getLatitude() != null) {
+                        favoriteDTO.setAddress(addressService.getAddressFromLatLng(board.getLatitude(), board.getLongitude()));
+                    }
+                }
+            } else {
+                favoriteDTO.setAddress("");
+            }
+        }
 
         String loc ="/favorite/"+userId;
 

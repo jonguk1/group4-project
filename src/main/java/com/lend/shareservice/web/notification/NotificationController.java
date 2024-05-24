@@ -53,7 +53,7 @@ public class NotificationController {
     // 특정 알림 삭제
     @DeleteMapping("/notification/{notiId}")
     public ResponseEntity<String> deleteNotification(@PathVariable("notiId") Integer notiId) {
-        log.info("삭제삭제");
+
         int deleteNum = notificationService.deleteNotification(notiId);
 
         if (deleteNum > 0) {

@@ -31,26 +31,18 @@
         function displayServerTime() {
             const eventSource = new EventSource('/time');
 
+            let alertDisplayed = false;
+
             eventSource.onmessage = function(event) {
-                currentServerTime = new Date(event.data);
+                const currentServerTime = new Date(event.data);
                 const deadlineElements = document.querySelectorAll('.deadline');
 
-                for (const deadlineElement of deadlineElements) {
+                deadlineElements.forEach(deadlineElement => {
                     const deadline = new Date(deadlineElement.dataset.deadline);
                     const timeDifference = deadline.getTime() - currentServerTime.getTime();
 
-                    console.log(deadline);
-                    console.log(currentServerTime);
-                    console.log(timeDifference);
-
-                    if(timeDifference == 0){
-                        alert('경매시간이 종료되었습니다');
-                        location.reload();
-                    }
-
                     if (timeDifference <= 0) {
                         deadlineElement.innerText = "경매시간이 종료되었습니다";
-                        console.log(deadlineElement.innerText);
                         const auctionId = deadlineElement.closest('.auction-details').querySelector('input[name="auctionId"]').value;
                         updateAuctionStatus(auctionId);
                         const auctionDetails = deadlineElement.closest('.auction-details');
@@ -62,12 +54,12 @@
                         if (buttonElement) {
                             buttonElement.disabled = true;
                         }
-                        eventSource.close();
-                    }else{
+
+                    } else {
                         const formattedDifference = formatTimeDifference(timeDifference);
                         deadlineElement.innerText = formattedDifference;
                     }
-                }
+                });
             };
         }
 
@@ -134,29 +126,30 @@
                     method: 'PUT',
                     data: formData,
                     success: function(response) {
-                        if (response === 'emptyCurrentPrice') {
-                            alert('금액을 입력하세요.');
-                            return;
-                        }else if(response === 'maxCurrentPrice'){
-                            alert('상한가를 넘게 입력하셧습니다. 다시 입력하세요');
-                            return;
-                        }else if(response =='lowCurrentPrice'){
-                            alert('현재 등록된 금액보다 낮게 입력하셧습니다. 다시 입력하세요');
-                            return;
-                        }else if (response === 'ok') {
-                            alert('경매 등록 성공!');
-                            location.reload();
-                        } else if (response === 'no') {
-                            alert('경매 등록 실패!');
-                            return;
-                        } else {
-                            alert('알 수 없는 응답: ' + response);
+                        const messages = {
+                                'emptyCurrentPrice': '입찰가을 입력하세요.',
+                                'maxCurrentPrice': '상한가를 넘게 입력하셧습니다. 다시 입력하세요.',
+                                'lowCurrentPrice': '현재 등록된 입찰가보다 낮게 입력하셧습니다. 다시 입력하세요.',
+                                'overDate':'경매 마감시간이 지났습니다.',
+                                'noMoney':'충전된 돈이 입력하신 금액에 비해 부족합니다.',
+                                'duplicateUserId':'이미 입찰금액을 등록하셨습니다.',
+                                'ok': '경매 등록 성공!',
+                                'no': '경매 등록 실패!'
+                            };
+                        if (response in messages) {
+                            alert(messages[response]);
+                            if (response === 'ok') {
+                                location.reload();
+                            }
                             return;
                         }
+
+                        alert('알 수 없는 응답: ' + response);
+                        return;
                     },
                     error: function(xhr, status, error) {
                         console.error('경매 등록에 실패하였습니다:', error);
-                       alert("오류 발생");
+                        alert("오류 발생");
                     }
                 });
             });
@@ -382,7 +375,7 @@
                                                     <h6>경매 마감 : <span class="deadline" data-deadline="${auction.boards[0].deadline}">
                                                     </span></h6>
                                                     <c:if test="${auction.boards[0].isAuction eq 1}">
-                                                        <h6>현재 경매 가격 : <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원</h6>
+                                                        <h6>현재 입찰 가격 : <fmt:formatNumber value="${auction.currentPrice}" pattern="#,###"/>원</h6>
                                                         <h6>상한가 : <fmt:formatNumber value="${auction.maxPrice}" pattern="#,###"/>원</h6>
                                                     </c:if>
                                                 </div>
@@ -393,6 +386,10 @@
                                                     <button type="submit" class="btn btn-primary btn-sm" style="margin-top:10px">가격 올리기</button>
                                                 </form>
                                                 <input type="hidden" name="auctionId" value="${auction.auctionId}">
+                                                <form class="d-flex auction-form" method="post" action="/auction/${userId}/cancel">
+                                                    <input type="hidden" name="_method" value="put">
+                                                    <button type="submit" class="btn btn-danger btn-sm">경매 취소</button>
+                                                </form>
                                            </div>
                                         </div>
                                     </div>

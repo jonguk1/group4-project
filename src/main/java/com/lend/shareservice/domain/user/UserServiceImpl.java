@@ -3,10 +3,7 @@ package com.lend.shareservice.domain.user;
 import com.lend.shareservice.entity.Block;
 import com.lend.shareservice.entity.User;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
-import com.lend.shareservice.web.user.dto.MyDetailDTO;
-import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
-import com.lend.shareservice.web.user.dto.UpdateUserAddressDTO;
-import com.lend.shareservice.web.user.dto.UpdateUserDTO;
+import com.lend.shareservice.web.user.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +14,6 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
-
 
     private final UserMapper userMapper;
 
@@ -33,11 +29,32 @@ public class UserServiceImpl implements UserService{
         return userMapper.deleteUser(userId);
     }
 
+    @Override
+    public int updateMoney(String userId,Integer money) {
+        User user = new User();
+        user.setUserId(userId);
+        user.setMoney(money);
+        return userMapper.updateMoney(user);
+    }
 
     @Override
-    public int blockUser(String userId) {
-        Block block = new Block();
-        block.setBlockedUserId(userId);
+    public List<MyBoardDTO> findByMyBoard(PagingDTO page, String userId) {
+        Map<String,Object> map=new HashMap<>();
+        map.put("userId",userId);
+        map.put("limit", page.getLimit());
+        map.put("offset", page.getOffset());
+        return userMapper.findByMyBoard(map);
+    }
+
+    @Override
+    public int getMyBoardCount(String userId) {
+        return userMapper.getMyBoardCount(userId);
+    }
+
+
+    @Override
+    public int blockUser(String userId, String writer) {
+        Block block = new Block(userId, writer);
         return userMapper.blockUser(block);
     }
 
@@ -48,13 +65,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-
     public boolean idCheck(String userId) {
         int n=userMapper.idCheck(userId);
 
         return (n>0)? false: true;
     }
-  
+
+    @Override
     public int updateUserAddress(String userId, Double latitude, Double longitude) {
         UpdateUserAddressDTO updateUserAddressDTO = new UpdateUserAddressDTO();
         updateUserAddressDTO.setUserId(userId);
@@ -71,21 +88,21 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<MyLenderAndMyLendyDTO> lenders(PagingDTO page, String userId) {
+    public List<MyLenderAndMyLendyDTO> findByLender(PagingDTO page, String userId) {
         Map<String,Object> map=new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return userMapper.lenders(map);
+        return userMapper.findByLender(map);
     }
 
     @Override
-    public List<MyLenderAndMyLendyDTO> lendys(PagingDTO page, String userId) {
+    public List<MyLenderAndMyLendyDTO> findByLendy(PagingDTO page, String userId) {
         Map<String,Object> map=new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return userMapper.lendys(map);
+        return userMapper.findByLendy(map);
     }
 
     @Override
@@ -97,5 +114,7 @@ public class UserServiceImpl implements UserService{
     public int getLendyCount(String userId) {
         return userMapper.getLendyCount(userId);
     }
+
+
 
 }

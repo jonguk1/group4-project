@@ -2,12 +2,15 @@ package com.lend.shareservice.domain.auction;
 
 
 
+import com.lend.shareservice.web.auction.dto.AuctionBoardDTO;
 import com.lend.shareservice.web.auction.dto.AuctionDTO;
 import com.lend.shareservice.entity.Auction;
 import com.lend.shareservice.entity.Participant_Auction;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -45,4 +48,14 @@ public interface AuctionMapper {
     int updateIsAuction(int auctionId);
 
     int getCurrentPrice(int auctionId);
+
+    List<AuctionDTO> getDeadlineList();
+
+    Date getDeadline(int auctionId);
+
+    String findByAuctionUserId(String userId,int auctionId);
+
+    int findByMoney(String userId);
+
+    Integer selectBoardId(int auctionId);
 }

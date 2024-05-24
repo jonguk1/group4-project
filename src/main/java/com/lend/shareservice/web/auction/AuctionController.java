@@ -1,6 +1,7 @@
 package com.lend.shareservice.web.auction;
 
 import com.lend.shareservice.domain.auction.AuctionService;
+import com.lend.shareservice.domain.auction.AuctionState;
 import com.lend.shareservice.domain.user.UserService;
 import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.web.auction.dto.AuctionBoardDTO;
@@ -40,6 +41,25 @@ import java.util.concurrent.TimeUnit;
 public class AuctionController {
 
     private final AuctionService auctionService;
+
+    @GetMapping(value = "/time", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter getTime() {
+        SseEmitter emitter = new SseEmitter();
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                emitter.send(Instant.now().toString());
+            } catch (IOException e) {
+                emitter.completeWithError(e);
+            }
+        }, 0, 1, TimeUnit.SECONDS);
+
+        emitter.onCompletion(scheduler::shutdown);
+        emitter.onTimeout(scheduler::shutdown);
+
+        return emitter;
+    }
 
     @GetMapping("/auction/{userId}")
     public String myAuctionList(Model model,
@@ -97,30 +117,8 @@ public class AuctionController {
     public ResponseEntity<String> updateCurrentPrice(@PathVariable("auctionId") int auctionId,
                                                      @RequestParam(value = "currentPrice", defaultValue = "0") int currentPrice,
                                                      @RequestParam(value="userId") String userId) {
-
-        if (currentPrice == 0) {
-            return ResponseEntity.ok("emptyCurrentPrice");
-        }
-
-        int maxPrice= auctionService.getMaxPrice(auctionId);
-
-        if(currentPrice>maxPrice){
-            return ResponseEntity.ok("maxCurrentPrice");
-        }
-
-        int getCurrentPrice =auctionService.getCurrentPrice(auctionId);
-
-        if(currentPrice<=getCurrentPrice){
-            return ResponseEntity.ok("lowCurrentPrice");
-        }
-
-        int n = auctionService.updateCurrentPrice(auctionId, currentPrice,userId);
-
-        if (n > 0) {
-            return ResponseEntity.ok("ok");
-        } else {
-            return ResponseEntity.ok("no");
-        }
+        String result = auctionService.updateCurrentPrice(auctionId, currentPrice, userId);
+        return ResponseEntity.ok(result);
     }
 
     @PatchMapping("/auction/{auctionId}/isAuction")

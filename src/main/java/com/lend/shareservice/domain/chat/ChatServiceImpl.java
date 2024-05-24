@@ -17,10 +17,9 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -80,32 +79,75 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
+    public Integer getOrCreateChatRoom(String userId, Integer boardId, ChatItemDTO chatItem, String time) {
+        boolean isSeller = chatItem.getWriter().equals(userId);
+        log.info("로그인한 사람과 글쓴이가 같은가? " + chatItem.getWriter().equals(userId));
+        Integer ChatId = null;
+
+//        // 채팅방 아이디 전달하기
+        if (!isSeller) {//로그인한 사람과 글쓴이가 같지않다면
+            ChatId = selectChatRoom(userId, boardId, chatItem.getWriter());
+        }
+        if (ChatId == null && !userId.equals(chatItem.getWriter())) {
+            createRoom(userId, boardId, chatItem.getWriter(), time);
+            ChatId = selectChatRoom(userId, boardId, chatItem.getWriter());
+        }
+        return  ChatId;
+    }
+
+    @Override
     public void saveMessage(ChatDTO chatDTO) {
-        log.info("되나요: "+chatDTO.toString());
         //DB저장
-//        String time = new SimpleDateFormat("yy-MM-dd HH:mm:ss").format(new Date());
         Message message = new Message();
         message.setChatId(chatDTO.getChatId());
-        message.setLendy(chatDTO.getLendy());
-        message.setLender(chatDTO.getLender());
+        message.setFrom(chatDTO.getFrom());
+        message.setTo(chatDTO.getTo());
         message.setContent(chatDTO.getContent());
         message.setSendTime(new Date());
+
+        log.info(message.toString());
 
         chatMapper.insertChat(message);
 
         // 1. 직렬화 - Message객체를 JSON형식으로 직렬화
-        redisTemplateChat.setValueSerializer(new Jackson2JsonRedisSerializer<>(Message.class));
+        // redisTemplateChat.setValueSerializer(new Jackson2JsonRedisSerializer<>(Message.class));
         // 2. redis 저장 - chatDTO 객체를 채팅방 ID를 Key로 하여 리스트에 추가
-        redisTemplateChat.opsForList().rightPush(String.valueOf(chatDTO.getChatId()), chatDTO);
+        //  redisTemplateChat.opsForList().rightPush(String.valueOf(chatDTO.getChatId()), chatDTO);
         // 3. expire 을 이용해서, 채팅방 ID를 Key로 하는 데이터가 5분 후 만료되도록 설정
-        redisTemplateChat.expire(String.valueOf(chatDTO.getChatId()), 5, TimeUnit.MINUTES);
+        // redisTemplateChat.expire(String.valueOf(chatDTO.getChatId()), 5, TimeUnit.MINUTES);
+    }
+
+    @Override
+    public List<Message> findChatList(String userId) {
+//        log.info(userId);
+
+        List<Message> messageList = chatMapper.findChatList(userId);
+
+        log.info(messageList.toString());
+
+        return  messageList;
+
+    }
+
+    @Override
+    public List<ChatDTO> loadMessage(int chatId) {
+        List<ChatDTO> messageList = chatMapper.loadMessage(chatId);
+        log.info("채팅 리스트: " + messageList.toString());
+
+        return messageList;
+    }
+
+
+    //채팅방 정보 뿌려주기 위한 메서드
+    @Override
+    public ChatRoomDTO getChatRoom(Integer chatId) {
+        return chatMapper.getChatRoomById(chatId);
     }
 
     //채팅방에 상세글 정보 넘겨주기 위한 메소드
     @Override
     public ChatItemDTO selectItem(Integer boardId) {
         Board board = chatMapper.selectItem(boardId);
-        log.info("board={}",board);
 
         ChatItemDTO chatItemDTO = new ChatItemDTO();
 
@@ -120,6 +162,7 @@ public class ChatServiceImpl implements ChatService{
     //채팅방 생성
     @Override
     public void createRoom(String userId, Integer boardId, String writer,String time) {
+
         Chatroom chatroom = new Chatroom();
         chatroom.setBoardId(boardId);
         chatroom.setLendy(userId);
@@ -138,7 +181,6 @@ public class ChatServiceImpl implements ChatService{
         chatroom.setBoardId(boardId);
 
         Integer chatId = chatMapper.selectChatId(chatroom);
-        log.info("채팅방아이디 : "+ chatId);
 
         return chatId;
     }

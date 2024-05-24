@@ -10,6 +10,8 @@
         <head>
 
             <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
+
+
             <link rel="stylesheet" href="/css/bootstrap.min.css">
 
             <meta charset="UTF-8">
@@ -57,10 +59,17 @@
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="#">
-                                                    <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                <a class="nav-link" href="#" id="notificationIcon">
+                                                    <img src="/images/icon/notificationIcon.png"  style="width:30px; height:30px;">
+                                                    <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                                 </a>
                                             </c:if>
+                                        </li>
+
+                                        <li>
+                                            <div id="messageContainer" style="display: none;">
+
+                                            </div>
                                         </li>
 
                                         <li class="nav-item">
@@ -72,7 +81,7 @@
                                         </li>
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                                <a class="nav-link" href="/user/${userId}" style="color: black;">${userId}님</a>
                                             </c:if>
                                         </li>
                                         <li class="nav-item">
@@ -151,7 +160,7 @@
                                    </div>
                                </div>
                            </div>
-                           <div class="col-md-2 text-end">
+                           <div class="col-md-2 text-end" id="editIconContainer">
                                <a href="#" onclick="sendEditRequest()">
                                    <img src="/images/icon/editIcon.png" style="width:25px; height:25px;">
                                </a>
@@ -235,48 +244,76 @@
                             <span>
                                  <img src="/images/people.png" alt="대체_텍스트" style="width: 50px;">
                             </span>
-                                <a href="/user"><span>${postById.writer}</span></a>
+                                <a href="/user/${postById.writer}"><span>${postById.writer}</span></a>
                             <span>
 
                                 <button type="button" class="btn btn-primary" onclick="chat()">채팅</button>
                             </span>
-                            <span>
+                            <span id="auctionSpan">
                                 <c:if test="${not empty postById.isAuction and postById.isAuction ne '경매 불가'}">
                                     <button type="button" id="auctionButton" class="btn btn-primary">경매</button>
                                 </c:if>
                             </span>
 
-                            <span>
+                            <span id="interestSpan">
                                 <button type="button" id="interestButton" class="btn btn-primary">관심</button>
                             </span>
 
-                            <span>
+                            <span id="blockSpan">
                                 <a href="#" id="blockUserLink">
                                     <img src="/images/ban.png" alt="대체" style="width: 50px; height:20px;">
                                 </a>
+
                                 <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
                                   <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                       <div class="modal-header">
-                                        <h5 class="modal-title" id="confirmModalLabel">유저를 차단하겠습니까?</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                          <span aria-hidden="true">&times;</span>
-                                        </button>
+                                        <img src="/images/ban.png" alt="대체" style="width: 50px; height:20px;">&nbsp;
+                                        <h5 class="modal-title" id="confirmModalLabel" style="color: red;">유저를 차단하겠습니까?</h5>
+
                                       </div>
                                       <div class="modal-body">
                                         차단한 유저는 더 이상 접근할 수 없습니다. 계속하시겠습니까?
                                       </div>
                                       <div class="modal-footer">
-                                        <button type="button" id="cancelButton" class="btn btn-secondary" data-dismiss="modal">취소</button>
-                                        <button type="button" id="confirmButton" class="btn btn-primary">확인</button>
+                                        <button type="button" id="blockCancelButton" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                                        <button type="button" id="blockConfirmButton" class="btn btn-primary">확인</button>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
+
                             </span>
 
-                            <span>
-                                <img src="/images/singo.png" alt="대체" style="width: 50px; height:20px;">
+                            <span id="singoSpan">
+                                <a href="#" id="singoLink">
+                                    <img src="/images/singo.png" alt="대체" style="width: 50px; height:20px;">
+                                </a>
+                                <div class="modal fade" id="singoModal" tabindex="-1" role="dialog" aria-labelledby="singoModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog" role="document">
+                                    <div class="modal-content" >
+                                      <div class="modal-header" >
+                                        <img src="/images/singo.png" alt="대체" style="width: 50px; height:20px;">
+                                        <h5 class="modal-title" id="confirmModalLabel" style="color: red;">신고 등록</h5>
+
+                                      </div>
+                                      <div class="modal-body">
+                                        <div id="title-error" style="display: none;">
+                                            <span class="badge bg-danger"></span>
+                                        </div>
+                                        <input type="input" class="form-control" id="singoTitle" name="singoTitle" placeholder="글 제목" autocomplete="off"> <br>
+                                        <div id="content-error" style="display: none;">
+                                            <span class="badge bg-danger"></span>
+                                        </div>
+                                        <textarea class="form-control" id="singoContent" name="singoContent" rows="10" placeholder="신고 내용"></textarea>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" id="singoCancelButton" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                                        <button type="button" id="singoConfirmButton" class="btn btn-primary">등록</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                             </span>
                     </div>
                     <div class="col-md-3">
@@ -1011,6 +1048,7 @@
                         <input type="hidden" name="latitude" id="latitude" value="${postById.latitude}">
                         <input type="hidden" name="longitude" id="longitude" value="${postById.longitude}">
                         <input type="hidden" name="userId" id="userId" value="${userId}">
+                        <input type="hidden" name="writer" id="writer" value="${postById.writer}">
             </div>
             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
@@ -1018,20 +1056,45 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <div id="postById" style="display: none;">${postById}</div>
-
+            <script src="/js/notification.js"></script>
+            <link rel="stylesheet" type="text/css" href="/css/notification.css">
             <script>
 
                 $(document).ready(function() {
 
-                    const eventSource = new EventSource('http://localhost:8081/subscribe');
-
-                    eventSource.addEventListener('auction', event => {
-
-                    });
-
                      var userId = document.getElementById("userId").value;
                      var dataString = document.getElementById("postById").textContent;
                      var boardIdMatch = dataString.match(/boardId=([^,]+)/);
+
+                     var writer = document.getElementById("writer").value;
+
+                     // 해당 글을 쓴 유저인 경우 차단, 신고 버튼을 숨김
+                     if (writer === userId) {
+                        hideBlockAndSingoAndAuctionAndInterestIcon();
+                     }
+                     // 해당 글을 쓴 유저가 아닌 경우 글 수정 버튼을 숨김
+                     if (writer !== userId) {
+                        hideEditIcon();
+                     }
+
+                     // 글수정 버튼 보이지 않게 함
+                     function hideEditIcon() {
+                        var editIconContainer = document.getElementById('editIconContainer');
+                        editIconContainer.style.display = 'none';
+                     }
+
+                     // 차단, 신고 버튼 보이지 않게 함
+                     function hideBlockAndSingoAndAuctionAndInterestIcon() {
+                         var blockSpan = document.getElementById('blockSpan');
+                         var singoSpan = document.getElementById('singoSpan');
+                         var auctionSpan = document.getElementById('auctionSpan');
+                         var interestSpan = document.getElementById('interestSpan');
+
+                         blockSpan.style.display = 'none';
+                         singoSpan.style.display = 'none';
+                         auctionSpan.style.display = 'none';
+                         interestSpan.style.display = 'none';
+                     }
 
                      // 현재 유저가 경매중 확인
                      $.ajax({
@@ -1103,6 +1166,69 @@
                     });
                 });
 
+                document.getElementById('singoLink').addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    if (${loggedIn}) {
+                      $('#singoModal').modal('show');
+                    } else {
+                      showAlert();
+                    }
+                });
+
+                document.getElementById('singoCancelButton').addEventListener('click', function(event) {
+                    event.preventDefault();
+                    $('#singoModal').modal('hide');
+                });
+
+                document.getElementById('singoConfirmButton').addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    // writer, title, content, boardId;
+                    var writer = '${postById.writer}';
+                    var boardId = '${postById.boardId}';
+                    var title = document.getElementById('singoTitle').value;
+                    var content = document.getElementById('singoContent').value;
+
+                    $.ajax({
+                        url: '/report',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ writer: writer, boardId: boardId, title: title, content: content }),
+                        success: function(response) {
+                            if (response === 'ok') {
+                                alert('신고글 등록 완료');
+                            }
+                            $('#singoModal').modal('hide');
+                        },
+                        error: function(xhr, status, error) {
+
+                            if (xhr.status == 500) {
+                                console.error("서버에서 내부 오류가 발생했습니다.");
+                            } else if (xhr.status == 400) {
+                                var errors = xhr.responseJSON;
+                                var titleErrorEle = document.getElementById('title-error');
+                                var contentErrorEle = document.getElementById('content-error');
+                                titleErrorEle.style.display = 'none';
+                                contentErrorEle.style.display = 'none';
+
+                                if (errors && errors.hasOwnProperty('title')) {
+                                    var spanElement = titleErrorEle.querySelector('span');
+                                    spanElement.textContent = errors.title;
+                                    titleErrorEle.style.display = 'block';
+                                }
+                                if (errors && errors.hasOwnProperty('content')) {
+                                    var spanElement = contentErrorEle.querySelector('span');
+                                    spanElement.textContent = errors.content;
+                                    contentErrorEle.style.display = 'block';
+                                }
+                            } else if (xhr.status == 429) {
+                                alert(xhr.responseText);
+                            }
+                        }
+                    });
+                });
+
                   document.getElementById('blockUserLink').addEventListener('click', function(event) {
                       event.preventDefault();
 
@@ -1113,12 +1239,13 @@
                       }
                   });
 
-                  document.getElementById('cancelButton').addEventListener('click', function(event) {
+                  document.getElementById('blockCancelButton').addEventListener('click', function(event) {
                       event.preventDefault();
                       $('#confirmModal').modal('hide');
                   });
 
-                  document.getElementById('confirmButton').addEventListener('click', function(event) {
+                  // 차단 확인을 누를 때
+                  document.getElementById('blockConfirmButton').addEventListener('click', function(event) {
                       event.preventDefault();
 
                       var dataString = document.getElementById("postById").textContent;
@@ -1129,14 +1256,17 @@
                       };
 
                       $.ajax({
-                          url: '/user/' + writer.writer + '/block',
+                          url: '/user/${userId}/block',
                           type: 'POST',
+                          contentType: 'application/json',
+                          data: JSON.stringify({ writer: writer.writer }),
                           success: function(response) {
                               console.log('Success:', response);
 
                               $('#confirmModal').modal('hide');
                           },
                           error: function(xhr, status, error) {
+
                               console.error('Error:', error);
                               $('#confirmModal').modal('hide');
                           }
@@ -1230,22 +1360,26 @@
 
 
                 // 글 상세 번호 채팅에 넘겨주기 위한 함수
-                function chat() {
+                function chat() {//채팅방 열기
                     if (${loggedIn}) {
-                        //alert("글 상세번호 : " + "${postById.boardId}");
-                        var boardId2 = parseInt("${postById.boardId}"); // 글 상세 번호
-                        var form = document.createElement("form");
-                        form.setAttribute("method", "post");
-                        form.setAttribute("action", "/chat/chat2");
+                        if("${userId}"=="${postById.writer}"){//만약 유저아이디랑 글쓴이가 같다면
+                            window.location.href = "/chatList/"+"${userId}";//채팅리스트로 이동
+                        } else {
+                            //alert("글 상세번호 : " + "${postById.boardId}");
+                            var boardId2 = parseInt("${postById.boardId}"); // 글 상세 번호
+                            var form = document.createElement("form");
+                            form.setAttribute("method", "post");
+                            form.setAttribute("action", "/chat");
 
-                        var hiddenField = document.createElement("input");
-                        hiddenField.setAttribute("type", "hidden");
-                        hiddenField.setAttribute("name", "boardId2");
-                        hiddenField.setAttribute("value", boardId2);
-                        form.appendChild(hiddenField);
+                            var hiddenField = document.createElement("input");
+                            hiddenField.setAttribute("type", "hidden");
+                            hiddenField.setAttribute("name", "boardId2");
+                            hiddenField.setAttribute("value", boardId2);
+                            form.appendChild(hiddenField);
 
-                        document.body.appendChild(form);
-                        form.submit();
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
                     } else {
                         showAlert();
                     }

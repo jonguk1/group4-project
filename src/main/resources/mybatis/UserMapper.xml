@@ -18,6 +18,8 @@
     <resultMap id="MyLenderAndMyLendyMap" type="com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO">
     </resultMap>
 
+    <resultMap id="MyBoardDTOMap" type="com.lend.shareservice.web.user.dto.MyBoardDTO">
+    </resultMap>
 
     <!--회원가입-->
 
@@ -33,26 +35,28 @@
         VALUES (#{blockedUserId}, #{blockUserId})
     </insert>
 
-    <select id="lenders" parameterType="map" resultMap="MyLenderAndMyLendyMap">
+    <select id="findByLender" parameterType="map" resultMap="MyLenderAndMyLendyMap">
         select
         writer,title,content,price,isAuction,isLend,interestCnt,hits,
-        itemName,itemImage1
+        itemName,itemImage1,regDate,returnDate,b.latitude,b.longitude,b.boardId
         from chatroom c inner join board b
         on c.boardId=b.boardId
         <where>
             c.lender= #{userId}
+            and isLend=2
         </where>
         order by b.boardId desc limit #{limit} offset #{offset}
     </select>
 
-    <select id="lendys" parameterType="map" resultMap="MyLenderAndMyLendyMap">
+    <select id="findByLendy" parameterType="map" resultMap="MyLenderAndMyLendyMap">
         select
         writer,title,content,price,isAuction,isLend,interestCnt,hits,
-        itemName,itemImage1
+        itemName,itemImage1,regDate,returnDate,b.latitude,b.longitude,b.boardId
         from chatroom c inner join board b
         on c.boardId=b.boardId
         <where>
             c.lendy= #{userId}
+            and isLend=2
         </where>
         order by b.boardId desc limit #{limit} offset #{offset}
     </select>
@@ -96,10 +100,10 @@
     <update id="updateUser" parameterType="com.lend.shareservice.web.user.dto.UpdateUserDTO">
         update user
         set name=#{name},
-            pw=#{pw},
-            phoneNumber=#{phoneNumber},
-            latitude=#{latitude},
-            longitude=#{longitude}
+        pw=#{pw},
+        phoneNumber=#{phoneNumber},
+        latitude=#{latitude},
+        longitude=#{longitude}
         <where>
             userId=#{userId}
         </where>
@@ -120,5 +124,33 @@
             userId=#{value}
         </where>
     </delete>
+
+    <update id="updateMoney" parameterType="com.lend.shareservice.entity.User">
+        update user
+        set
+            money=money+#{money}
+        <where>
+            userId=#{userId}
+        </where>
+    </update>
+
+    <select id="findByMyBoard" resultMap="MyBoardDTOMap" parameterType="map">
+        select
+        writer,title,content,price,isAuction,isLend,interestCnt,hits,
+        itemName,itemImage1,regDate,returnDate,latitude,longitude,boardId
+        from board
+        <where>
+            writer=#{userId}
+        </where>
+        order by boardId desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getMyBoardCount" parameterType="String" resultType="_int">
+        select count(*)
+        from board
+        <where>
+            writer=#{userId}
+        </where>
+    </select>
 
 </mapper>

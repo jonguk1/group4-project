@@ -2,10 +2,12 @@ package com.lend.shareservice.entity;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 
 @Data
+@NoArgsConstructor
 public class Notification {
 
     // 알림 번호 (ID)
@@ -32,5 +34,10 @@ public class Notification {
     @NotNull
     private Integer boardId;
 
-
+    public Notification(String userId, String content, Boolean isRead, Integer boardId) {
+        this.userId = userId;
+        this.content = content;
+        this.isRead = isRead;
+        this.boardId = boardId;
+    }
 }

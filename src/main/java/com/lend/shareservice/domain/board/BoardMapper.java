@@ -1,10 +1,9 @@
 package com.lend.shareservice.domain.board;
 
+import com.lend.shareservice.domain.board.dto.BoardAuctionStateDTO;
 import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.entity.Favorite;
-import com.lend.shareservice.web.board.dto.ItemAndBoardCategoryDTO;
-import com.lend.shareservice.web.board.dto.ItemCategoryDTO;
-import com.lend.shareservice.web.board.dto.PostDTO;
+import com.lend.shareservice.web.board.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -35,4 +34,16 @@ public interface BoardMapper {
     int decreaseInterest(Favorite favorite);
 
     int getInterestCnt(Favorite favorite);
+
+    int updateIsAuction(BoardAuctionStateDTO boardAuctionStateDTO);
+
+    int updatePost(PostEditDTO postEditDTO);
+
+    String selectImage1(Integer boardId);
+    String selectImage2(Integer boardId);
+    String selectImage3(Integer boardId);
+
+    LatiLongDTO selectLatAndLong(Integer boardId);
+
+    void expireMegaphone();
 }
