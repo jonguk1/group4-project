@@ -124,7 +124,7 @@
         </div>
         <div class="col-md-8 text-center">
             <h3>
-                <c:out value="${userId}"/>님의 빌려준 목록
+                <c:out value="${userId}"/>님의 쓴 글 목록
             </h3>
         </div>
         <div class="col-md-2">
@@ -139,67 +139,67 @@
     		    <%@ include file="/WEB-INF/views/jspp/include/mypage.jsp"%>
     		</div>
     		<c:choose>
-    		    <c:when test="${lenders eq null or empty lenders}">
+    		    <c:when test="${myBoards eq null or empty myBoards}">
     		        <div class="col-md-8">
-    		            빌려준 물품 목록이 없습니다
+    		            쓴 글목록이 없습니다
     		        </div>
     		    </c:when>
     		    <c:otherwise>
     		        <div class="col-md-8">
                         <div class="row">
-                            <c:forEach var="lenders" items="${lenders}" varStatus="status" begin="0" end="${page.oneRecordPage-4}">
+                            <c:forEach var="myBoard" items="${myBoards}" varStatus="status" begin="0" end="${page.oneRecordPage-4}">
                                 <div class="col-md-4">
                                     <div class="card">
                                         <h5 class="card-header">
-                                            <c:out value="${lenders.title}"/>
+                                            <c:out value="${myBoard.title}"/>
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
-                                            <a href="/board/${lenders.boardId}">
-                                                <img src="/postimage/${lenders.itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
+                                            <a href="/board/${myBoard.boardId}">
+                                                <img src="/postimage/${myBoard.itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
                                             </a>
                                             </p>
                                         </div>
                                         <div class="card-footer">
                                             <c:choose>
-                                                <c:when test="${lenders.isAuction eq 0}">
+                                                <c:when test="${myBoard.isAuction eq 0}">
                                                     <span class="badge bg-danger">경매전</span>
                                                 </c:when>
-                                                <c:when test="${lenders.isAuction eq 1}">
+                                                <c:when test="${myBoard.isAuction eq 1}">
                                                     <span class="badge bg-danger">경매중</span>
                                                 </c:when>
-                                                <c:when test="${lenders.isAuction eq 2}">
+                                                <c:when test="${myBoard.isAuction eq 2}">
                                                     <span class="badge bg-danger">경매완료</span>
                                                 </c:when>
                                             </c:choose>
                                             <c:choose>
-                                                <c:when test="${lenders.isLend eq 0}">
+                                                <c:when test="${myBoard.isLend eq 0}">
                                                     <span class="badge bg-success">대여전</span>
                                                 </c:when>
-                                                <c:when test="${lenders.isLend eq 1}">
+                                                <c:when test="${myBoard.isLend eq 1}">
                                                     <span class="badge bg-success">대여중</span>
                                                 </c:when>
-                                                <c:when test="${lenders.isLend eq 2}">
+                                                <c:when test="${myBoard.isLend eq 2}">
                                                     <span class="badge bg-success">대여완료</span>
                                                 </c:when>
                                             </c:choose>
                                             <div>
                                             <img src="/images/icon/postRegDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
-                                            <c:out value="${lenders.regDate}"/>
+                                            <c:out value="${myBoard.regDate}"/>
                                             </div>
                                             <div><img src="/images/icon/mapIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
-                                            <c:out value="${lenders.address}"/></div>
+                                            <c:out value="${myBoard.address}"/></div>
                                             <div>
                                             <img src="/images/icon/moneyIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
-                                             <fmt:formatNumber value="${lenders.price}" pattern="#,###"/>원
+                                             <fmt:formatNumber value="${myBoard.price}" pattern="#,###"/>원
                                             <div>
                                             <img src="/images/icon/returnDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
-                                            반납 희망일 : <c:out value="${lenders.returnDate}"/>
+                                            반납 희망일 : <c:out value="${myBoard.returnDate}"/>
                                             </div>
                                             </div>
                                             <div>
-                                            <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${lenders.interestCnt}"/></span>
-                                            <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${lenders.hits}"/></span>
+                                            <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${myBoard.interestCnt}"/></span>
+                                            <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${myBoard.hits}"/></span>
                                             </div>
                                         </div>
                                     </div>
@@ -219,61 +219,61 @@
             </div>
             <div class="col-md-8">
                 <div class="row">
-                    <c:forEach var="lenders" items="${lenders}" varStatus="status" begin="${page.oneRecordPage-3}" end="${page.oneRecordPage}">
+                    <c:forEach var="myBoard" items="${myBoards}" varStatus="status" begin="${page.oneRecordPage-3}" end="${page.oneRecordPage}">
                         <div class="col-md-4">
                             <div class="card">
                                 <h5 class="card-header">
-                                    <c:out value="${lenders.title}"/>
+                                    <c:out value="${myBoard.title}"/>
                                 </h5>
                                 <div class="card-body">
                                     <p class="card-text">
-                                    <a href="/board/${lenders.boardId}">
-                                        <img src="/postimage/${lenders.itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
+                                    <a href="/board/${myBoard.boardId}">
+                                        <img src="/postimage/${myBoard.itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
                                     </a>
                                     </p>
                                 </div>
                                 <div class="card-footer">
                                     <c:choose>
-                                        <c:when test="${lenders.isAuction eq 0}">
+                                        <c:when test="${myBoard.isAuction eq 0}">
                                             <span class="badge bg-danger">경매전</span>
                                         </c:when>
-                                        <c:when test="${lenders.isAuction eq 1}">
+                                        <c:when test="${myBoard.isAuction eq 1}">
                                             <span class="badge bg-danger">경매중</span>
                                         </c:when>
-                                        <c:when test="${lenders.isAuction eq 2}">
+                                        <c:when test="${myBoard.isAuction eq 2}">
                                             <span class="badge bg-danger">경매완료</span>
                                         </c:when>
                                     </c:choose>
                                     <c:choose>
-                                        <c:when test="${lenders.isLend eq 0}">
+                                        <c:when test="${myBoard.isLend eq 0}">
                                             <span class="badge bg-success">대여전</span>
                                         </c:when>
-                                        <c:when test="${lenders.isLend eq 1}">
+                                        <c:when test="${myBoard.isLend eq 1}">
                                             <span class="badge bg-success">대여중</span>
                                         </c:when>
-                                        <c:when test="${lenders.isLend eq 2}">
+                                        <c:when test="${myBoard.isLend eq 2}">
                                             <span class="badge bg-success">대여완료</span>
                                         </c:when>
                                     </c:choose>
                                     <div>
                                         <img src="/images/icon/postRegDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
-                                        <c:out value="${lenders.regDate}"/>
+                                        <c:out value="${myBoard.regDate}"/>
                                     </div>
                                     <div>
                                         <img src="/images/icon/mapIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
-                                        <c:out value="${lenders.address}"/>
+                                        <c:out value="${myBoard.address}"/>
                                     </div>
                                     <div>
                                         <img src="/images/icon/moneyIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
-                                        <fmt:formatNumber value="${lenders.price}" pattern="#,###"/>원
+                                        <fmt:formatNumber value="${myBoard.price}" pattern="#,###"/>원
                                     <div>
                                         <img src="/images/icon/returnDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">
-                                        반납 희망일 : <c:out value="${lenders.returnDate}"/>
+                                        반납 희망일 : <c:out value="${myBoard.returnDate}"/>
                                     </div>
                                     </div>
                                     <div>
-                                        <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${lenders.interestCnt}"/></span>
-                                        <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${lenders.hits}"/></span>
+                                        <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${myBoard.interestCnt}"/></span>
+                                        <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;">&nbsp;<c:out value="${myBoard.hits}"/></span>
                                     </div>
                                 </div>
                             </div>

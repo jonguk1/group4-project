@@ -7,6 +7,7 @@ import com.lend.shareservice.domain.user.service.UserSignupService;
 import com.lend.shareservice.domain.user.util.CommonUtil;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.User;
+import com.lend.shareservice.web.user.dto.MyBoardDTO;
 import com.lend.shareservice.web.user.dto.MyDetailDTO;
 import com.lend.shareservice.web.user.dto.UpdateUserDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -186,6 +187,42 @@ public class UserController {
 
 
         return "jspp/myLendy";
+    }
+
+    @GetMapping("/user/{userId}/board")
+    public String myBoardList(Model model,
+                              PagingDTO page,
+                              @PathVariable("userId") String userId,
+                              @RequestParam(defaultValue = "1") int pageNum){
+
+        int totalCount = userService.getMyBoardCount(userId);
+
+        page.setTotalCount(totalCount);
+        page.setOneRecordPage(6);
+        page.setPagingBlock(5);
+
+        page.init();
+
+        List<MyBoardDTO> myBoards= userService.findByMyBoard(page,userId);
+
+        for(MyBoardDTO dto:myBoards){
+            if (dto.getLongitude() != null && dto.getLatitude() != null) {
+                dto.setAddress(addressService.getAddressFromLatLng(dto.getLatitude(), dto.getLongitude()));
+            } else {
+                dto.setAddress("");
+            }
+        }
+
+        String loc ="/user/"+userId+"/board";
+
+        String pageNavi=page.getPageNavi(loc);
+
+        model.addAttribute("myBoards",myBoards);
+        model.addAttribute("userId",userId);
+        model.addAttribute("page",page);
+        model.addAttribute("pageNavi",pageNavi);
+
+        return "jspp/myBoard";
     }
 
     //회원가입 페이지 출력

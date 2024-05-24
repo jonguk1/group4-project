@@ -9,7 +9,7 @@
         </where>
     </select>
 
-    <select id="blocks" resultType="com.lend.shareservice.entity.Block" parameterType="map">
+    <select id="blocks" resultType="com.lend.shareservice.web.block.dto.BlockDTO" parameterType="map">
         select blockedUserId from block
         <where>
             blockUserId=#{userId}

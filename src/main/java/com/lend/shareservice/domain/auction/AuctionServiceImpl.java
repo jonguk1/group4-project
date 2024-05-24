@@ -253,5 +253,4 @@ public class AuctionServiceImpl implements AuctionService{
         return auctionMapper.getDeadlineList();
     }
 
-
 }
