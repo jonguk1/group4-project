@@ -3,10 +3,7 @@ package com.lend.shareservice.domain.user;
 import com.lend.shareservice.entity.Block;
 import com.lend.shareservice.entity.User;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
-import com.lend.shareservice.web.user.dto.MyDetailDTO;
-import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
-import com.lend.shareservice.web.user.dto.UpdateUserAddressDTO;
-import com.lend.shareservice.web.user.dto.UpdateUserDTO;
+import com.lend.shareservice.web.user.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +37,20 @@ public class UserServiceImpl implements UserService{
         return userMapper.updateMoney(user);
     }
 
+    @Override
+    public List<MyBoardDTO> findByMyBoard(PagingDTO page, String userId) {
+        Map<String,Object> map=new HashMap<>();
+        map.put("userId",userId);
+        map.put("limit", page.getLimit());
+        map.put("offset", page.getOffset());
+        return userMapper.findByMyBoard(map);
+    }
+
+    @Override
+    public int getMyBoardCount(String userId) {
+        return userMapper.getMyBoardCount(userId);
+    }
+
 
     @Override
     public int blockUser(String userId, String writer) {
@@ -54,13 +65,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-
     public boolean idCheck(String userId) {
         int n=userMapper.idCheck(userId);
 
         return (n>0)? false: true;
     }
 
+    @Override
     public int updateUserAddress(String userId, Double latitude, Double longitude) {
         UpdateUserAddressDTO updateUserAddressDTO = new UpdateUserAddressDTO();
         updateUserAddressDTO.setUserId(userId);

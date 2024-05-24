@@ -125,9 +125,18 @@
                          <div id="chatList">
                              <ul class="list-group">
                                  <c:forEach var="chat" items="${chatList}">
-                                    <a href="/chat/chat/{chatList.chatId}">
+                                    <a href="/chat/${chat.chatId}" class>
+
                                         <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
-                                              <c:out value="${chat.lendy}"/>
+                                              <c:choose>
+                                                <c:when test="${chat.from eq userId}">
+                                                    <c:out value="${chat.to}"/>
+                                                </c:when>
+                                                <c:when test="${chat.to eq userId}">
+                                                    <c:out value="${chat.from}"/>
+                                                </c:when>
+                                              </c:choose>
+
                                              <span class="badge bg-primary rounded-pill"><fmt:formatDate pattern="yy-MM-dd HH:mm:ss" value="${chat.sendTime}"/></span>
                                         </li>
                                         <a href="#">

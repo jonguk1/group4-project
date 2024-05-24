@@ -15,13 +15,13 @@ public class Message {
     @NotNull
     private Integer chatId;
 
-    // 구매자 (FK)
+    // 보낸사람 (FK)
     @NotNull
-    private String lendy;
+    private String from;
 
-    // 판매자 (FK)
+    // 받는사람 (FK)
     @NotNull
-    private String lender;
+    private String to;
 
     // 메세지 내용
     private String content;

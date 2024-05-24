@@ -1,6 +1,7 @@
 package com.lend.shareservice.web.auction;
 
 import com.lend.shareservice.domain.auction.AuctionService;
+import com.lend.shareservice.domain.auction.AuctionState;
 import com.lend.shareservice.domain.user.UserService;
 import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.web.auction.dto.AuctionBoardDTO;

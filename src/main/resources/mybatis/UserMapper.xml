@@ -18,6 +18,8 @@
     <resultMap id="MyLenderAndMyLendyMap" type="com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO">
     </resultMap>
 
+    <resultMap id="MyBoardDTOMap" type="com.lend.shareservice.web.user.dto.MyBoardDTO">
+    </resultMap>
 
     <!--회원가입-->
 
@@ -41,6 +43,7 @@
         on c.boardId=b.boardId
         <where>
             c.lender= #{userId}
+            and isLend=2
         </where>
         order by b.boardId desc limit #{limit} offset #{offset}
     </select>
@@ -53,6 +56,7 @@
         on c.boardId=b.boardId
         <where>
             c.lendy= #{userId}
+            and isLend=2
         </where>
         order by b.boardId desc limit #{limit} offset #{offset}
     </select>
@@ -129,5 +133,24 @@
             userId=#{userId}
         </where>
     </update>
+
+    <select id="findByMyBoard" resultMap="MyBoardDTOMap" parameterType="map">
+        select
+        writer,title,content,price,isAuction,isLend,interestCnt,hits,
+        itemName,itemImage1,regDate,returnDate,latitude,longitude,boardId
+        from board
+        <where>
+            writer=#{userId}
+        </where>
+        order by boardId desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getMyBoardCount" parameterType="String" resultType="_int">
+        select count(*)
+        from board
+        <where>
+            writer=#{userId}
+        </where>
+    </select>
 
 </mapper>

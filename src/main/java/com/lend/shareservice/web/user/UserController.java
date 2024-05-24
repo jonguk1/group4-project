@@ -7,7 +7,11 @@ import com.lend.shareservice.domain.user.service.UserSignupService;
 import com.lend.shareservice.domain.user.util.CommonUtil;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.User;
+
 import com.lend.shareservice.web.user.dto.BlockDTO;
+
+import com.lend.shareservice.web.user.dto.MyBoardDTO;
+
 import com.lend.shareservice.web.user.dto.MyDetailDTO;
 import com.lend.shareservice.web.user.dto.UpdateUserDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,14 +37,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @AllArgsConstructor
 @Slf4j
 public class UserController {
+
 
     private final UserService userService;
 
@@ -48,8 +53,13 @@ public class UserController {
 
     private final AddressService addressService;
 
+
     @Autowired
     private CommonUtil util;
+
+
+
+
 
     @GetMapping("/test")
     public String test(@SessionAttribute(name="userId", required = false)String userId, Model model) {
@@ -150,9 +160,9 @@ public class UserController {
 
     @GetMapping("/user/{userId}/lendy")
     public String lendyList(Model model,
-                             PagingDTO page,
-                             @PathVariable("userId") String userId,
-                             @RequestParam(defaultValue = "1") int pageNum) {
+                            PagingDTO page,
+                            @PathVariable("userId") String userId,
+                            @RequestParam(defaultValue = "1") int pageNum) {
 
         int totalCount = userService.getLendyCount(userId);
 
@@ -185,6 +195,42 @@ public class UserController {
         return "jspp/myLendy";
     }
 
+    @GetMapping("/user/{userId}/board")
+    public String myBoardList(Model model,
+                              PagingDTO page,
+                              @PathVariable("userId") String userId,
+                              @RequestParam(defaultValue = "1") int pageNum){
+
+        int totalCount = userService.getMyBoardCount(userId);
+
+        page.setTotalCount(totalCount);
+        page.setOneRecordPage(6);
+        page.setPagingBlock(5);
+
+        page.init();
+
+        List<MyBoardDTO> myBoards= userService.findByMyBoard(page,userId);
+
+        for(MyBoardDTO dto:myBoards){
+            if (dto.getLongitude() != null && dto.getLatitude() != null) {
+                dto.setAddress(addressService.getAddressFromLatLng(dto.getLatitude(), dto.getLongitude()));
+            } else {
+                dto.setAddress("");
+            }
+        }
+
+        String loc ="/user/"+userId+"/board";
+
+        String pageNavi=page.getPageNavi(loc);
+
+        model.addAttribute("myBoards",myBoards);
+        model.addAttribute("userId",userId);
+        model.addAttribute("page",page);
+        model.addAttribute("pageNavi",pageNavi);
+
+        return "jspp/myBoard";
+    }
+
     //회원가입 페이지 출력
     @GetMapping("/user/signup")
     public String userSignupForm(){
@@ -200,6 +246,9 @@ public class UserController {
 
         return "redirect:/login";
     }
+
+
+
     @GetMapping("/user/idCheck")
     public String idCheckForm(){
 
@@ -220,6 +269,9 @@ public class UserController {
 
         return "jspp/idCheckResult";
     }
+
+
+
 
     // 차단 등록
     @PostMapping("/user/{userId}/block")
@@ -272,28 +324,55 @@ public class UserController {
     }
 
     @PutMapping("/user/{userId}")
-    public ResponseEntity<String> updateUser(@PathVariable("userId") String userId,
-                                             @Valid @RequestBody UpdateUserDTO updateUserDTO,
-                                             BindingResult bindingResult){
-        // 만약 유효성 검사에서 오류가 발생한 경우
+    public ResponseEntity<Map<String, String>> updateUser(@PathVariable("userId") String userId,
+                                                          @Valid @RequestBody UpdateUserDTO updateUserDTO,
+                                                          BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            // 각 필드에 대한 오류 메시지를 응답으로 반환
-            StringBuilder errorMessage = new StringBuilder("입력한 데이터가 유효하지 않습니다:\n");
+            Map<String, String> errors = new HashMap<>();
             for (FieldError error : bindingResult.getFieldErrors()) {
-                errorMessage.append(error.getDefaultMessage()).append("\n");
+                errors.put(error.getField(), error.getDefaultMessage());
             }
-            return ResponseEntity.badRequest().body(errorMessage.toString());
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-        System.out.println(updateUserDTO.getName());
-
 
         int n=userService.updateUser(userId,updateUserDTO);
 
-        if(n>0){
-            return ResponseEntity.ok("ok");
+        Map<String, String> response = new HashMap<>();
+        if (n > 0) {
+            response.put("message", "ok");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
-        return ResponseEntity.ok("no");
+        response.put("message", "no");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/user/{userId}/address")
+    public ResponseEntity<String> updateUserAddress(@PathVariable("userId") String userId,
+                                                    @RequestParam("latitude") Double latitude,
+                                                    @RequestParam("longitude") Double longitude){
+
+        int n= userService.updateUserAddress(userId,latitude,longitude);
+
+        if(n>0){
+            return ResponseEntity.ok("ok");
+        }else{
+            return ResponseEntity.ok("no");
+        }
+    }
+
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<String> DeleteUser(@PathVariable("userId")String userId, HttpSession session){
+
+        int n=userService.deleteUser(userId);
+
+        if(n>0){
+            session.invalidate();
+            return ResponseEntity.ok("ok");
+        }else{
+            return ResponseEntity.ok("no");
+        }
+
     }
 
     @PutMapping("/user/{userId}/charge")

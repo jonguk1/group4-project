@@ -54,11 +54,7 @@
                         if (buttonElement) {
                             buttonElement.disabled = true;
                         }
-                        if (!alertDisplayed) {
-                            alert("경매가 종료되었습니다.");
-                            alertDisplayed = true;
-                            window.location.reload();
-                        }
+
                     } else {
                         const formattedDifference = formatTimeDifference(timeDifference);
                         deadlineElement.innerText = formattedDifference;
@@ -390,6 +386,10 @@
                                                     <button type="submit" class="btn btn-primary btn-sm" style="margin-top:10px">가격 올리기</button>
                                                 </form>
                                                 <input type="hidden" name="auctionId" value="${auction.auctionId}">
+                                                <form class="d-flex auction-form" method="post" action="/auction/${userId}/cancel">
+                                                    <input type="hidden" name="_method" value="put">
+                                                    <button type="submit" class="btn btn-danger btn-sm">경매 취소</button>
+                                                </form>
                                            </div>
                                         </div>
                                     </div>
