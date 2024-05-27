@@ -24,7 +24,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-
+    //받은 리뷰 목룩 보여주기
     @GetMapping("/review/{userId}/received")
     public String receivedReviewList(Model model,
                                      PagingDTO page,
@@ -51,6 +51,7 @@ public class ReviewController {
         return "jspp/myReceivedReview";
     }
 
+    //보낸 리뷰 목룩 보여주기
     @GetMapping("/review/{userId}/sent")
     public String sentReviewList(Model model,
                                  PagingDTO page,

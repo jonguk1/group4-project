@@ -32,6 +32,7 @@ public class ReportController {
     private Map<String, Long> requestTimestamps = new HashMap<>();
     private static final long REQUEST_EXPIRY_TIME = 60000 * 60 * 24 * 3;
 
+    //신고 목록 보여주기
     @GetMapping("/report")
     public String reportList(Model model,
                              PagingDTO page,
@@ -58,6 +59,7 @@ public class ReportController {
         return "jspp/reportList";
     }
 
+    //해당하는 대상자의 신고 상세 목록 보여주기
     @GetMapping(value="/report/{writer}",produces = {"application/json; charset=utf-8"})
     @ResponseBody
     public ModelMap reportWriterAjaxList(PagingDTO page,
@@ -86,6 +88,7 @@ public class ReportController {
         return map;
     }
 
+    //신고자 정지 처리
     @PutMapping("/report/{writer}/ban")
     public ResponseEntity<String> updateBanUser(@PathVariable("writer") String writer) {
 

@@ -27,6 +27,7 @@ public class FavoriteController {
 
     private final AddressService addressService;
 
+    //관심 목록 보여주기
     @GetMapping("/favorite/{userId}")
     public String favoriteView(Model model,
                                PagingDTO page,
