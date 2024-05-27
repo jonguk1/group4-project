@@ -31,4 +31,10 @@ public class Review {
     @NotNull
     private String reviewee;
 
+    public Review(String reviewer, String reviewee, String content, Integer star) {
+        this.reviewer = reviewer;
+        this.reviewee = reviewee;
+        this.content = content;
+        this.star = star;
+    }
 }

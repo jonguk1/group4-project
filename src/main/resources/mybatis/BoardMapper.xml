@@ -128,4 +128,16 @@
         SET isMegaphone = false
         WHERE isMegaphone = true AND TIMESTAMPDIFF(WEEK, regDate, NOW()) >= 1;
     </update>
+
+    <select id="selectCategoryNameById" resultType="string" parameterType="_int">
+        SELECT itemCategoryName
+        FROM Item_Category
+        WHERE itemCategoryId = #{itemCategoryId}
+    </select>
+
+    <update id="updateIsLend" parameterType="com.lend.shareservice.entity.Board">
+        UPDATE BOARD
+        SET isLend = #{isLend}
+        WHERE boardId = #{boardId}
+    </update>
 </mapper>

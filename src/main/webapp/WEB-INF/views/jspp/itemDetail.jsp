@@ -334,6 +334,16 @@
                     <div class="col-md-3">
                     </div>
                     <div class="col-md-6">
+                        <span><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${postById.itemCategoryName}&nbsp;<span><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${postById.itemName}</span>
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-6">
                         <span id="address"><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">${postById.address}</span>
                         <c:if test="${loggedIn}">
                             <span style="color: orange;"> (${postById.distance}km)</span>
@@ -1096,14 +1106,18 @@
                          interestSpan.style.display = 'none';
                      }
 
+                     var boardId = {
+                         boardId: boardIdMatch ? boardIdMatch[1] : null,
+                      };
+
                      // 현재 유저가 경매중 확인
                      $.ajax({
-                         url: "/auction/is/" + userId,
+                         url: "/auction/" + boardId.boardId + "/participant/" + userId + "/check",
                          type: "GET",
                          dataType: "text",
                          success: function(response) {
 
-                             if (response === "ok") {
+                              if (response === "ok") {
                                  document.getElementById('auctionButton').textContent = '경매참여중';
                              } else if (response === "no") {
                                  document.getElementById('auctionButton').textContent = '경매참여';
@@ -1111,9 +1125,7 @@
                          }
                      });
 
-                     var boardId = {
-                        boardId: boardIdMatch ? boardIdMatch[1] : null,
-                     };
+
 
                      $.ajax({
                          url: "/favorite/is/" + boardId.boardId,
@@ -1262,8 +1274,12 @@
                           data: JSON.stringify({ writer: writer.writer }),
                           success: function(response) {
                               console.log('Success:', response);
-
+                              alert('해당 유저가 차단되었습니다.');
                               $('#confirmModal').modal('hide');
+
+                              var boardCategoryId = '${postById.boardCategoryId}';
+                              var itemCategoryId = '${postById.itemCategoryId}';
+                              window.location.href = '/board?boardCategoryId=' + boardCategoryId + '&itemCategoryId=' + itemCategoryId;
                           },
                           error: function(xhr, status, error) {
 

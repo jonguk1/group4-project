@@ -25,7 +25,7 @@ public interface AuctionService {
 
     int paticipateAuction(String id, Integer boardId);
 
-    boolean findCurrentAuctionState(String userId);
+    boolean findCurrentAuctionState(String userId, Integer boardId);
 
     int updateIsAuction(int auctionId);
 

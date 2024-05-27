@@ -7,6 +7,7 @@ import com.lend.shareservice.domain.user.UserService;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.entity.Favorite;
+import com.lend.shareservice.web.board.ItemCategory;
 import com.lend.shareservice.web.board.dto.*;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -235,8 +236,6 @@ public class BoardServiceImpl implements BoardService{
             return null;
         }
 
-
-
         ItemDetailDTO itemDetailDTO = new ItemDetailDTO();
 
         itemDetailDTO.setBoardId(board.getBoardId());
@@ -269,6 +268,8 @@ public class BoardServiceImpl implements BoardService{
         itemDetailDTO.setLatitude(board.getLatitude());
         itemDetailDTO.setLongitude(board.getLongitude());
 
+        String itemCategoryName = boardMapper.selectCategoryNameById(board.getItemCategoryId());
+        itemDetailDTO.setItemCategoryName(itemCategoryName);
 
         itemDetailDTO.setIsMegaphone(board.IsMegaphone(board.getIsMegaphone()));
 
@@ -461,5 +462,17 @@ public class BoardServiceImpl implements BoardService{
     @Scheduled(fixedRate = 60000 * 60 * 24 * 5)
     public void expireMegaphone() {
         boardMapper.expireMegaphone();
+    }
+
+    // 대여 상태 변경
+
+    @Override
+    public int updateLendState(Integer boardId, String lendState) {
+        System.out.println(lendState);
+        Board board = new Board();
+        board.setBoardId(boardId);
+        board.toIsLend(lendState);
+
+        return boardMapper.updateIsLend(board);
     }
 }

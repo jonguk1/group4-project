@@ -58,9 +58,6 @@ public class UserController {
     private CommonUtil util;
 
 
-
-
-
     @GetMapping("/test")
     public String test(@SessionAttribute(name="userId", required = false)String userId, Model model) {
 

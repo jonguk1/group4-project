@@ -18,4 +18,6 @@ public interface ReviewMapper {
     List<ReviewDTO> sents(Map<String, Object> map);
 
     int sentGetTotalCount(String userId);
+
+    int saveReview(Review review);
 }

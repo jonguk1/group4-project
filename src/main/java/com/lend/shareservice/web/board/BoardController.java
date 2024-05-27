@@ -352,4 +352,15 @@ public class BoardController {
             }
         }
     }
+
+    // 글 대여상태 변경
+    @PutMapping("/{boardId}/isLend")
+    public ResponseEntity<String> updateLendState(@PathVariable("boardId") Integer boardId, @RequestBody String lendState) {
+        log.info("lendState = {}", lendState);
+        if (boardService.updateLendState(boardId, lendState) > 0) {
+            return ResponseEntity.ok("ok");
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+    }
 }

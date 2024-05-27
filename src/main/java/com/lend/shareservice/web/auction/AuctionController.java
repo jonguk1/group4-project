@@ -142,10 +142,10 @@ public class AuctionController {
         return ResponseEntity.ok("no");
     }
 
-    @GetMapping("/auction/is/{userId}")
-    public ResponseEntity<String> currentAuctionState(@PathVariable("userId") String userId) {
+    @GetMapping("/auction/{boardId}/participant/{userId}/check")
+    public ResponseEntity<String> currentAuctionState(@PathVariable("boardId") Integer boardId, @PathVariable("userId") String userId) {
 
-        boolean isAuction = auctionService.findCurrentAuctionState(userId);
+        boolean isAuction = auctionService.findCurrentAuctionState(userId, boardId);
 
         if (isAuction) {
             return ResponseEntity.ok("ok");

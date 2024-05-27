@@ -153,10 +153,12 @@
         WHERE boardId = #{boardId}
     </select>
 
-    <select id="selectIsAuctionById" parameterType="string" resultType="_int">
-        SELECT COUNT(*)
-        FROM Participant_Auction
-        WHERE userId = #{userId}
+    <select id="selectIsAuctionById" parameterType="java.util.Map" resultType="_int">
+        SELECT COUNT(*) AS cnt
+        FROM Auction a
+        JOIN Participant_Auction pa ON a.auctionId = pa.auctionId
+        WHERE pa.userId = #{userId}
+        AND a.boardId = #{boardId};
     </select>
 
     <select id="selectParticipantCnt" parameterType="com.lend.shareservice.entity.Auction" resultType="_int">

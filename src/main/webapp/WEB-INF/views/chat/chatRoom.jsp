@@ -10,6 +10,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>채팅하기</title>
+    <link rel="stylesheet" href="/css/notification.css">
+    <link rel="stylesheet" href="/css/chatRoom.css">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.0.0/dist/minty/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -70,7 +72,7 @@
     request.setAttribute("time", now);
 %>
 <fmt:formatDate pattern="yy-MM-dd HH:mm:ss" value="${time}" var="sendTime" />
-<div class="container bg-green text-center">
+ <div class="container bg-green text-center">
                 <div class="row">
                     <div class="col" >
                         <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
@@ -95,22 +97,29 @@
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="#">
-                                                    <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                <a class="nav-link" href="#" id="notificationIcon">
+                                                    <img src="/images/icon/notificationIcon.png"  style="width:30px; height:30px;">
+                                                    <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                                 </a>
                                             </c:if>
                                         </li>
 
+                                        <li>
+                                            <div id="messageContainer" style="display: none;">
+
+                                            </div>
+                                        </li>
+
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="/chat/chatList/${userId}">
+                                                <a class="nav-link" href="#">
                                                     <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
                                                 </a>
                                             </c:if>
                                         </li>
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="/user/${userId}" style="color: black;">내정보</a>
+                                                <a class="nav-link" href="/user/${userId}" style="color: black;">${userId}님</a>
                                             </c:if>
                                         </li>
                                         <li class="nav-item">
@@ -204,12 +213,59 @@
                                 <h1>${chatItem.title}</h1>
                                 <div class="row">
                                     <div class="col-md-9">
-                                        <select class="form-select" id="exampleSelect1">
+                                        <select class="form-select" id="isLend">
                                             <option>대여전</option>
                                             <option>대여중</option>
                                             <option>대여완료</option>
                                         </select>
                                     </div>
+                                    <div id="myModal" class="modal">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <div>
+                                                        <h5 class="modal-title">
+                                                            <c:choose>
+                                                                <c:when test="${userId eq chatItem.writer}">
+                                                                    ${chatRoomDTO.lendy}님과의 거래는 어떠셨나요?
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    ${chatItem.writer}님과의 거래는 어떠셨나요?
+                                                                </c:otherwise>
+                                                            </c:choose>
+
+
+                                                        </h5>
+                                                    </div>
+
+                                                    <div id="star-error" style="display: none;">
+                                                        <span class="badge bg-danger"></span>
+                                                    </div>
+                                                    <div class="rating" style="text-align: center;" >
+
+                                                        <span>☆</span>
+                                                        <span>☆</span>
+                                                        <span>☆</span>
+                                                        <span>☆</span>
+                                                        <span>☆</span>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div id="content-error" style="display: none;">
+                                                        <span class="badge bg-danger"></span>
+                                                    </div>
+                                                    <textarea class="form-control" id="content" name="content" rows="10"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                    <button type="button" id="reviewReg" class="btn btn-primary">리뷰 등록</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                      <div class="col-md-3">
                                         <div class="btn-group btn-group-md" role="group">
                                             <button class="btn btn-secondary" type="button">
@@ -279,11 +335,183 @@
         </div>
     </div>
 
+    <script src="/js/notification.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
 
-        chat_connect();
+            let lendState = '${chatItem.lendState}';
+            let boardId = '${chatItem.boardId}';
+            const selectBox = document.getElementById('isLend');
+
+            selectBox.addEventListener('change', function(event) {
+                let selectedOption = event.target.value;
+
+                $.ajax({
+                    url: '/board/' + boardId + '/isLend',
+                    method: 'PUT',
+                    contentType: 'text/plain',
+                    data: selectedOption,
+                    success: function(response) {
+
+                    },
+                    error: function(xhr, status, error) {
+
+                    }
+                });
+            });
+
+            if (lendState === '대여전') {
+                selectBox.value = '대여전';
+            } else if (lendState == '대여중') {
+                selectBox.value = '대여중';
+            } else if (lendState == '대여 완료') {
+                selectBox.value = '대여완료';
+                selectBox.setAttribute('disabled', 'disabled');
+            }
+
+            const modal = document.getElementById('myModal');
+            let selectedStars = 0;
+
+            if ('${userId}' === '${chatItem.writer}') {
+                reviewee = '${chatRoomDTO.lendy}';
+            } else {
+                reviewee = '${chatItem.writer}';
+            }
+
+            selectBox.addEventListener('change', function () {
+                const selectedValue = selectBox.value;
+
+                if (selectedValue === '대여완료') {
+                    reviewModal();
+
+                }
+            });
+
+            $('#reviewReg').click(function() {
+                var isError = false;
+                var starErrorEle = document.getElementById('star-error');
+                var contentErrorEle = document.getElementById('content-error');
+                starErrorEle.style.display = 'none';
+                contentErrorEle.style.display = 'none';
+                var cnt = 0;
+                const stars = document.querySelectorAll('.rating span');
+                for (let i = 0; i < stars.length; i++) {
+                    if (stars[i].textContent === '☆') {
+                        cnt = cnt + 1;
+                    }
+
+                }
+                if (cnt === 5) {
+                    var spanElement = starErrorEle.querySelector('span');
+                    spanElement.textContent = '별점을 입력하세요';
+                    starErrorEle.style.display = 'block';
+                    isError = true;
+                }
+
+                var content = document.getElementById('content').value;
+
+                if (content.length > 200) {
+                    var spanElement = contentErrorEle.querySelector('span');
+                    spanElement.textContent = '글 내용 200자 초과';
+                    contentErrorEle.style.display = 'block';
+                    isError = true;
+                }
+
+                if (content === null || content === '') {
+                    var spanElement = contentErrorEle.querySelector('span');
+                    spanElement.textContent = '리뷰내용을 입력해주세요';
+                    contentErrorEle.style.display = 'block';
+                    isError = true;
+                }
+
+                if (isError === false) {
+                    var content = document.getElementById('content').value;
+                    $.ajax({
+                        url: '/review',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            reviewer: '${userId}',
+                            reviewee: reviewee,
+                            content: content,
+                            star: selectedStars
+                        }),
+                        success: function(response) {
+                            if (response === 'ok') {
+                                alert('리뷰 등록 완료');
+                                $('#myModal').modal('hide');
+                                selectBox.setAttribute('disabled', 'disabled');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                             if (xhr.status == 500) {
+                                console.error("서버에서 내부 오류가 발생했습니다.");
+                            } else if (xhr.status == 400) {
+                                var errors = xhr.responseJSON;
+                                var contentErrorEle = document.getElementById('content-error');
+                                contentErrorEle.style.display = 'none';
+                                if (errors?.content) {
+                                    var spanElement = contentErrorEle.querySelector('span');
+                                    spanElement.textContent = errors.content;
+                                    contentErrorEle.style.display = 'block';
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+
+            var textarea = document.getElementById('content');
+
+            // 재입력 시 에러메세지 삭제
+            textarea.addEventListener('input', function(event) {
+                var contentErrorEle = document.getElementById('content-error');
+                contentErrorEle.style.display = 'none';
+            });
+
+            // 포커스 시 에러메세지 삭제
+            textarea.addEventListener('focus', function(event) {
+                var contentErrorEle = document.getElementById('content-error');
+                contentErrorEle.style.display = 'none';
+            });
+
+            function reviewModal() {
+
+                var textarea = document.getElementById('content');
+                textarea.value = '';
+                $('#myModal').modal('show');
+                var starErrorEle = document.getElementById('star-error');
+                var contentErrorEle = document.getElementById('content-error');
+                starErrorEle.style.display = 'none';
+                contentErrorEle.style.display = 'none';
+                const stars = document.querySelectorAll('.rating span');
+
+                // 별 초기화
+                for (let i = 0; i < stars.length; i++) {
+                    stars[i].textContent = '☆';
+                }
+
+                stars.forEach((star, index) => {
+                    star.addEventListener('click', () => {
+                        starErrorEle.style.display = 'none';
+                        for (let i = 0; i < stars.length; i++) {
+                            if (i >= index) {
+                                stars[i].textContent = '★';
+                            } else {
+                                stars[i].textContent = '☆';
+                            }
+                        }
+                        selectedStars = 5 - index;
+
+                        // 리뷰 등록
+
+                    });
+
+                });
+            }
+
+         chat_connect();
             $.ajax({
                        url: "/board/board-category",
                        type: "GET",
@@ -521,4 +749,6 @@
     </script>
     <!------------------------------- script ----------------------------------->
 </body>
+
+    <script src="/js/chatRoom.js"></script>
 </html>

@@ -37,4 +37,8 @@
         </where>
     </select>
 
+    <insert id="saveReview" parameterType="com.lend.shareservice.entity.Review" useGeneratedKeys="true" keyProperty="reviewId">
+        INSERT INTO REVIEW (reviewer, reviewee, content, star)
+        VALUES (#{reviewer}, #{reviewee}, #{content}, #{star})
+    </insert>
 </mapper>

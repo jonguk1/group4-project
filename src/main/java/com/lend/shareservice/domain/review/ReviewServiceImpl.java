@@ -3,6 +3,7 @@ package com.lend.shareservice.domain.review;
 import com.lend.shareservice.entity.Review;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import com.lend.shareservice.web.review.dto.ReviewDTO;
+import com.lend.shareservice.web.review.dto.ReviewRegDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,4 +44,13 @@ public class ReviewServiceImpl implements ReviewService{
     public int sentGetTotalCount(String userId) {
         return reviewMapper.sentGetTotalCount(userId);
     }
+
+    // 리뷰 등록
+    @Override
+    public int registerReview(ReviewRegDTO reviewRegDTO) {
+        Review review = new Review(reviewRegDTO.getReviewer(), reviewRegDTO.getReviewee(), reviewRegDTO.getContent(), reviewRegDTO.getStar());
+        return reviewMapper.saveReview(review);
+    }
+
+
 }

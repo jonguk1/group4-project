@@ -45,4 +45,6 @@ public interface BoardService {
     int updateIsAuction(BoardAuctionStateDTO boardAuctionStateDTO);
 
     int editPost(PostEditDTO postEditDTO);
+
+    int updateLendState(Integer boardId, String lendState);
 }

@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+    <link rel="stylesheet" type="text/css" href="/css/mainImage.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
@@ -123,9 +123,9 @@
         </ul>
     </nav>
 </div>
-
+<div id="mainImage">
+</div>
 <br><br>
-
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
@@ -206,7 +206,7 @@
     <input type="hidden" id="whatIsCureentState" name="whatIsCureentState" value="hiddenInputValue">
 </div>
     <script id="allPostsByCategorys" type="application/json">${allPostsByCategorys}</script>
-
+    <script src="/js/mainImage.js"></script>
 <script>
     $(document).ready(function() {
 
@@ -409,7 +409,7 @@
 
         var allPostsByCategorys = JSON.parse(allPostsByCategorysJson);
         var numberOfPosts = allPostsByCategorys.length;
-        var visiblePosts = 9;
+        var visiblePosts = 6;
 
         function renderPosts(startIndex, count) {
 
@@ -478,11 +478,11 @@
             container.innerHTML += postHtml;
         }
 
-        var loadedPosts = 9;
+        var loadedPosts = 6;
 
         function loadMorePosts() {
 
-            var postsToAdd = 9;
+            var postsToAdd = 6;
             renderPosts(loadedPosts, postsToAdd);
             loadedPosts += postsToAdd;
             if (loadedPosts >= allPostsByCategorys.length) {

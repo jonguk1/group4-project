@@ -7,6 +7,7 @@
 <html>
 <head>
     <title>Navigation Bar</title>
+    <link rel="stylesheet" href="/css/notification.css">
     <!-- 부트 스트랩 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.0.0/dist/minty/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -18,7 +19,7 @@
         </style>
     </head>
     <body>
-    <div class="container bg-green text-center">
+     <div class="container bg-green text-center">
                     <div class="row">
                         <div class="col" >
                             <nav class="navbar navbar-expand-lg bg-green" data-bs-theme="light">
@@ -43,22 +44,29 @@
                                         <ul class="navbar-nav">
                                             <li class="nav-item">
                                                 <c:if test="${loggedIn}">
-                                                    <a class="nav-link" href="#">
-                                                        <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                    <a class="nav-link" href="#" id="notificationIcon">
+                                                        <img src="/images/icon/notificationIcon.png"  style="width:30px; height:30px;">
+                                                        <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                                     </a>
                                                 </c:if>
                                             </li>
 
+                                            <li>
+                                                <div id="messageContainer" style="display: none;">
+
+                                                </div>
+                                            </li>
+
                                             <li class="nav-item">
                                                 <c:if test="${loggedIn}">
-                                                    <a class="nav-link" href="/chat/chatList/${userId}">
+                                                    <a class="nav-link" href="#">
                                                         <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
                                                     </a>
                                                 </c:if>
                                             </li>
                                             <li class="nav-item">
                                                 <c:if test="${loggedIn}">
-                                                    <a class="nav-link" href="/user" style="color: black;">내정보</a>
+                                                    <a class="nav-link" href="/user/${userId}" style="color: black;">${userId}님</a>
                                                 </c:if>
                                             </li>
                                             <li class="nav-item">
@@ -162,7 +170,7 @@
 
 
     </html>
-
+    <script src="/js/notification.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
