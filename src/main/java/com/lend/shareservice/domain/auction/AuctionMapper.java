@@ -58,4 +58,16 @@ public interface AuctionMapper {
     int findByMoney(String userId);
 
     Integer selectBoardId(int auctionId);
+
+    void auctionCancel(Auction auction);
+
+    void updateBeforeIsAuction(Auction auction);
+
+    int deleteParticipant(Participant_Auction auction);
+
+    void deleteAuction(Auction auction);
+
+    void lockParticipant(Participant_Auction auction);
+
+    void lockAuction(int auctionId);
 }

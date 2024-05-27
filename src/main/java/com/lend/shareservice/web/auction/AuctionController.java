@@ -154,4 +154,13 @@ public class AuctionController {
         }
     }
 
+    @PutMapping("/auction/{userId}/cancel")
+    public ResponseEntity<String> AuctionCancel(@PathVariable("userId") String userId,
+                                                @RequestParam("auctionId") int auctionId){
+
+        String result = auctionService.AuctionCancel(userId,auctionId);
+
+        return ResponseEntity.ok(result);
+    }
+
 }

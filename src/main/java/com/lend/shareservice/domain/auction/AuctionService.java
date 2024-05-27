@@ -30,4 +30,8 @@ public interface AuctionService {
     int updateIsAuction(int auctionId);
 
     List<AuctionDTO> getDeadlineList();
+
+    String AuctionCancel(String userId,int auctionId);
+
+
 }

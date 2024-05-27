@@ -116,6 +116,8 @@ public class AuctionServiceImpl implements AuctionService{
             return "duplicateUserId";
         }
 
+        auctionMapper.lockAuction(auctionId);
+
         Map<String, Object> map = new HashMap<>();
         map.put("currentPrice", currentPrice);
         map.put("auctionId", auctionId);
@@ -253,6 +255,48 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public List<AuctionDTO> getDeadlineList() {
         return auctionMapper.getDeadlineList();
+    }
+
+    @Override
+    @Transactional
+    public String AuctionCancel(String userId, int auctionId) {
+        try {
+            Auction auction = new Auction();
+            auction.setAuctionId(auctionId);
+            auction.setUserId(userId);
+
+            Participant_Auction participant = new Participant_Auction();
+            participant.setAuctionId(auctionId);
+            participant.setUserId(userId);
+
+            auctionMapper.lockParticipant(participant);
+
+            int n = auctionMapper.deleteParticipant(participant);
+
+            if (n > 0) {
+                int k = auctionMapper.selectParticipantCnt(auction);
+                updateBeforeIsAuctionIfNeeded(k, auction);
+                return "ok";
+            } else {
+                return "no";
+            }
+        } catch (Exception e) {
+            System.err.println("경매 취소 중 오류 발생: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    private void updateBeforeIsAuctionIfNeeded(int participantCount, Auction auction) {
+        if (participantCount == 0) {
+            auctionMapper.deleteAuction(auction);
+        } else {
+            auctionMapper.auctionCancel(auction);
+            if (participantCount == 1) {
+                String message = "경매전으로 변경되었습니다";
+                notificationService.sendMessageAuctionUsers(auction.getAuctionId(), message);
+                auctionMapper.updateBeforeIsAuction(auction);
+            }
+        }
     }
 
 }
