@@ -4,20 +4,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var imgElement1 = document.createElement("img");
     imgElement1.src = "/images/main/smile.jpeg";
-    imgElement1.style.width = "90%";
-    imgElement1.style.height = "500px";
+    imgElement1.style.width = "100%";
+    imgElement1.style.height = "600px";
     imgElement1.style.margin = "0 auto";
     imgElement1.style.display = "block";
     var imgElement2 = document.createElement("img");
     imgElement2.src = "/images/main/family1.jpeg";
-    imgElement2.style.width = "90%";
-    imgElement2.style.height = "500px";
+    imgElement2.style.width = "100%";
+    imgElement2.style.height = "600px";
     imgElement2.style.margin = "0 auto";
     imgElement2.style.display = "block";
     var imgElement3 = document.createElement("img");
     imgElement3.src = "/images/main/family2.jpeg";
-    imgElement3.style.width = "90%";
-    imgElement3.style.height = "500px";
+    imgElement3.style.width = "100%";
+    imgElement3.style.height = "600px";
     imgElement3.style.margin = "0 auto";
     imgElement3.style.display = "block";
 
