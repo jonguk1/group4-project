@@ -56,21 +56,21 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public List<AuctionDTO> auctions(PagingDTO page, String userId) {
+    public List<AuctionDTO> findByAuctionList(PagingDTO page, String userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return auctionMapper.auctions(map);
+        return auctionMapper.findByAuctionList(map);
     }
 
     @Override
-    public List<AuctionDTO> completeAuctions(PagingDTO page, String userId) {
+    public List<AuctionDTO> findByCompleteAuctionList(PagingDTO page, String userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return auctionMapper.completeAuctions(map);
+        return auctionMapper.findByCompleteAuctionList(map);
     }
 
     @Override
@@ -259,7 +259,7 @@ public class AuctionServiceImpl implements AuctionService{
 
     @Override
     @Transactional
-    public String AuctionCancel(String userId, int auctionId) {
+    public String auctionCancel(String userId, int auctionId) {
         try {
             Auction auction = new Auction();
             auction.setAuctionId(auctionId);

@@ -17,9 +17,9 @@ public interface AuctionService {
 
     int getCompleteAuctionCount(String userId);
 
-    List<AuctionDTO> auctions(PagingDTO page,String userId);
+    List<AuctionDTO> findByAuctionList(PagingDTO page,String userId);
 
-    List<AuctionDTO> completeAuctions(PagingDTO page,String userId);
+    List<AuctionDTO> findByCompleteAuctionList(PagingDTO page,String userId);
 
     String updateCurrentPrice(int auctionId,int currentPrice,String userId);
 
@@ -31,7 +31,7 @@ public interface AuctionService {
 
     List<AuctionDTO> getDeadlineList();
 
-    String AuctionCancel(String userId,int auctionId);
+    String auctionCancel(String userId,int auctionId);
 
 
 }

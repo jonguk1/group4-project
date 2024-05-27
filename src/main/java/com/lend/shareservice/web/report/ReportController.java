@@ -46,7 +46,7 @@ public class ReportController {
 
         page.init();
 
-        List<ReportDTO> reports= reportService.reports(page);
+        List<ReportDTO> reports= reportService.findByReportList(page);
 
         String loc ="/report";
 
@@ -74,7 +74,7 @@ public class ReportController {
 
         page.init();
 
-        List<ReportDTO> reportsWriter= reportService.reportWriters(writer,page);
+        List<ReportDTO> reportsWriter= reportService.findByReportWriterList(writer,page);
 
         String loc ="/report/"+writer;
 

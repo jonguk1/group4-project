@@ -18,20 +18,20 @@ public class ReportServiceImpl implements ReportService{
     private final ReportMapper reportMapper;
 
     @Override
-    public List<ReportDTO> reports(PagingDTO page) {
+    public List<ReportDTO> findByReportList(PagingDTO page) {
         Map<String,Object> map=new HashMap<>();
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return reportMapper.reports(map);
+        return reportMapper.findByReportList(map);
     }
 
     @Override
-    public List<ReportDTO> reportWriters(String writer, PagingDTO page) {
+    public List<ReportDTO> findByReportWriterList(String writer, PagingDTO page) {
         Map<String,Object> map=new HashMap<>();
         map.put("writer",writer);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return reportMapper.reportWriters(map);
+        return reportMapper.findByReportWriterList(map);
     }
 
     @Override

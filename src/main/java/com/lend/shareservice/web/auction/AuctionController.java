@@ -74,7 +74,7 @@ public class AuctionController {
 
         page.init();
 
-        List<AuctionDTO> auctions = auctionService.auctions(page,userId);
+        List<AuctionDTO> auctions = auctionService.findByAuctionList(page,userId);
 
         String loc ="/auction/"+userId;
 
@@ -100,7 +100,7 @@ public class AuctionController {
 
         page.init();
 
-        List<AuctionDTO> auctions = auctionService.completeAuctions(page,userId);
+        List<AuctionDTO> auctions = auctionService.findByCompleteAuctionList(page,userId);
 
         String loc ="/auction/"+userId+"/complete";
 
@@ -155,10 +155,10 @@ public class AuctionController {
     }
     //경매 취소
     @PutMapping("/auction/{userId}/cancel")
-    public ResponseEntity<String> AuctionCancel(@PathVariable("userId") String userId,
+    public ResponseEntity<String> auctionCancel(@PathVariable("userId") String userId,
                                                 @RequestParam("auctionId") int auctionId){
 
-        String result = auctionService.AuctionCancel(userId,auctionId);
+        String result = auctionService.auctionCancel(userId,auctionId);
 
         return ResponseEntity.ok(result);
     }

@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface ReportService {
 
-    List<ReportDTO> reports(PagingDTO page);
+    List<ReportDTO> findByReportList(PagingDTO page);
 
-    List<ReportDTO> reportWriters(String writer,PagingDTO page);
+    List<ReportDTO> findByReportWriterList(String writer,PagingDTO page);
 
     int getReportCount();
 

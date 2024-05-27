@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface FavoriteService {
 
-    List<FavoriteDTO> favorites(PagingDTO page, String userId);
+    List<FavoriteDTO> findByFavoriteList(PagingDTO page, String userId);
 
     int getFavoriteTotalCount(PagingDTO page);
 

@@ -38,7 +38,7 @@ public class ReviewController {
 
         page.init();
 
-        List<ReviewDTO> receiveds=reviewService.receiveds(page,userId);
+        List<ReviewDTO> receiveds=reviewService.findByReceivedList(page,userId);
 
         String loc ="/review/"+userId+"/received";
 
@@ -66,7 +66,7 @@ public class ReviewController {
 
         page.init();
 
-        List<ReviewDTO> sents=reviewService.sents(page,userId);
+        List<ReviewDTO> sents=reviewService.findBySentList(page,userId);
 
         String loc ="/review/"+userId+"/sent";
 

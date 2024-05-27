@@ -21,9 +21,9 @@ public interface AuctionMapper {
 
     int getCompleteAuctionCount(String userId);
 
-    List<AuctionDTO> auctions(Map<String, Object> map);
+    List<AuctionDTO> findByAuctionList(Map<String, Object> map);
 
-    List<AuctionDTO> completeAuctions(Map<String, Object> map);
+    List<AuctionDTO> findByCompleteAuctionList(Map<String, Object> map);
 
     Auction selectAuctionByBoardId(Integer boardId);
 

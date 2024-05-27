@@ -30,7 +30,7 @@
     <resultMap type="com.lend.shareservice.entity.Participant_Auction" id="participantAuctionMap">
     </resultMap>
 
-    <select id="auctions" parameterType="map" resultMap="auctionMap">
+    <select id="findByAuctionList" parameterType="map" resultMap="auctionMap">
         select
         a.auctionId,a.userId,b.deadline,b.title,b.itemImage1,b.isAuction,b.isLend
         ,b.price,b.itemName,b.latitude,b.longitude
@@ -56,7 +56,7 @@
         order by b.deadline limit #{limit} offset #{offset}
     </select>
 
-    <select id="completeAuctions" parameterType="map" resultMap="auctionMap">
+    <select id="findByCompleteAuctionList" parameterType="map" resultMap="auctionMap">
         select
         a.auctionId,a.userId,b.deadline,b.title,b.itemImage1,b.isAuction,b.isLend
         ,b.price,b.itemName,b.latitude,b.longitude
