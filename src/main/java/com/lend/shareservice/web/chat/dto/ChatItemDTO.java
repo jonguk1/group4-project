@@ -12,4 +12,5 @@ public class ChatItemDTO {
     private String writer;
     private String title;
     private String images;
+    private String lendState;
 }

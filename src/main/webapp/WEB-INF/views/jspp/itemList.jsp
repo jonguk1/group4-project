@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+    <link rel="stylesheet" type="text/css" href="/css/mainImage.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
@@ -95,7 +95,9 @@
                     </div>
                 </div>
             </div>
-
+<div id="mainImage">
+</div>
+<br><br>
 <div class="container d-flex justify-content-center">
     <nav class="navbar navbar-expand-lg" data-bs-theme="light">
         <ul class="navbar-nav me-auto">
@@ -112,19 +114,9 @@
 
                 </div>
             </li>
-
-            <li class="nav-item dropdown text-center">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">경매 현황</a>
-                    <a class="dropdown-item" href="#">마감 임박</a>
-                </div>
-            </li>
         </ul>
     </nav>
 </div>
-
-<br><br>
 
 <div class="container-fluid">
 	<div class="row">
@@ -155,7 +147,7 @@
         </div>
     </div>
 
-<br><br>
+<br>
        <div class="row">
            <div class="col-md-12">
                <div class="row">
@@ -206,7 +198,7 @@
     <input type="hidden" id="whatIsCureentState" name="whatIsCureentState" value="hiddenInputValue">
 </div>
     <script id="allPostsByCategorys" type="application/json">${allPostsByCategorys}</script>
-
+    <script src="/js/mainImage.js"></script>
 <script>
     $(document).ready(function() {
 
@@ -409,7 +401,7 @@
 
         var allPostsByCategorys = JSON.parse(allPostsByCategorysJson);
         var numberOfPosts = allPostsByCategorys.length;
-        var visiblePosts = 9;
+        var visiblePosts = 6;
 
         function renderPosts(startIndex, count) {
 
@@ -478,11 +470,11 @@
             container.innerHTML += postHtml;
         }
 
-        var loadedPosts = 9;
+        var loadedPosts = 6;
 
         function loadMorePosts() {
 
-            var postsToAdd = 9;
+            var postsToAdd = 6;
             renderPosts(loadedPosts, postsToAdd);
             loadedPosts += postsToAdd;
             if (loadedPosts >= allPostsByCategorys.length) {

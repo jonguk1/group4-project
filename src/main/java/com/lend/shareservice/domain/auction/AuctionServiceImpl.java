@@ -237,8 +237,12 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public boolean findCurrentAuctionState(String userId) {
-        int cnt = auctionMapper.selectIsAuctionById(userId);
+    public boolean findCurrentAuctionState(String userId, Integer boardId) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+        map.put("boardId", boardId);
+        int cnt = auctionMapper.selectIsAuctionById(map);
 
         if (cnt >= 1) {
             return true;

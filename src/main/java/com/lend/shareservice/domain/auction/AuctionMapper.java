@@ -35,7 +35,7 @@ public interface AuctionMapper {
 
     Auction selectMaxPrice(Auction auction);
 
-    int selectIsAuctionById(String userId);
+    int selectIsAuctionById(Map<String, Object> map);
 
     int selectParticipantCnt(Auction findAuctionId);
 
