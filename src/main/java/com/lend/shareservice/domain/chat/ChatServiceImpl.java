@@ -3,9 +3,7 @@ package com.lend.shareservice.domain.chat;
 import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.entity.Chatroom;
 import com.lend.shareservice.entity.Message;
-import com.lend.shareservice.web.chat.dto.ChatDTO;
-import com.lend.shareservice.web.chat.dto.ChatItemDTO;
-import com.lend.shareservice.web.chat.dto.ChatRoomDTO;
+import com.lend.shareservice.web.chat.dto.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +22,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ChatServiceImpl implements ChatService{
+public class ChatServiceImpl implements ChatService {
 
     private final ChatMapper chatMapper;
     // 채팅 저장을 위한
-    private final RedisTemplate<String,ChatDTO> redisTemplateChat;
+    private final RedisTemplate<String, ChatDTO> redisTemplateChat;
 
     // 채팅(topic)에 발행되는 메시지 처리하는 리스너
     private final RedisMessageListenerContainer redisMessageListener;
@@ -42,7 +40,7 @@ public class ChatServiceImpl implements ChatService{
     private HashOperations<String, String, ChatRoomDTO> opsHashMessageRoom;
 
     // 2. 채팅의 대화 메시지 발행을 위한 redis topic(채팅) 정보
-    private Map<String , ChannelTopic> topics;
+    private Map<String, ChannelTopic> topics;
 
     // 3. redis 의 Hash 데이터 다루기 위함
     @PostConstruct
@@ -51,6 +49,7 @@ public class ChatServiceImpl implements ChatService{
         opsHashMessageRoom = redisTemplate.opsForHash();
         topics = new HashMap<>();
     }
+
     // redis 채널에서 쪽지방 조회
     @Override
     public ChannelTopic getTopic(int chatId) {
@@ -63,7 +62,7 @@ public class ChatServiceImpl implements ChatService{
         }
     }
 
-
+    //레디스를 위한 채팅방 입장 메소드
     @Override
     public void enterChatRoom(int chatId) {
 
@@ -78,6 +77,7 @@ public class ChatServiceImpl implements ChatService{
 
     }
 
+    //채팅방 내역 갖고오기 또는 채팅방 생성하기
     @Override
     public Integer getOrCreateChatRoom(String userId, Integer boardId, ChatItemDTO chatItem, String time) {
         boolean isSeller = chatItem.getWriter().equals(userId);
@@ -85,16 +85,18 @@ public class ChatServiceImpl implements ChatService{
         Integer ChatId = null;
 
 //        // 채팅방 아이디 전달하기
-        if (!isSeller) {//로그인한 사람과 글쓴이가 같지않다면
+        if (!isSeller) {//로그인한 사람과 글쓴이가 같지않다면 채팅방 번호 갖고오기 메서드 찾아가기
             ChatId = selectChatRoom(userId, boardId, chatItem.getWriter());
         }
+        //채팅방 번호 없고 로그인한 사람과 글쓴이가 다르면 채팅방 생성 메소드 찾아가기
         if (ChatId == null && !userId.equals(chatItem.getWriter())) {
             createRoom(userId, boardId, chatItem.getWriter(), time);
             ChatId = selectChatRoom(userId, boardId, chatItem.getWriter());
         }
-        return  ChatId;
+        return ChatId;
     }
 
+    //채팅 저장하기
     @Override
     public void saveMessage(ChatDTO chatDTO) {
         //DB저장
@@ -117,18 +119,57 @@ public class ChatServiceImpl implements ChatService{
         // redisTemplateChat.expire(String.valueOf(chatDTO.getChatId()), 5, TimeUnit.MINUTES);
     }
 
+    //현재 유저 채팅 리스트에 뿌려줄 아이템 갖고오기
     @Override
-    public List<Message> findChatList(String userId) {
-//        log.info(userId);
+    public List<ChatListItemDTO> findChatList(String userId) {
 
-        List<Message> messageList = chatMapper.findChatList(userId);
+        List<ChatListItemDTO> messageList = chatMapper.findChatList(userId);
+//        log.info("서비스임플 채팅리스트를 찾아라 : " + messageList.toString());
 
-        log.info(messageList.toString());
+        for (ChatListItemDTO message : messageList) {
+            Integer boardId = message.getBoardId();
+            if (boardId != null) {
+                ChatItemDTO chatItemDTO = selectItem(boardId);
+                message.setChatItemDTO(chatItemDTO);  // 메시지에 ChatItemDTO 설정
+                log.info("상세글 정보: " + chatItemDTO.toString());
+            }
+        }
 
-        return  messageList;
+        return messageList;
 
     }
 
+    @Override
+    public ReservLatiLongDTO reservLoadList(Integer chatId) {
+        ReservLatiLongDTO reservLoadList = chatMapper.reservLoadList(chatId);
+        log.info("이거 되나요 제발 진심 : " + reservLoadList.toString());
+        return reservLoadList;
+    }
+
+    //약속 정보 가져오기
+    @Override
+    public Message loadReserv(Integer chatId) {
+        return chatMapper.loadReserv(chatId);
+    }
+
+    //약속 수정하기
+    @Override
+    public void updateReserv(Double reservLat, Double reservLong, Integer chatId,
+                             String from, String to, String newSendTime, String content, Integer messageId) {
+        Message message = new Message();
+        message.setLatitude(reservLat);
+        message.setLongitude(reservLong);
+        message.setChatId(chatId);
+        message.setFrom(from);
+        message.setTo(to);
+        message.setSendTime(new Date());
+        message.setContent(content);
+        message.setMessageId(messageId);
+
+        chatMapper.updateReserv(message);
+    }
+
+    //채팅 내역 갖고오기
     @Override
     public List<ChatDTO> loadMessage(int chatId) {
         List<ChatDTO> messageList = chatMapper.loadMessage(chatId);
@@ -142,6 +183,24 @@ public class ChatServiceImpl implements ChatService{
     @Override
     public ChatRoomDTO getChatRoom(Integer chatId) {
         return chatMapper.getChatRoomById(chatId);
+    }
+
+    //약속하기 위한 메소드
+    @Override
+    public void saveReserv(Double reservLat, Double reservLong, Integer chatId,
+                           String from, String to, String time, String content) {
+        Message message = new Message();
+        message.setLatitude(reservLat);
+        message.setLongitude(reservLong);
+        message.setChatId(chatId);
+        message.setFrom(from);
+        message.setTo(to);
+        message.setSendTime(new Date());
+        message.setContent(content);
+
+//        log.info("여기는 예약하기 임플 : " + message.toString());
+
+        chatMapper.saveReserv(message);
     }
 
     //채팅방에 상세글 정보 넘겨주기 위한 메소드
@@ -161,7 +220,7 @@ public class ChatServiceImpl implements ChatService{
 
     //채팅방 생성
     @Override
-    public void createRoom(String userId, Integer boardId, String writer,String time) {
+    public void createRoom(String userId, Integer boardId, String writer, String time) {
 
         Chatroom chatroom = new Chatroom();
         chatroom.setBoardId(boardId);

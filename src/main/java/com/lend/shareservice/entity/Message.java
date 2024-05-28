@@ -11,7 +11,11 @@ import java.util.Date;
 @Data
 public class Message {
 
-    // 채팅방번호 (ID)
+    //메세지 아이디 (ID)
+    @NotNull
+    private Integer messageId;
+
+    // 채팅방번호
     @NotNull
     private Integer chatId;
 
