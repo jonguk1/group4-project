@@ -23,12 +23,12 @@ public class BlockServiceImpl implements BlockService{
     }
 
     @Override
-    public List<BlockDTO> blocks(PagingDTO page, String userId) {
+    public List<BlockDTO> findByBlockList(PagingDTO page, String userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return blockMapper.blocks(map);
+        return blockMapper.findByBlockList(map);
     }
 
     @Override

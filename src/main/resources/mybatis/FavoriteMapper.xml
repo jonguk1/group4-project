@@ -25,7 +25,7 @@
         </collection>
     </resultMap>
 
-    <select id="favorites" parameterType="map" resultMap="FavoriteMap">
+    <select id="findByFavoriteList" parameterType="map" resultMap="FavoriteMap">
         select
         userId,writer,b.title,b.content,price,isAuction,isLend,
         interestCnt,hits,itemName,itemImage1,b.boardId,longitude,latitude

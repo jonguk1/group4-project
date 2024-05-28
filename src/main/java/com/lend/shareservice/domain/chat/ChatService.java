@@ -1,9 +1,7 @@
 package com.lend.shareservice.domain.chat;
 
 import com.lend.shareservice.entity.Message;
-import com.lend.shareservice.web.chat.dto.ChatDTO;
-import com.lend.shareservice.web.chat.dto.ChatItemDTO;
-import com.lend.shareservice.web.chat.dto.ChatRoomDTO;
+import com.lend.shareservice.web.chat.dto.*;
 import org.springframework.data.redis.listener.ChannelTopic;
 
 import java.util.List;
@@ -21,11 +19,19 @@ public interface ChatService {
 
     void saveMessage(ChatDTO chatDTO);
 
-    List<Message> findChatList(String userId);
-
     List<ChatDTO> loadMessage(int chatId);
 
     Integer getOrCreateChatRoom(String userId, Integer boardId, ChatItemDTO chatItem, String time);
 
     ChatRoomDTO getChatRoom(Integer chatId);
+
+    void saveReserv(Double reservLat, Double reservLong, Integer chatId, String from, String to, String time, String content);
+
+    List<ChatListItemDTO> findChatList(String userId);
+
+    Message loadReserv(Integer chatId);
+
+    ReservLatiLongDTO reservLoadList(Integer chatId);
+
+    void updateReserv(Double reservLat, Double reservLong, Integer chatId, String from, String to, String sendTime, String content, Integer messageId);
 }

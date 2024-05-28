@@ -5,7 +5,7 @@
     <resultMap id="reviews" type="com.lend.shareservice.web.review.dto.ReviewDTO">
     </resultMap>
 
-    <select id="receiveds" parameterType="map" resultMap="reviews">
+    <select id="findByReceivedList" parameterType="map" resultMap="reviews">
         select content,star,reviewer,reviewee
         from review
         <where>
@@ -21,7 +21,7 @@
         </where>
     </select>
 
-    <select id="sents" parameterType="map" resultMap="reviews">
+    <select id="findBySentList" parameterType="map" resultMap="reviews">
         select content,star,reviewer,reviewee
         from review
         <where>

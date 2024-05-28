@@ -35,7 +35,7 @@ public class BlockController {
 
         page.init();
 
-        List<BlockDTO> blocks = blockService.blocks(page,userId);
+        List<BlockDTO> blocks = blockService.findByBlockList(page,userId);
         String loc ="/user/"+userId+"/block";
 
         String pageNavi=page.getPageNavi(loc);

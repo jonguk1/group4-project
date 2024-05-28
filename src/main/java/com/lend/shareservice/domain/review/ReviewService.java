@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface ReviewService {
 
-    List<ReviewDTO> receiveds(PagingDTO page, String userId);
+    List<ReviewDTO> findByReceivedList(PagingDTO page, String userId);
 
-    List<ReviewDTO> sents(PagingDTO page,String userId);
+    List<ReviewDTO> findBySentList(PagingDTO page,String userId);
 
     int receivedGetTotalCount(String userId);
 

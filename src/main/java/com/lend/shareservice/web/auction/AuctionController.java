@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 public class AuctionController {
 
     private final AuctionService auctionService;
-
+    //서버 시간 실시간으로 얻어오기
     @GetMapping(value = "/time", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter getTime() {
         SseEmitter emitter = new SseEmitter();
@@ -60,7 +60,7 @@ public class AuctionController {
 
         return emitter;
     }
-
+    //내 경매 진행중인 목록 보여주기 
     @GetMapping("/auction/{userId}")
     public String myAuctionList(Model model,
                                 PagingDTO page,
@@ -74,7 +74,7 @@ public class AuctionController {
 
         page.init();
 
-        List<AuctionDTO> auctions = auctionService.auctions(page,userId);
+        List<AuctionDTO> auctions = auctionService.findByAuctionList(page,userId);
 
         String loc ="/auction/"+userId;
 
@@ -86,7 +86,7 @@ public class AuctionController {
 
         return "jspp/myAuction";
     }
-
+    //내 경매 완료된 목록 보여주기 
     @GetMapping("/auction/{userId}/complete")
     public String myAuctionCompleteList(Model model,
                                PagingDTO page,
@@ -100,7 +100,7 @@ public class AuctionController {
 
         page.init();
 
-        List<AuctionDTO> auctions = auctionService.completeAuctions(page,userId);
+        List<AuctionDTO> auctions = auctionService.findByCompleteAuctionList(page,userId);
 
         String loc ="/auction/"+userId+"/complete";
 
@@ -112,7 +112,7 @@ public class AuctionController {
 
         return "jspp/myAuction";
     }
-
+    //입찰하기
     @PutMapping("/auction/{auctionId}/current-price")
     public ResponseEntity<String> updateCurrentPrice(@PathVariable("auctionId") int auctionId,
                                                      @RequestParam(value = "currentPrice", defaultValue = "0") int currentPrice,
@@ -120,7 +120,7 @@ public class AuctionController {
         String result = auctionService.updateCurrentPrice(auctionId, currentPrice, userId);
         return ResponseEntity.ok(result);
     }
-
+    //경매완료로 갱신
     @PatchMapping("/auction/{auctionId}/isAuction")
     public ResponseEntity<String> updateIsAuction(@PathVariable("auctionId") int auctionId){
         if(auctionService.updateIsAuction(auctionId)>0){
@@ -152,6 +152,15 @@ public class AuctionController {
         } else {
             return ResponseEntity.ok("no");
         }
+    }
+    //경매 취소
+    @PutMapping("/auction/{userId}/cancel")
+    public ResponseEntity<String> auctionCancel(@PathVariable("userId") String userId,
+                                                @RequestParam("auctionId") int auctionId){
+
+        String result = auctionService.auctionCancel(userId,auctionId);
+
+        return ResponseEntity.ok(result);
     }
 
 }

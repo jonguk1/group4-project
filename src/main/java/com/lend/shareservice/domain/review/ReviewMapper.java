@@ -11,11 +11,11 @@ import java.util.Map;
 @Mapper
 public interface ReviewMapper {
 
-    List<ReviewDTO> receiveds(Map<String, Object> map);
+    List<ReviewDTO> findByReceivedList(Map<String, Object> map);
 
     int receivedGetTotalCount(String userId);
 
-    List<ReviewDTO> sents(Map<String, Object> map);
+    List<ReviewDTO> findBySentList(Map<String, Object> map);
 
     int sentGetTotalCount(String userId);
 

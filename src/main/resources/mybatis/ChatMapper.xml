@@ -6,9 +6,13 @@
         values(1,#{test})
     </insert>
     <select id="selectItem" resultType="com.lend.shareservice.entity.Board" parameterType="Integer">
+
         select boardId, title, writer, itemImage1, isLend from board
+
+        select title,writer,itemImage1,boardId from board
+
         <where>
-            boardId = #{value}
+            boardId = #{boardId}
         </where>
     </select>
     <insert id="createRoom" parameterType="com.lend.shareservice.entity.Chatroom">
@@ -17,25 +21,30 @@
     </insert>
     <select id="selectChatId" resultType="Integer" parameterType="com.lend.shareservice.entity.Chatroom">
         select chatId from chatRoom
-       <where>
-           lendy=#{lendy} and lender=#{lender} and boardId=${boardId}
-       </where>
+        <where>
+            lendy=#{lendy} and lender=#{lender} and boardId=${boardId}
+        </where>
     </select>
     <insert id="insertChat" parameterType="com.lend.shareservice.entity.Message">
         insert into Message (chatId, `from`, `to`, content, sendTime)
         values(#{chatId},#{from},#{to},#{content},#{sendTime})
     </insert>
-    <select id="findChatList" resultType="com.lend.shareservice.entity.Message">
+    <select id="findChatList" resultType="com.lend.shareservice.web.chat.dto.ChatListItemDTO">
         select m2.`to` as `to`, m2.`from` as `from`,
         m2.chatId as chatId,m2.content as content,
-        m2.sendTime as sendTime,m2.isRead as isRead
+        m2.sendTime as sendTime,m2.isRead as isRead,
+        b.boardId
         from (
         select m.chatId,max(m.sendTime) as maxSendTime
         from message as m
         group by m.chatId
         ) as m1
         inner JOIN message m2 on m1.chatId=m2.chatId and m1.maxSendTime=m2.sendTime
-        where `from`=#{userId} or `to`=#{userid}
+        inner join chatroom c
+        on c.chatId=m2.chatId
+        inner join board b
+        on c.boardId=b.boardId
+        where `from`=#{userId} or `to`=#{userid};
     </select>
     <select id="loadMessage" parameterType="com.lend.shareservice.entity.Message">
         select `from`, `to`, chatId, content, sendTime
@@ -43,11 +52,46 @@
         <where>
             chatId = #{chatId}
         </where>
+        ORDER BY sendTime asc
     </select>
     <select id="getChatRoomById" parameterType="com.lend.shareservice.entity.Chatroom">
         select * from chatRoom
         <where>
             chatId = #{chatId}
         </where>
+    </select>
+    <insert id="saveReserv" parameterType="com.lend.shareservice.entity.Message">
+        insert into Message (latitude, longitude, chatId, `from`, `to`, sendTime, content)
+        values(#{latitude},#{longitude},#{chatId},#{from},#{to},#{sendTime},#{content})
+    </insert>
+    <select id="loadReserv" resultType="com.lend.shareservice.entity.Message">
+        select chatId, `from`, `to`, sendTime, latitude, longitude, messageId
+        from message
+        <where>
+            chatId = #{chatId}
+            and latitude is not null
+        </where>
+        ORDER BY sendTime asc
+        LIMIT 1
+    </select>
+    <update id="updateReserv" parameterType="com.lend.shareservice.entity.Message">
+        UPDATE message
+        SET
+        `from` = #{from},
+        `to` = #{to},
+        sendTime = #{sendTime},
+        content = #{content},
+        latitude = #{latitude},
+        longitude = #{longitude}
+        WHERE chatId = #{chatId}
+        and messageId = #{messageId}
+    </update>
+    <select id="reservLoadList" parameterType="com.lend.shareservice.web.chat.dto.ReservLatiLongDTO">
+        select latitude, longitude, messageId
+        from message
+        <where>
+            chatId = #{chatId}
+        </where>
+        and latitude is not null
     </select>
 </mapper>
