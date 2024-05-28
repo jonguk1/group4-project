@@ -17,21 +17,21 @@ public class ReviewServiceImpl implements ReviewService{
     private final ReviewMapper reviewMapper;
 
     @Override
-    public List<ReviewDTO> receiveds(PagingDTO page, String userId) {
+    public List<ReviewDTO> findByReceivedList(PagingDTO page, String userId) {
         Map<String,Object> map=new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return reviewMapper.receiveds(map);
+        return reviewMapper.findByReceivedList(map);
     }
 
     @Override
-    public List<ReviewDTO> sents(PagingDTO page, String userId) {
+    public List<ReviewDTO> findBySentList(PagingDTO page, String userId) {
         Map<String,Object> map=new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return reviewMapper.sents(map);
+        return reviewMapper.findBySentList(map);
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface BlockMapper {
 
     int getBlockCount(String userId);
 
-    List<BlockDTO> blocks(Map<String, Object> map);
+    List<BlockDTO> findByBlockList(Map<String, Object> map);
 
     int deleteBlock(String userId);
 }

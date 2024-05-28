@@ -153,6 +153,39 @@
                     }
                 });
             });
+
+            $('.auction-cancel-form').submit(function(event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'PUT',
+                    data: formData,
+                    success: function(response) {
+                        const messages = {
+                                'ok': '경매 취소 성공!',
+                                'no': '경매 취소 실패!'
+                            };
+                        if (response in messages) {
+                            alert(messages[response]);
+                            if (response === 'ok') {
+                                location.reload();
+                            }
+                            return;
+                        }
+
+                        alert('알 수 없는 응답: ' + response);
+                        return;
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('경매 취소에 실패하였습니다:', error);
+                        alert("오류 발생");
+                    }
+                });
+
+
+            });
         });
 
 
@@ -385,11 +418,12 @@
                                                     <input type="text" name="currentPrice" style="margin-top:10px" placeholder="가격을 올려주세요" autocomplete='off'/>
                                                     <button type="submit" class="btn btn-primary btn-sm" style="margin-top:10px">가격 올리기</button>
                                                 </form>
-                                                <input type="hidden" name="auctionId" value="${auction.auctionId}">
-                                                <form class="d-flex auction-form" method="post" action="/auction/${userId}/cancel">
+                                                <form class="d-flex auction-cancel-form" method="post" action="/auction/${userId}/cancel">
                                                     <input type="hidden" name="_method" value="put">
+                                                    <input type="hidden" name="auctionId" value="${auction.auctionId}">
                                                     <button type="submit" class="btn btn-danger btn-sm">경매 취소</button>
                                                 </form>
+                                                <input type="hidden" name="auctionId" value="${auction.auctionId}">
                                            </div>
                                         </div>
                                     </div>

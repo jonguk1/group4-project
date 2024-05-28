@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Mapper
 public interface FavoriteMapper {
-    List<FavoriteDTO> favorites(Map<String, Object> map);
+    List<FavoriteDTO> findByFavoriteList(Map<String, Object> map);
 
     int getFavoriteTotalCount(PagingDTO page);
 

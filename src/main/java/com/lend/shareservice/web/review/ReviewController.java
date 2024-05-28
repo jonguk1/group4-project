@@ -24,7 +24,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-
+    //받은 리뷰 목룩 보여주기
     @GetMapping("/review/{userId}/received")
     public String receivedReviewList(Model model,
                                      PagingDTO page,
@@ -38,7 +38,7 @@ public class ReviewController {
 
         page.init();
 
-        List<ReviewDTO> receiveds=reviewService.receiveds(page,userId);
+        List<ReviewDTO> receiveds=reviewService.findByReceivedList(page,userId);
 
         String loc ="/review/"+userId+"/received";
 
@@ -51,6 +51,7 @@ public class ReviewController {
         return "jspp/myReceivedReview";
     }
 
+    //보낸 리뷰 목룩 보여주기
     @GetMapping("/review/{userId}/sent")
     public String sentReviewList(Model model,
                                  PagingDTO page,
@@ -65,7 +66,7 @@ public class ReviewController {
 
         page.init();
 
-        List<ReviewDTO> sents=reviewService.sents(page,userId);
+        List<ReviewDTO> sents=reviewService.findBySentList(page,userId);
 
         String loc ="/review/"+userId+"/sent";
 

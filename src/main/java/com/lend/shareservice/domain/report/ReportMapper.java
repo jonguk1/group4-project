@@ -10,9 +10,9 @@ import java.util.Map;
 @Mapper
 public interface ReportMapper {
 
-    List<ReportDTO> reports(Map<String, Object> map);
+    List<ReportDTO> findByReportList(Map<String, Object> map);
 
-    List<ReportDTO> reportWriters(Map<String, Object> map);
+    List<ReportDTO> findByReportWriterList(Map<String, Object> map);
 
     int getReportCount();
 

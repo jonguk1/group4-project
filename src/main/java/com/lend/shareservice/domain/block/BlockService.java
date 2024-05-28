@@ -12,7 +12,7 @@ public interface BlockService {
 
     int getBlockCount(String userId);
 
-    List<BlockDTO> blocks(PagingDTO page, String userId);
+    List<BlockDTO> findByBlockList(PagingDTO page, String userId);
 
     int deleteBlock(String userId);
 }
