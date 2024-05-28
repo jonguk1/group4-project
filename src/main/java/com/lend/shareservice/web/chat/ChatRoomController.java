@@ -58,11 +58,12 @@ public class ChatRoomController {
         if (ChatId != null) {
             Message messageByChatId = chatService.loadReserv(ChatId);
             if (messageByChatId != null && messageByChatId.getLatitude() != null && messageByChatId.getLongitude() != null) {
-                ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(), messageByChatId.getMessageId());
+                ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(),
+                        messageByChatId.getMessageId(), String.valueOf(messageByChatId.getReservation()));
                 model.addAttribute("reservList", reservLatiLongDTO);
-                log.info("이거 갖고오나요1" + reservLatiLongDTO.toString());
+                log.info("이거 갖고오나요222" + reservLatiLongDTO.toString());
             } else {
-                model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0));
+                model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0, null));
             }
         }
 
@@ -93,11 +94,12 @@ public class ChatRoomController {
         if (chatId != null) {
             Message messageByChatId = chatService.loadReserv(chatId);
             if (messageByChatId != null && messageByChatId.getLatitude() != null && messageByChatId.getLongitude() != null) {
-                ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(), messageByChatId.getMessageId());
+                ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(),
+                        messageByChatId.getMessageId(), String.valueOf(messageByChatId.getReservation()));
                 model.addAttribute("reservList", reservLatiLongDTO);
-                log.info("이거 갖고오나요2" + reservLatiLongDTO.toString());
+                log.info("이거 갖고오나요222" + reservLatiLongDTO.toString());
             } else {
-                model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0));
+                model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0, null));
             }
         }
 
@@ -179,15 +181,17 @@ public class ChatRoomController {
                               String from,
                               String to,
                               String content,
-                              String sendTime) {
+                              String sendTime,
+                              Date selectedDateTime) {
         //log.info("여긴 컨트롤러 위도 : " + reservLat); //정상출력 완료
         //log.info("여긴 컨트롤러 경도 : " + reservLong); //정상출력 완료
         //log.info("여긴 컨트롤러 채팅방번호 : " + chatId); //정상출력 완료
         //log.info("from은 누구?? : " + from);
         //log.info("to는 누구?? : " + to);
         //log.info(sendTime);
+        log.info("내가 선택한 날짜는? : " + selectedDateTime);
 
-        chatService.saveReserv(reservLat, reservLong, chatId, from, to, sendTime, content);
+        chatService.saveReserv(reservLat, reservLong, chatId, from, to, sendTime, content, selectedDateTime);
 
         return "/chat/chatRoom";
     }
@@ -212,7 +216,8 @@ public class ChatRoomController {
                                     String to,
                                     String content,
                                     String sendTime,
-                                    Integer messageId) {
+                                    Integer messageId,
+                                    Date selectedDateTime) {
 //        log.info("여긴 수정 위도 : " + reservLat); //정상출력 완료
 //        log.info("여긴 수정 경도 : " + reservLong); //정상출력 완료
 //        log.info("여긴 수정 채팅방번호 : " + chatId); //정상출력 완료
@@ -221,7 +226,7 @@ public class ChatRoomController {
 //        log.info("수정된 시간은:" + sendTime);
 //        log.info("멘트는 뭐라고? :" + content);
 
-        chatService.updateReserv(reservLat, reservLong, chatId, from, to, sendTime, content, messageId);
+        chatService.updateReserv(reservLat, reservLong, chatId, from, to, sendTime, content, messageId, selectedDateTime);
 
         return "/chat/chatRoom";
     }
