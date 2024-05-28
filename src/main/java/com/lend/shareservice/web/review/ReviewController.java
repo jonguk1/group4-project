@@ -45,9 +45,7 @@ public class ReviewController {
 
         page.init();
 
-
-        List<ReviewDTO> receiveds = reviewService.receiveds(page,userId);
-
+        
         List<ReviewDTO> receiveds=reviewService.findByReceivedList(page,userId);
 
 

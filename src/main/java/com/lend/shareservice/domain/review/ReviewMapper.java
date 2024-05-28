@@ -20,4 +20,6 @@ public interface ReviewMapper {
     int sentGetTotalCount(String userId);
 
     int saveReview(Review review);
+
+    Double averageStar(String userId);
 }

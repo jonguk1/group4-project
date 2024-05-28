@@ -1,6 +1,7 @@
 package com.lend.shareservice.web.user;
 
 import com.lend.shareservice.domain.address.AddressService;
+import com.lend.shareservice.domain.review.ReviewService;
 import com.lend.shareservice.domain.user.UserService;
 
 import com.lend.shareservice.domain.user.service.UserSignupService;
@@ -52,6 +53,8 @@ public class UserController {
     private final UserSignupService userSignupService;
 
     private final AddressService addressService;
+
+    private final ReviewService reviewService;
 
 
     @Autowired
@@ -285,11 +288,12 @@ public class UserController {
     //내 정보
     @GetMapping("/user/{userId}")
     public String myDetail(Model model,
-                           @PathVariable("userId")String userId){
-
-
+                           @PathVariable("userId") String userId,
+                           HttpServletRequest request){
 
         MyDetailDTO details=userService.findByUserDetail(userId);
+
+        Double avgStar=reviewService.averageStar(userId);
 
         if(details.getLatitude()!=null && details.getLongitude()!=null){
             details.setAddress(addressService.getAddressFromLatLng(details.getLatitude(),details.getLongitude()));
@@ -297,7 +301,16 @@ public class UserController {
             details.setAddress("");
         }
 
+        HttpSession session = request.getSession();
+        String sessionUserId = (String) session.getAttribute("userId");
+
         model.addAttribute("details",details);
+        model.addAttribute("avgStar",avgStar);
+        if (userId.equals(sessionUserId)) {
+            model.addAttribute("sessionUserId", sessionUserId);
+        } else {
+            model.addAttribute("notSessionUserId", userId);
+        }
 
         return "jspp/myDetail";
     }
