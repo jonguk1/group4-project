@@ -15,12 +15,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
@@ -84,7 +80,6 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public Integer getOrCreateChatRoom(String userId, Integer boardId, ChatItemDTO chatItem, String time) {
         boolean isSeller = chatItem.getWriter().equals(userId);
-        log.info("로그인한 사람과 글쓴이가 같은가? " + chatItem.getWriter().equals(userId));
         Integer ChatId = null;
 
 //        // 채팅방 아이디 전달하기
@@ -145,7 +140,6 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ReservLatiLongDTO reservLoadList(Integer chatId) {
         ReservLatiLongDTO reservLoadList = chatMapper.reservLoadList(chatId);
-        log.info("이거 되나요 제발 진심 : " + reservLoadList.toString());
         return reservLoadList;
     }
 
@@ -167,8 +161,6 @@ public class ChatServiceImpl implements ChatService {
         chatReservUpdateDTO.setContent(content);
         chatReservUpdateDTO.setSelectedDateTime(formattedDateTime);
 
-        log.info("잘되니 저장이??", chatReservUpdateDTO);
-
         chatMapper.updateReserv(chatReservUpdateDTO);
     }
 
@@ -178,11 +170,15 @@ public class ChatServiceImpl implements ChatService {
         return chatMapper.loadReserv(chatId);
     }
 
+    @Override
+    public void deleteChatRoom(Integer chatId) {
+        chatMapper.deleteChatRoom(chatId);
+    }
+
     //채팅 내역 갖고오기
     @Override
     public List<ChatDTO> loadMessage(int chatId) {
         List<ChatDTO> messageList = chatMapper.loadMessage(chatId);
-        log.info("채팅 리스트: " + messageList.toString());
 
         return messageList;
     }
@@ -202,7 +198,6 @@ public class ChatServiceImpl implements ChatService {
         SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
         String formattedDateTime = formatter.format(selectedDateTime);
 
-        log.info("서비스 임플 날짜가 과연?" + formattedDateTime);
         ChatReservDTO chatReservDTO = new ChatReservDTO(reservLat, reservLong, chatId, from, to, content, formattedDateTime, time);
 
         chatReservDTO.setReservLat(reservLat);
@@ -213,8 +208,6 @@ public class ChatServiceImpl implements ChatService {
         chatReservDTO.setSendTime(time);
         chatReservDTO.setContent(content);
         chatReservDTO.setSelectedDateTime(formattedDateTime);
-
-        log.info("잘되니 저장이??", chatReservDTO);
 
         chatMapper.saveReserv(chatReservDTO);
     }

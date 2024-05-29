@@ -461,16 +461,16 @@
                                                         <!-- 유저 정보에서 가져온 위도 경도 -->
                                           <c:choose>
                                             <c:when test="${reservList.latitude != 0}">
-                                                <input type="text" name="latitude" id="latitude" value="${reservList.latitude}">
-                                                <input type="text" name="longitude" id="longitude" value="${reservList.longitude}">
-                                                <input type="text" name="reservationDateTime" id="reservationDateTime" value="${reservList.selectedDateTime}">
-                                                <input type="text" name="userId" id="userId" value="${userId}">
+                                                <input type="hidden" name="latitude" id="latitude" value="${reservList.latitude}">
+                                                <input type="hidden" name="longitude" id="longitude" value="${reservList.longitude}">
+                                                <input type="hidden" name="reservationDateTime" id="reservationDateTime" value="${reservList.selectedDateTime}">
+                                                <input type="hidden" name="userId" id="userId" value="${userId}">
                                             </c:when>
                                             <c:otherwise>
-                                                <input type="text" name="latitude" id="latitude" value="${latiAndLong.latitude}">
-                                                <input type="text" name="longitude" id="longitude" value="${latiAndLong.longitude}">
-                                                <input type="text" name="reservationDateTime" id="reservationDateTime" value="">
-                                                <input type="text" name="userId" id="userId" value="${userId}">
+                                                <input type="hidden" name="latitude" id="latitude" value="${latiAndLong.latitude}">
+                                                <input type="hidden" name="longitude" id="longitude" value="${latiAndLong.longitude}">
+                                                <input type="hidden" name="reservationDateTime" id="reservationDateTime" value="">
+                                                <input type="hidden" name="userId" id="userId" value="${userId}">
                                             </c:otherwise>
                                           </c:choose>
                                     </div>
@@ -497,10 +497,10 @@
                                                 </div>
                                           </div>
                                                         <!-- 메세지에서 가져온 위도 경도 -->
-                                          <input type="text" name="reservLatitude" id="reservLatitude">
-                                          <input type="text" name="reservLongitude" id="reservLongitude">
-                                          <input type="text" name="userId" id="userId" value="${userId}">
-                                          <input type="text" name="messageId" id="messageId">
+                                          <input type="hidden" name="reservLatitude" id="reservLatitude">
+                                          <input type="hidden" name="reservLongitude" id="reservLongitude">
+                                          <input type="hidden" name="userId" id="userId" value="${userId}">
+                                          <input type="hidden" name="messageId" id="messageId">
 
                                     </div>
                                 <!-- ---약속정보 클릭시 약속 된 장소 지도랑 시간 달력 출력 모달 나타나기--- -->
@@ -751,7 +751,7 @@
             //stomp 이용해서 서버에 연결
             stompClient.connect({}, function(frame)
             {
-                alert('연결됨: ' + frame+"/"+$('#taMsg').html());
+                //alert('연결됨: ' + frame+"/"+$('#taMsg').html());
                 $('#taMsg').html('');
                 $('#inputMsg').focus(); // 대화 내용 입력 박스에 포커스 추가
                 let obj={
@@ -766,7 +766,7 @@
 
                 stompClient.subscribe('/topic/messages/'+chatId, function(msg)
                 {
-                    console.log('subscribe topic → ', msg);
+                    //console.log('subscribe topic → ', msg);
                     //alert(msg.body); // msg.body → json 형태의 문자열
                     let jsonMsg = JSON.parse(msg.body); // 문자열을 JSON 객체로 만들기
                    // alert(jsonMsg.length);
@@ -780,11 +780,11 @@
                 }); // subscribe end -------
 
                 // 연결 메시지 출력
-                let connectMessage = lender + "님과 연결되었습니다."
-                if("${userId}" == "${chatItem.writer}"){
-                    connectMessage = "${chatRoomDTO.lendy}" + "님과 연결되었습니다."
-                }
-                alert(connectMessage);
+                //let connectMessage = lender + "님과 연결되었습니다."
+               // if("${userId}" == "${chatItem.writer}"){
+                //    connectMessage = "${chatRoomDTO.lendy}" + "님과 연결되었습니다."
+                //}
+                //alert(connectMessage);
 
             }); // stomp.connect() end
         }//chat_connect() end ----------------
@@ -916,19 +916,19 @@
 
             //약속된 위도
             let reservLatitude = document.getElementById("latitude").value;               //${reservList.latitude};
-            console.log("여기서 값이 제대로 넘어오는지 : "+ reservLatitude)
+           // console.log("여기서 값이 제대로 넘어오는지 : "+ reservLatitude)
 
             //약속된 경도
             let reservLongitude = document.getElementById("longitude").value;
-            console.log("여기서 값이 제대로 넘어오는지 : "+ reservLongitude)
+           // console.log("여기서 값이 제대로 넘어오는지 : "+ reservLongitude)
 
             //약속된 정보에 따른 메세지 아이디
             let messageId = ${reservList.messageId}
-            console.log("메세지 아이디는 : "+messageId);
+           // console.log("메세지 아이디는 : "+messageId);
 
             //약속된 날짜
             let reservTime = document.getElementById("reservationDateTime").value == null ? '0' : document.getElementById("reservationDateTime").value;
-            console.log("저장한 날짜는 : "+reservTime);
+           // console.log("저장한 날짜는 : "+reservTime);
 
 
             $('#reservModal').on('shown.bs.modal', function (){
@@ -1051,8 +1051,8 @@
             $("#modal_btn_reserv").click(function(e){
                 e.stopPropagation();
 
-                console.log("뭘까요??",reservLatitude);
-                console.log("뭘까요??",reservLongitude);
+               // console.log("뭘까요??",reservLatitude);
+               // console.log("뭘까요??",reservLongitude);
                 if($("#latitude").val() != ${latiAndLong.latitude} && $("#longitude").val() != ${latiAndLong.longitude}){
                     alert("약속이 이미 정해졌습니다. 약속정보를 확인해주세요");
                 }else{
@@ -1069,7 +1069,7 @@
                 let selectedDateTimeString = $("#reservationDate").val();
                 let selectedDateTime = new Date(selectedDateTimeString);
 
-                console.log("내가 선택한 날짜와 시간은?:", selectedDateTimeString);
+                //console.log("내가 선택한 날짜와 시간은?:", selectedDateTimeString);
 
                 $.ajax({
                     url: "/chat/{chatId}/appointed-place-date",
@@ -1114,7 +1114,7 @@
 
                 //console.log("다시 정한 약속 위도는 : "+reservLat)
                 //console.log("다시 정한 약속 경도는 : "+reservLong)
-                console.log("다시 정한 약속 날짜는 : "+selectedDateTime)
+                //console.log("다시 정한 약속 날짜는 : "+selectedDateTime)
 
                 $.ajax({
                     url: "/chat/{chatId}/appointed-place-date",
@@ -1202,7 +1202,7 @@
 
             // 버튼 클릭 시 모달 창 열기
             $("#modal_btn_infoReserv").click(function(){
-                if($("#reservLatitude").val() == 0 && $("#reservLongitude").val() == 0){
+                if($("#reservLatitude").val() == 0 && $("#reservLongitude").val() == 0 && $("#reservationDate").val() == null){
                     alert("약속을 정하지 않았어요. 약속을 정해주세요");
                 }else{
                      $.ajax({
@@ -1233,7 +1233,7 @@
             });// 버튼 클릭 시 모달 창 열기 END=================
             //수정하시겠습니까 버튼 클릭 시 액션
             $(document).on('click',"#changeReserv", function(){
-                console.log("이거 눌리는지 띄워봐");
+                //console.log("이거 눌리는지 띄워봐");
                 // 모달 창 닫기
                 $("#reservInfoModal").modal('hide');
                 $("#reservModal").modal("show");
@@ -1273,6 +1273,7 @@
               if("<c:out value='${userId}'/>" == writer){
                     writer = "<c:out value='${chatRoomDTO.lendy}'/>"
               }
+              let chatId = "<c:out value='${chatId}'/>";
 
               //alert(writer);
               $.ajax({
@@ -1281,11 +1282,23 @@
                     contentType: 'application/json',
                     data: JSON.stringify({
                         writer
-
                     }),
                     success: function(response) {
                         console.log('Success:', response);
+                        $.ajax({
+                            url : '/chat/${chatId}',
+                            type : 'Delete',
+                            data: (
+                                chatId
+                            ),
+                            success : function(data){
+                                alert("차단 되었습니다")
+                            },error : function(err){
+                                console.log("ajax요청 실패 : " + err);
+                            }
+                        });
 
+                        location.reload();
                         window.location.href = "/chatList/"+"${userId}";
                     },
                     error: function(xhr, status, error) {

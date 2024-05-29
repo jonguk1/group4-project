@@ -26,21 +26,33 @@
         values(#{chatId},#{from},#{to},#{content},#{sendTime})
     </insert>
     <select id="findChatList" resultType="com.lend.shareservice.web.chat.dto.ChatListItemDTO">
-        select m2.`to` as `to`, m2.`from` as `from`,
-        m2.chatId as chatId,m2.content as content,
-        m2.sendTime as sendTime,m2.isRead as isRead,
-        b.boardId
-        from (
-        select m.chatId,max(m.sendTime) as maxSendTime
-        from message as m
-        group by m.chatId
-        ) as m1
-        inner JOIN message m2 on m1.chatId=m2.chatId and m1.maxSendTime=m2.sendTime
-        inner join chatroom c
-        on c.chatId=m2.chatId
-        inner join board b
-        on c.boardId=b.boardId
-        where `from`=#{userId} or `to`=#{userid};
+        SELECT
+        m.`to` as `to`,
+        m.`from` as `from`,
+        m.chatId as chatId,
+        m.content as content,
+        m.sendTime as sendTime,
+        m.isRead as isRead,
+        m.messageId,
+        c.boardId
+        FROM message m
+        JOIN (
+        SELECT chatId, MAX(sendTime) AS maxSendTime
+        FROM message
+        GROUP BY chatId
+        ) AS latest
+        ON m.chatId = latest.chatId AND m.sendTime = latest.maxSendTime
+        JOIN (
+        SELECT chatId, sendTime, MAX(messageId) AS latestMessageId
+        FROM message
+        GROUP BY chatId, sendTime
+        ) AS unique_latest
+        ON m.chatId = unique_latest.chatId
+        AND m.sendTime = unique_latest.sendTime
+        AND m.messageId = unique_latest.latestMessageId
+        JOIN chatroom c
+        ON c.chatId = m.chatId
+        where `from`=#{userId} or `to`=#{userid}
     </select>
     <select id="loadMessage" parameterType="com.lend.shareservice.entity.Message">
         select `from`, `to`, chatId, content, sendTime
@@ -91,4 +103,10 @@
         </where>
         and latitude is not null
     </select>
+    <delete id="deleteChatRoom" parameterType="com.lend.shareservice.entity.Chatroom">
+        delete from chatRoom
+        <where>
+            chatId = #{chatId}
+        </where>
+    </delete>
 </mapper>

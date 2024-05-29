@@ -32,4 +32,6 @@ public interface ChatMapper {
     void saveReserv(ChatReservDTO chatReservDTO);
 
     Message loadReserv(Integer chatId);
+
+    void deleteChatRoom(Integer chatId);
 }

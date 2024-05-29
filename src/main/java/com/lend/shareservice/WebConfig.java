@@ -16,9 +16,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private UserService userService;
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
@@ -26,18 +23,18 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry){
+    public void addInterceptors(InterceptorRegistry registry) {
 
         registry.addInterceptor(new LoginCheckInterceptor())
-                .addPathPatterns("/user/**", "/review/**", "/auction/**", "/favorite/**","/board/boardForm",
-                                "/chat/**","/chatList/**","/board/editForm")
+                .addPathPatterns("/user/**", "/review/**", "/auction/**", "/favorite/**", "/board/boardForm",
+                        "/chat/**", "/chatList/**", "/board/editForm")
                 .excludePathPatterns("/user/signup");
         registry.addInterceptor(new LoginPatternCheckInterceptor())
-                        .addPathPatterns("/user/**", "/review/**", "/auction/**", "/favorite/**","/chatList/**")
-                        .excludePathPatterns("/user/signup","/user/{userId}");
+                .addPathPatterns("/user/**", "/review/**", "/auction/**", "/favorite/**", "/chatList/**")
+                .excludePathPatterns("/user/signup", "/user/{userId}");
 
         registry.addInterceptor(new BanUserCheckInterceptor())
-                .addPathPatterns("/user/**","/board/**","/chat/**");
+                .addPathPatterns("/user/**", "/board/**", "/chat/**");
 
         registry.addInterceptor(new AdminCheckImterceptor())
                 .addPathPatterns("/report/**");
