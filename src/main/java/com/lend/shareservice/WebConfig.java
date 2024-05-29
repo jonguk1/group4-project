@@ -41,15 +41,19 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(new LoginCheckInterceptor())
                 .addPathPatterns("/user/**", "/review/**", "/auction/**", "/favorite/**", "/board/boardForm",
+
                         "/chat/**", "/chatList/**", "/user/signup", "/board/editForm")
                 .excludePathPatterns("/user/signup", "/user/idCheck");
+
         registry.addInterceptor(new LoginPatternCheckInterceptor())
 
                 .addPathPatterns("/user/**", "/review/**", "/favorite/**", "/chatList/**")
                 .excludePathPatterns("/user/signup", "/user/{userId}","/user/idCheck");
 
+
         registry.addInterceptor(new BanUserCheckInterceptor())
                 .addPathPatterns("/user/**", "/board/**", "/chat/**");
+
 
         registry.addInterceptor(new AdminCheckImterceptor())
                 .addPathPatterns("/admin/report");

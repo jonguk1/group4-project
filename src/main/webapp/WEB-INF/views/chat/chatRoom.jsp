@@ -666,6 +666,8 @@
                                 alert('리뷰 등록 완료');
                                 $('#myModal').modal('hide');
                                 selectBox.setAttribute('disabled', 'disabled');
+                                var reviewButton = document.getElementById('reviewButton');
+                                reviewButton.style.display = 'none';
                             }
                         },
                         error: function(xhr, status, error) {
