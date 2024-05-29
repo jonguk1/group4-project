@@ -40,7 +40,7 @@ public class LoginPatternCheckInterceptor implements HandlerInterceptor {
 
     private String extractUserIdFromRequest(String requestUri) {
         // 요청된 URL에서 / 다음에 오는 문자열을 userId로 간주하여 추출
-        Pattern pattern = Pattern.compile("/[^/]+/([^/]+)/?");
+        Pattern pattern = Pattern.compile("/[^/]+/([^/]+?)(?:/|$)");
         Matcher matcher = pattern.matcher(requestUri);
 
         if (matcher.find()) {

@@ -100,13 +100,14 @@
         }
 
         $(document).ready(function() {
+            displayServerTime();
+
             $('.auction-details').hide();
 
             $('.form-check-input').change(function() {
                 var card = $(this).closest('.card');
                 var details = card.find('.auction-details');
                 details.toggle($(this).prop('checked'));
-                displayServerTime();
             });
 
             $('.auction-form').submit(function(event) {
@@ -332,7 +333,9 @@
                                         </h5>
                                         <div class="card-body">
                                             <p class="card-text">
+                                            <a href="/board/${auction.boards[0].boardId}">
                                                 <img src="/postimage/${auction.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 100px;">
+                                            </a>
                                             </p>
                                         </div>
                                         <div class="card-footer">
