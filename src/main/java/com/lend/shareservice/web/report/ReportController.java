@@ -33,7 +33,7 @@ public class ReportController {
     private static final long REQUEST_EXPIRY_TIME = 60000 * 60 * 24 * 3;
 
     //신고 목록 보여주기
-    @GetMapping("/report")
+    @GetMapping("/admin/report")
     public String reportList(Model model,
                              PagingDTO page,
                              @RequestParam(defaultValue = "1") int pageNum){

@@ -269,7 +269,7 @@
                                          </li>
                                          <li class="nav-item">
                                              <c:if test="${loggedIn}">
-                                                 <a class="nav-link" href="#">
+                                                 <a class="nav-link" href="/chatList/${userId}">
                                                      <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
                                                  </a>
                                              </c:if>

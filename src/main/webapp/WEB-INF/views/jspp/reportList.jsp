@@ -279,16 +279,19 @@
                                         </li>
 
                                         <li class="nav-item">
-                                            <c:if test="${loggedIn}">
+                                            <c:if test="${loggedIn &&  !authorization}">
                                                 <a class="nav-link" href="#">
                                                     <img src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
                                                 </a>
                                             </c:if>
                                         </li>
                                         <li class="nav-item">
-                                            <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="/user/${userId}" style="color: black;">${userId}님</a>
-                                            </c:if>
+                                             <c:if test="${loggedIn &&  !authorization}">
+                                                  <a class="nav-link" href="/user/${userId}" style="color: black;">${userId}님</a>
+                                              </c:if>
+                                              <c:if test="${loggedIn &&  authorization}">
+                                                 <a class="nav-link" href="/admin/report" style="color: black;">${userId}님</a>
+                                              </c:if>
                                         </li>
                                         <li class="nav-item">
                                             <c:if test="${not loggedIn}">
