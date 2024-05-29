@@ -74,6 +74,15 @@
                              <div class="dropdown-menu" id="lendServed">
                              </div>
                          </li>
+
+                         <li class="nav-item dropdown text-center">
+                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
+                             <div class="dropdown-menu">
+                                 <a class="dropdown-item" href="#">경매 현황</a>
+                                 <a class="dropdown-item" href="#">마감 임박</a>
+
+                             </div>
+                         </li>
                      </ul>
                  </nav>
              </div>
@@ -106,7 +115,7 @@
 
        		<div class="col-md-4">
        		    <div class="form-group">
-                    <form name="signup" action="/user/signup" method="post" accept-charset-"utf-8">
+                    <form name="signup" action="/user/signup" method="post" onsubmit="return checkValue()" accept-charset-"utf-8">
                 					<input type ="hidden" name="idDupChk" value="f">
                 					<label for="exampleInputEmail1">
                 						아이디
@@ -116,15 +125,15 @@
                                     <div class="col-md-8 text start">
                                       <div class="form-group">
 
-                					<input type="user_id" name="userId" class="form-control" id="user_id1" placeholder="아이디 입력(6~20자)" required/>
+                					<input type="text" name="userId" class="form-control" id="userId" placeholder="아이디 입력(6~20자)" onkeydown="inputIdChk()" required/>
 
                                     </div>
                                     </div>
                                     <div class="col-md-4 text-start">
                                     <div class="form-group">
-                                        <input type="button" value="중복체크" onclick="idDupPopup()" class="btn btn-primary">
-                                        중복 확인
+                                        <input type="button" value="중복체크" onclick="openWin()" class="btn btn-primary">
                                          </button>
+                                         <input type="hidden" name="idDuplication" value="idUncheck">
                                          </div>
                                          </div>
 
@@ -169,7 +178,7 @@
                                 <div class="row">
                                     <div class="col-md-8 text-start">
                                         <div class="form-group">
-                                            <input type="text" name="address" class="form-control" id="myAroundHome" placeholder="주소" required/>
+                                            <input type="text" onclick="sample5_execDaumPostcode()" name="address" class="form-control" id="myAroundHome" placeholder="주소" required/>
                                         </div>
                                     </div>
                                     <div class="col-md-4 text-start">
@@ -268,6 +277,26 @@
 
 </script>
 <script>
+function checkValue()
+{
+var idcheckform = document.signup;
+
+if(idcheckform.idDuplication.value != "idCheck"){
+    alert("아이디 중복체크를 해주세요.");
+    return false;
+    }
+
+}
+
+function inputIdChk(){
+    document.signup.idDuplication.value="idUncheck";
+}
+
+
+
+</script>
+
+<script>
     document.addEventListener("DOMContentLoaded", function() {
         var passwordInput = document.getElementById("exampleInputPassword1");
         var confirmPasswordInput = document.getElementById("exampleInputPassword2");
@@ -320,17 +349,12 @@
 
 
 <script>
-function idDupPopup(){
-window.open('idDup.jsp','','width=200,height=300');
-}
-function memberSubmit(){
-    var idDupChk= document.f1.userId.value;
-    if(idDupChk =='t'){
-    document.f1.submit();
-    }else{
-    alert('아이디 중복체크를 해주세요');
-    }
-    }
+var win = null;
+function openWin(){
+var url="idCheck?mode=pop";
+		win=open(url,"idCheck","width=500, height=500, left=100, top=100");
+
+	}
     </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
