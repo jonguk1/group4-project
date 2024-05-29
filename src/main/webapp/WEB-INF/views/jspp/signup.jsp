@@ -330,7 +330,7 @@
 
 <script>
 function idDupPopup(){
-window.open('idDup.jsp','','width=200,height=300');
+window.open('idCheck123.jsp','','width=200,height=300');
 }
 function memberSubmit(){
     var idDupChk= document.f1.userId.value;
