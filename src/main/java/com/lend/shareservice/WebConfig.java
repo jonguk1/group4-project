@@ -30,8 +30,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     private final BlockService blockService;
 
-    private final BlockService blockService;
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
@@ -46,14 +44,14 @@ public class WebConfig implements WebMvcConfigurer {
                         "/chat/**", "/chatList/**","/user/signup", "/board/editForm")
                 .excludePathPatterns("/user/signup","/user/idCheck");
         registry.addInterceptor(new LoginPatternCheckInterceptor())
-                .addPathPatterns("/user/**", "/review/**", "/auction/**", "/favorite/**", "/chatList/**")
+                .addPathPatterns("/user/**", "/review/**", "/favorite/**", "/chatList/**")
                 .excludePathPatterns("/user/signup", "/user/{userId}","/user/idCheck");
 
         registry.addInterceptor(new BanUserCheckInterceptor())
                 .addPathPatterns("/user/**", "/board/**", "/chat/**");
 
         registry.addInterceptor(new AdminCheckImterceptor())
-                .addPathPatterns("/report/**");
+                .addPathPatterns("/admin/report");
 
         registry.addInterceptor(new BlockedUserInterceptor(blockService))
                 .addPathPatterns("/board");
