@@ -1219,16 +1219,19 @@
                     event.preventDefault();
 
                     // writer, title, content, boardId;
-                    var writer = '${postById.writer}';
+                    var userId = '${userId}';
                     var boardId = '${postById.boardId}';
                     var title = document.getElementById('singoTitle').value;
                     var content = document.getElementById('singoContent').value;
-
+                    console.log(writer);
+                    console.log(boardId);
+                    console.log(title);
+                    console.log(content);
                     $.ajax({
                         url: '/report',
                         type: 'POST',
                         contentType: 'application/json',
-                        data: JSON.stringify({ writer: writer, boardId: boardId, title: title, content: content }),
+                        data: JSON.stringify({ userId: userId, boardId: boardId, title: title, content: content }),
                         success: function(response) {
                             if (response === 'ok') {
                                 alert('신고글 등록 완료');

@@ -52,7 +52,7 @@ public class ReportServiceImpl implements ReportService{
     @Override
     public int registerReport(ReportRegDTO reportRegDTO) {
 
-        return reportMapper.insertReport(new Report(reportRegDTO.getBoardId(), reportRegDTO.getWriter()
+        return reportMapper.insertReport(new Report(reportRegDTO.getBoardId(), reportRegDTO.getUserId()
         , reportRegDTO.getTitle(), reportRegDTO.getContent()));
     }
 }

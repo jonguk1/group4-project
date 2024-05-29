@@ -17,7 +17,7 @@ public class ReportRegDTO {
     String content;
 
     @NotNull
-    String writer;
+    String userId;
 
     @NotNull
     Integer boardId;

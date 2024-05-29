@@ -106,7 +106,7 @@ public class ReportController {
     // 신고글 등록
     @PostMapping("/report")
     public ResponseEntity<?> registerReport(HttpServletRequest request, @Valid @RequestBody ReportRegDTO reportRegDTO, BindingResult bindingResult) {
-
+        log.info("haha");
         // 바인딩 에러 발생
         if (bindingResult.hasErrors()) {
             log.info("bindingResult = {}", bindingResult);
