@@ -58,11 +58,12 @@ public class ChatRoomController {
         if (ChatId != null) {
             Message messageByChatId = chatService.loadReserv(ChatId);
             if (messageByChatId != null && messageByChatId.getLatitude() != null && messageByChatId.getLongitude() != null) {
-                ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(), messageByChatId.getMessageId());
+                ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(),
+                        messageByChatId.getMessageId(), String.valueOf(messageByChatId.getReservation()));
                 model.addAttribute("reservList", reservLatiLongDTO);
 
             } else {
-                model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0));
+                model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0, null));
             }
         }
 
@@ -93,11 +94,12 @@ public class ChatRoomController {
         if (chatId != null) {
             Message messageByChatId = chatService.loadReserv(chatId);
             if (messageByChatId != null && messageByChatId.getLatitude() != null && messageByChatId.getLongitude() != null) {
-                ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(), messageByChatId.getMessageId());
+                ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(),
+                        messageByChatId.getMessageId(), String.valueOf(messageByChatId.getReservation()));
                 model.addAttribute("reservList", reservLatiLongDTO);
 
             } else {
-                model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0));
+                model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0, null));
             }
         }
 
@@ -179,10 +181,15 @@ public class ChatRoomController {
                               String from,
                               String to,
                               String content,
+
                               String sendTime) {
 
 
-        chatService.saveReserv(reservLat, reservLong, chatId, from, to, sendTime, content);
+                              String sendTime,
+                              Date selectedDateTime) {
+ 
+
+        chatService.saveReserv(reservLat, reservLong, chatId, from, to, sendTime, content, selectedDateTime);
 
         return "/chat/chatRoom";
     }
@@ -206,9 +213,14 @@ public class ChatRoomController {
                                     String to,
                                     String content,
                                     String sendTime,
+
                                     Integer messageId) {
 
-        chatService.updateReserv(reservLat, reservLong, chatId, from, to, sendTime, content, messageId);
+                                    Integer messageId,
+                                    Date selectedDateTime) {
+
+
+        chatService.updateReserv(reservLat, reservLong, chatId, from, to, sendTime, content, messageId, selectedDateTime);
 
         return "/chat/chatRoom";
     }

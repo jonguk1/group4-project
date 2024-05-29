@@ -18,4 +18,6 @@ public interface ReviewService {
     int sentGetTotalCount(String userId);
 
     int registerReview(ReviewRegDTO reviewRegDTO);
+
+    Double averageStar(String userId);
 }

@@ -36,14 +36,15 @@ public class ReviewController {
     public String receivedReviewList(Model model,
                                      PagingDTO page,
                                      @PathVariable("userId") String userId,
-                                     @RequestParam(defaultValue = "1") int pageNum){
-        int totalCount= reviewService.receivedGetTotalCount(userId);
+                                     @RequestParam(defaultValue = "1") int pageNum) {
+        int totalCount = reviewService.receivedGetTotalCount(userId);
 
         page.setTotalCount(totalCount);
         page.setOneRecordPage(6);
         page.setPagingBlock(5);
 
         page.init();
+
 
         List<ReviewDTO> receiveds=reviewService.findByReceivedList(page,userId);
 
@@ -55,6 +56,7 @@ public class ReviewController {
         model.addAttribute("page",page);
         model.addAttribute("pageNavi",pageNavi);
 
+
         return "jspp/myReceivedReview";
     }
 
@@ -63,9 +65,9 @@ public class ReviewController {
     public String sentReviewList(Model model,
                                  PagingDTO page,
                                  @PathVariable("userId") String userId,
-                                     @RequestParam(defaultValue = "1") int pageNum){
+                                 @RequestParam(defaultValue = "1") int pageNum) {
 
-        int totalCount=reviewService.sentGetTotalCount(userId);
+        int totalCount = reviewService.sentGetTotalCount(userId);
 
         page.setTotalCount(totalCount);
         page.setOneRecordPage(6);
@@ -73,22 +75,22 @@ public class ReviewController {
 
         page.init();
 
-        List<ReviewDTO> sents=reviewService.findBySentList(page,userId);
+        List<ReviewDTO> sents = reviewService.findBySentList(page, userId);
 
-        String loc ="/review/"+userId+"/sent";
+        String loc = "/review/" + userId + "/sent";
 
-        String pageNavi=page.getPageNavi(loc);
+        String pageNavi = page.getPageNavi(loc);
 
-        model.addAttribute("sents",sents);
-        model.addAttribute("page",page);
-        model.addAttribute("pageNavi",pageNavi);
+        model.addAttribute("sents", sents);
+        model.addAttribute("page", page);
+        model.addAttribute("pageNavi", pageNavi);
 
         return "jspp/mySentReview";
     }
 
     // 리뷰 등록 요청
     @PostMapping("/review")
-    public ResponseEntity<?> registerReview(@Valid  @RequestBody ReviewRegDTO reviewRegDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> registerReview(@Valid @RequestBody ReviewRegDTO reviewRegDTO, BindingResult bindingResult) {
 
         log.info("reviewRegDTO = {}", reviewRegDTO);
         if (bindingResult.hasErrors()) {

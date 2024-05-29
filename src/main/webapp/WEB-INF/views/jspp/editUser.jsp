@@ -12,8 +12,8 @@
      <script src="/js/menuControl.js"></script>
      <link rel="stylesheet" href="/css/bootstrap.min.css">
      <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k495h0yzln"></script>
-     <script src="/js/notification.js"></script>
-     <link rel="stylesheet" type="text/css" href="/css/notification.css">
+      <script src="/js/notification.js"></script>
+      <link rel="stylesheet" type="text/css" href="/css/notification.css">
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
@@ -32,25 +32,37 @@
 </head>
 
 <script>
+
+    var map;
+    var marker;
+    var selectedAddress = '';
+    var lat, lng;
+
     $(document).ready(function(){
         var passwordsMatch = false;
 
         function comparePasswords() {
             var pw = $("#pw").val();
             var pwConfirm = $("#pwConfirm").val();
-            var message = $(".invalid-feedback");
+            var message = $("#error-password");
             var successMessage = $(".valid-feedback");
             var pwField = $("#pw");
             var pwConfirmField = $("#pwConfirm");
 
             // 값이 일치하는지 확인
-            if (pw === pwConfirm) {
+            if (pw === pwConfirm && pw.trim() !== "") {
                 passwordsMatch = true;
                 pwField.removeClass("is-invalid").addClass("is-valid");
                 pwConfirmField.removeClass("is-invalid").addClass("is-valid");
                 message.html("");
                 successMessage.html("비밀번호가 일치합니다");
-            } else {
+            } else if(pw.trim() === "" || pwConfirm.trim() === ""){
+                passwordsMatch = false;
+                pwField.removeClass("is-valid").addClass("is-invalid");
+                pwConfirmField.removeClass("is-valid").addClass("is-invalid");
+                successMessage.html("");
+                message.html("비밀번호를 입력해주세요");
+            }else{
                 passwordsMatch = false;
                 pwField.removeClass("is-valid").addClass("is-invalid");
                 pwConfirmField.removeClass("is-valid").addClass("is-invalid");
@@ -85,16 +97,131 @@
                 data: JSON.stringify(updateUserDTO),
                 success: function(response) {
                     console.log("서버 응답:", response);
+                    if(response.message === "ok") {
+                        alert("수정하셧습니다");
+                        window.location.href = "/user/${userId}";
+                    } else {
+                        alert("수정에 실패하셧습니다");
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error("에러 발생:", error);
+
+                    var errorNameMessage = $("#error-name");
+                    var errorPwMessage = $("#error-password");
+                    var errorPhoneNumberMessage = $("#error-phoneNumber");
+
+                    $("#name").removeClass("is-invalid").addClass("is-valid");
+                    $("#pw").removeClass("is-invalid").addClass("is-valid");
+                    $("#phoneNumber").removeClass("is-invalid").addClass("is-valid");
+                    errorNameMessage.html("");
+                    errorPwMessage.html("");
+                    errorPhoneNumberMessage.html("");
+
+                    var errors = xhr.responseJSON;
+                    if (errors.name) {
+                       $("#name").removeClass("is-valid").addClass("is-invalid");
+                       errorNameMessage.html(errors.name);
+                    }
+                    if (errors.pw) {
+                        $("#pw").removeClass("is-valid").addClass("is-invalid");
+                        errorPwMessage.html(errors.pw);
+                    }
+                    if (errors.phoneNumber) {
+                       $("#phoneNumber").removeClass("is-valid").addClass("is-invalid");
+                       errorPhoneNumberMessage.html(errors.phoneNumber);
+                    }
                 }
             });
-
         });
 
         $("#cancelButton").click(function(){
             window.location.href = "/user/${userId}";
+        });
+
+        // 모달이 열릴 때 이벤트를 감지
+        $('#mapModal').on('shown.bs.modal', function () {
+            // 모달 body의 크기를 가져옴
+            var modalBody = $(this).find('.modal-body');
+            var width = modalBody.width();
+
+            // 지도의 크기를 동적으로 설정
+            $('#map').css({
+                width: width
+            });
+
+            // 네이버 지도 초기화
+            var mapOptions = {
+                center: new naver.maps.LatLng(37.3595704, 127.105399),
+                zoom: 17,
+                zoomControl: true,
+                zoomControlOptions: {
+                    position: naver.maps.Position.TOP_RIGHT
+                },
+                mapDataControl: false
+            };
+
+            // 네이버 지도 객체 생성
+            map = new naver.maps.Map('map', mapOptions);
+
+            // 이전에 저장된 위치가 있으면 마커를 생성하여 표시
+            var savedLat = parseFloat($('#latitude').val());
+            var savedLng = parseFloat($('#longitude').val());
+            if (savedLat && savedLng) {
+                var savedPosition = new naver.maps.LatLng(savedLat, savedLng);
+                marker = new naver.maps.Marker({
+                    position: savedPosition,
+                    map: map
+                });
+                map.setCenter(savedPosition);
+            }
+
+            // 지도 클릭 이벤트 추가
+            naver.maps.Event.addListener(map, 'click', function(e) {
+                var latlng = e.coord; // 클릭한 위치의 경도와 위도
+
+                // 기존 마커가 있으면 제거
+                if (marker) {
+                    marker.setMap(null);
+                }
+
+                // 새로운 마커 생성
+                marker = new naver.maps.Marker({
+                    position: latlng,
+                    map: map
+                });
+
+               // 위도와 경도를 hidden input에 설정
+               lat=latlng.lat();
+               lng=latlng.lng();
+
+               $.ajax({
+                   url: "/address?latitude=" + latlng.lat() + "&longitude=" + latlng.lng(),
+                   type: "GET",
+
+                   dataType: "json",
+                   success: function(response) {
+                       console.log(response);
+                       selectedAddress = response.address.replace(/^"(.*)"$/, '$1');
+                   },
+                   error: function(xhr, status, error) {
+                       console.error(xhr.responseText);
+                   }
+               });
+            });
+        });
+
+        // 버튼 클릭 시 모달 창 열기
+        $("#openMapBtn").click(function(){
+            $("#mapModal").modal("show");
+        });
+
+         // 완료 버튼 클릭 시 모달 창 닫기
+        $("#completeBtn").click(function(){
+            $('#latitude').val(lat);
+            $('#longitude').val(lng);
+            $("#myAroundHome").val(selectedAddress);
+            $("#mapModal").modal("hide");
         });
 
     });
@@ -189,7 +316,6 @@
                              </div>
                          </li>
 
-
                      </ul>
                  </nav>
              </div>
@@ -222,14 +348,15 @@
            <div class="col-md-4">
                    <div class="form-group">
                        <label for="inputDefault">이름</label>
-                       <input type="text" class="form-control" name="name" value="${edit.name}">
+                       <input type="text" class="form-control" name="name" id="name" value="${edit.name}">
+                       <div class="invalid-feedback" id="error-name"></div>
                    </div>
                    <br>
                    <div class="form-group">
                       <label for="inputDefault">비밀번호</label>
                       <input type="password" class="form-control" id="pw" name="pw" value="${edit.pw}">
                       <div class="valid-feedback"></div>
-                      <div class="invalid-feedback"></div>
+                      <div class="invalid-feedback" id="error-password"></div>
                    </div>
                    <br>
                    <div class="form-group">
@@ -250,7 +377,8 @@
                    <br>
                    <div class="form-group">
                        <label for="inputDefault">전화번호</label>
-                       <input type="text" class="form-control" name="phoneNumber" value="${edit.phoneNumber}">
+                       <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" value="${edit.phoneNumber}">
+                       <div class="invalid-feedback" id="error-phoneNumber"></div>
                    </div>
                    <br>
                    <div class="form-group">
@@ -265,13 +393,28 @@
                           </div>
                           <div class="col-md-4 text-start">
                               <div class="form-group">
-                                  <button type="submit" class="btn btn-primary">
+                                  <button type="submit" class="btn btn-primary" id="openMapBtn">
                                       위치검색
                                   </button>
                               </div>
                           </div>
-                          <input type="hidden" name="latitude">
-                          <input type="hidden" name="longitude">
+                          <div id="mapModal" class="modal fade" tabindex="-1" role="dialog">
+                              <div class="modal-dialog modal-lg" role="document">
+                                  <div class="modal-content">
+                                      <div class="modal-header">
+                                          <h5 class="modal-title">지도</h5>
+                                      </div>
+                                      <div class="modal-body">
+                                          <div id="map"></div>
+                                      </div>
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-primary" id="completeBtn">완료</button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <input type="hidden" name="latitude" id="latitude" value="${edit.latitude}">
+                          <input type="hidden" name="longitude" id="longitude" value="${edit.longitude}">
                       </div>
                    </div>
                <br>

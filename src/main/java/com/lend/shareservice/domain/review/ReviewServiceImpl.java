@@ -52,5 +52,10 @@ public class ReviewServiceImpl implements ReviewService{
         return reviewMapper.saveReview(review);
     }
 
+    @Override
+    public Double averageStar(String userId) {
+        return reviewMapper.averageStar(userId);
+    }
+
 
 }

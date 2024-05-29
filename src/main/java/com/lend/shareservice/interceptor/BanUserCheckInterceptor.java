@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.PrintWriter;
+
 public class BanUserCheckInterceptor implements HandlerInterceptor {
 
     @Override
@@ -17,8 +19,19 @@ public class BanUserCheckInterceptor implements HandlerInterceptor {
 
         // 회원 정보 체크 및 리다이렉션 수행
         if (userId != null && ban) {
-            session.removeAttribute("userId");
-            response.sendRedirect("/login");
+            session.invalidate();
+
+            response.setContentType("text/html; charset=UTF-8");
+            response.setStatus(HttpServletResponse.SC_OK); // 상태 코드를 명시적으로 설정
+            PrintWriter out = response.getWriter();
+            out.write(
+                    "<script>" +
+                            "alert('영구정지를 당하였습니다.');" +
+                            "window.location.href = '/login';" +
+                            "</script>"
+            );
+            out.flush();
+            out.close(); // 스트림을 닫아 데이터를 모두 전송
             return false; // 요청 처리 중지
         }
 
