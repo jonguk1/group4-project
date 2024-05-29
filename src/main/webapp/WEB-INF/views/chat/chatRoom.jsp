@@ -416,7 +416,6 @@
                                        <img src="/images/plus.png"/>
                                    </a>
                                     <div class="dropdown-menu" style="">
-                                       <a class="dropdown-item" href="#">파일첨부</a>
                                        <a class="dropdown-item" id="modal_btn_reserv">약속하기</a>
                                        <a class="dropdown-item" href="#" id="modal_btn_infoReserv">약속정보</a>
                                     </div>
@@ -463,16 +462,16 @@
                                                         <!-- 유저 정보에서 가져온 위도 경도 -->
                                           <c:choose>
                                             <c:when test="${reservList.latitude != 0}">
-                                                <input type="text" name="latitude" id="latitude" value="${reservList.latitude}">
-                                                <input type="text" name="longitude" id="longitude" value="${reservList.longitude}">
-                                                <input type="text" name="reservationDateTime" id="reservationDateTime" value="${reservList.selectedDateTime}">
-                                                <input type="text" name="userId" id="userId" value="${userId}">
+                                                <input type="hidden" name="latitude" id="latitude" value="${reservList.latitude}">
+                                                <input type="hidden" name="longitude" id="longitude" value="${reservList.longitude}">
+                                                <input type="hidden" name="reservationDateTime" id="reservationDateTime" value="${reservList.selectedDateTime}">
+                                                <input type="hidden" name="userId" id="userId" value="${userId}">
                                             </c:when>
                                             <c:otherwise>
-                                                <input type="text" name="latitude" id="latitude" value="${latiAndLong.latitude}">
-                                                <input type="text" name="longitude" id="longitude" value="${latiAndLong.longitude}">
-                                                <input type="text" name="reservationDateTime" id="reservationDateTime" value="">
-                                                <input type="text" name="userId" id="userId" value="${userId}">
+                                                <input type="hidden" name="latitude" id="latitude" value="${latiAndLong.latitude}">
+                                                <input type="hidden" name="longitude" id="longitude" value="${latiAndLong.longitude}">
+                                                <input type="hidden" name="reservationDateTime" id="reservationDateTime" value="">
+                                                <input type="hidden" name="userId" id="userId" value="${userId}">
                                             </c:otherwise>
                                           </c:choose>
                                     </div>
@@ -499,10 +498,10 @@
                                                 </div>
                                           </div>
                                                         <!-- 메세지에서 가져온 위도 경도 -->
-                                          <input type="text" name="reservLatitude" id="reservLatitude">
-                                          <input type="text" name="reservLongitude" id="reservLongitude">
-                                          <input type="text" name="userId" id="userId" value="${userId}">
-                                          <input type="text" name="messageId" id="messageId">
+                                          <input type="hidden" name="reservLatitude" id="reservLatitude">
+                                          <input type="hidden" name="reservLongitude" id="reservLongitude">
+                                          <input type="hidden" name="userId" id="userId" value="${userId}">
+                                          <input type="hidden" name="messageId" id="messageId">
 
                                     </div>
                                 <!-- ---약속정보 클릭시 약속 된 장소 지도랑 시간 달력 출력 모달 나타나기--- -->
@@ -1381,7 +1380,7 @@
             event.preventDefault();
 
             // writer, title, content, boardId;
-            var writer = '${chatItem.writer}';
+            var user = '${userId}';
             var boardId = '${chatItem.boardId}';
             var title = document.getElementById('singoTitle').value;
             var content = document.getElementById('singoContent').value;
