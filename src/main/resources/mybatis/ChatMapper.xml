@@ -56,12 +56,12 @@
             chatId = #{chatId}
         </where>
     </select>
-    <insert id="saveReserv" parameterType="com.lend.shareservice.entity.Message">
-        insert into Message (latitude, longitude, chatId, `from`, `to`, sendTime, content)
-        values(#{latitude},#{longitude},#{chatId},#{from},#{to},#{sendTime},#{content})
+    <insert id="saveReserv" parameterType="com.lend.shareservice.web.chat.dto.ChatReservDTO">
+        insert into Message (latitude, longitude, chatId, `from`, `to`, sendTime, content,reservation)
+        values(#{reservLat},#{reservLong},#{chatId},#{from},#{to},#{sendTime},#{content},#{selectedDateTime})
     </insert>
     <select id="loadReserv" resultType="com.lend.shareservice.entity.Message">
-        select chatId, `from`, `to`, sendTime, latitude, longitude, messageId
+        select chatId, `from`, `to`, sendTime, latitude, longitude, messageId, reservation
         from message
         <where>
             chatId = #{chatId}
@@ -70,20 +70,21 @@
         ORDER BY sendTime asc
         LIMIT 1
     </select>
-    <update id="updateReserv" parameterType="com.lend.shareservice.entity.Message">
+    <update id="updateReserv" parameterType="com.lend.shareservice.web.chat.dto.ChatReservUpdateDTO">
         UPDATE message
         SET
         `from` = #{from},
         `to` = #{to},
         sendTime = #{sendTime},
         content = #{content},
-        latitude = #{latitude},
-        longitude = #{longitude}
+        latitude = #{reservLat},
+        longitude = #{reservLong},
+        reservation = #{selectedDateTime}
         WHERE chatId = #{chatId}
         and messageId = #{messageId}
     </update>
     <select id="reservLoadList" parameterType="com.lend.shareservice.web.chat.dto.ReservLatiLongDTO">
-        select latitude, longitude, messageId
+        select latitude, longitude, messageId, reservation
         from message
         <where>
             chatId = #{chatId}
