@@ -38,6 +38,7 @@
         ,a.currentPrice as auctionCurrentPrice
         ,a.maxPrice
         ,p.currentPrice as participantCurrentPrice
+        ,b.boardId
         from auction a
         inner join board b
         on a.boardId=b.boardId
@@ -64,6 +65,7 @@
         ,a.maxPrice
         ,a.currentPrice as auctionCurrentPrice
         ,p.currentPrice as participantCurrentPrice
+        ,b.boardId
         from auction a
         inner join board b
         on a.boardId=b.boardId
