@@ -90,7 +90,7 @@
         #title{
             text-align : right;
         }
-        #exampleSelect1 {
+        #isLend {
             width: 150px;
             float: right;
         }
@@ -335,6 +335,12 @@
                                         </select>
                                     </div>
 
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn btn-success">
+                                            리뷰등록
+                                        </button>
+                                    </div>
+
                                     <div id="myModal" class="modal">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
@@ -382,22 +388,6 @@
                                         </div>
                                     </div>
 
-                                     <div class="col-md-3">
-                                        <div class="btn-group btn-group-md" role="group">
-                                            <button class="btn btn-secondary" type="button">
-                                                신고
-                                            </button>
-                                            <button class="btn btn-secondary" type="button">
-                                                차단
-                                            </button>
-                                        </div>
-
-                                    <div class="col-md-3">
-                                        <button type="button" class="btn btn-success">
-                                            리뷰등록
-                                        </button>
-
-                                    </div>
                                 </div>
 
                             </div>
@@ -433,7 +423,7 @@
                                    </a>
                                     <div class="dropdown-menu" style="">
                                        <a class="dropdown-item" href="#">파일첨부</a>
-                                       <a class="dropdown-item" id="modal_btn_reserv" href="#">약속하기</a>
+                                       <a class="dropdown-item" id="modal_btn_reserv">약속하기</a>
                                        <a class="dropdown-item" href="#" id="modal_btn_infoReserv">약속정보</a>
                                     </div>
                                </div>
@@ -481,11 +471,13 @@
                                             <c:when test="${reservList.latitude != 0}">
                                                 <input type="text" name="latitude" id="latitude" value="${reservList.latitude}">
                                                 <input type="text" name="longitude" id="longitude" value="${reservList.longitude}">
+                                                <input type="text" name="reservationDateTime" id="reservationDateTime" value="${reservList.selectedDateTime}">
                                                 <input type="text" name="userId" id="userId" value="${userId}">
                                             </c:when>
                                             <c:otherwise>
                                                 <input type="text" name="latitude" id="latitude" value="${latiAndLong.latitude}">
                                                 <input type="text" name="longitude" id="longitude" value="${latiAndLong.longitude}">
+                                                <input type="text" name="reservationDateTime" id="reservationDateTime" value="">
                                                 <input type="text" name="userId" id="userId" value="${userId}">
                                             </c:otherwise>
                                           </c:choose>
@@ -505,6 +497,8 @@
                                                       <div class="modal-body">
                                                         <div id="reservMap"></div>
                                                       </div>
+                                                      <h5>약속 시간</h5>
+                                                      <input type="text" name="reservTime" id="reservTime" readonly>
                                                       <div class="modal-footer">
                                                         <button type="button" class="btn btn-primary" id="changeReserv">약속을 수정 하시겠습니까?</button>
                                                       </div>
@@ -515,6 +509,7 @@
                                           <input type="text" name="reservLongitude" id="reservLongitude">
                                           <input type="text" name="userId" id="userId" value="${userId}">
                                           <input type="text" name="messageId" id="messageId">
+
                                     </div>
                                 <!-- ---약속정보 클릭시 약속 된 장소 지도랑 시간 달력 출력 모달 나타나기--- -->
 
@@ -937,7 +932,12 @@
 
             //약속된 정보에 따른 메세지 아이디
             let messageId = ${reservList.messageId}
-            console.log("메세지 아이디는"+messageId);
+            console.log("메세지 아이디는 : "+messageId);
+
+            //약속된 날짜
+            let reservTime = document.getElementById("reservationDateTime").value == null ? '0' : document.getElementById("reservationDateTime").value;
+            console.log("저장한 날짜는 : "+reservTime);
+
 
             $('#reservModal').on('shown.bs.modal', function (){
                 // 모달 body의 크기를 가져옴
@@ -1056,7 +1056,9 @@
             });
 
              // 버튼 클릭 시 모달 창 열기
-            $("#modal_btn_reserv").click(function(){
+            $("#modal_btn_reserv").click(function(e){
+                e.stopPropagation();
+
                 console.log("뭘까요??",reservLatitude);
                 console.log("뭘까요??",reservLongitude);
                 if($("#latitude").val() != ${latiAndLong.latitude} && $("#longitude").val() != ${latiAndLong.longitude}){
@@ -1072,9 +1074,10 @@
                 alert("약속이 정해졌습니다.")
                 let reservLat = $("#latitude").val();
                 let reservLong = $("#longitude").val();
-                let selectedDateTime = $("#reservationDate").val();
+                let selectedDateTimeString = $("#reservationDate").val();
+                let selectedDateTime = new Date(selectedDateTimeString);
 
-                console.log("내가 선택한 날짜와 시간은?:", selectedDateTime);
+                console.log("내가 선택한 날짜와 시간은?:", selectedDateTimeString);
 
                 $.ajax({
                     url: "/chat/{chatId}/appointed-place-date",
@@ -1086,7 +1089,8 @@
                         from : from,
                         to : to,
                         content: "약속이 정해졌습니다",
-                        sendTime : getCurrentTime()
+                        sendTime : getCurrentTime(),
+                        selectedDateTime : selectedDateTime
                     },
                     success: function(response) {
                         console.log("요청 성공:", response);
@@ -1113,8 +1117,12 @@
                 alert("약속을 다시 정했어요")
                 let reservLat = $("#latitude").val();
                 let reservLong = $("#longitude").val();
+                let selectedDateTimeString = $("#reservationDate").val();
+                let selectedDateTime = new Date(selectedDateTimeString);
+
                 //console.log("다시 정한 약속 위도는 : "+reservLat)
                 //console.log("다시 정한 약속 경도는 : "+reservLong)
+                console.log("다시 정한 약속 날짜는 : "+selectedDateTime)
 
                 $.ajax({
                     url: "/chat/{chatId}/appointed-place-date",
@@ -1127,7 +1135,8 @@
                         to : to,
                         content: "약속을 다시 정했어요",
                         sendTime : getCurrentTime(),
-                        messageId : messageId
+                        messageId : messageId,
+                        selectedDateTime : selectedDateTime
                     },
                     success: function(response) {
                         console.log("요청 성공:", response);
@@ -1201,27 +1210,33 @@
 
             // 버튼 클릭 시 모달 창 열기
             $("#modal_btn_infoReserv").click(function(){
-                $.ajax({
-                    type : "get",
-                    url : '/chat/' + chatId + '/appointed-place-date',
-                    contentType:"application/json; charset=UTF-8",
-                    dataType:"json",
-                    data:{chatId},
-                    success : function(data){
-                         //console.log("성공성공", data);
-                         //console.log("성공??", data.latitude);
+                if($("#reservLatitude").val() == 0 && $("#reservLongitude").val() == 0){
+                    alert("약속을 정하지 않았어요. 약속을 정해주세요");
+                }else{
+                     $.ajax({
+                        type : "get",
+                        url : '/chat/' + chatId + '/appointed-place-date',
+                        contentType:"application/json; charset=UTF-8",
+                        dataType:"json",
+                        data:{chatId},
+                        success : function(data){
+                             //console.log("성공성공", data);
+                             //console.log("성공??", data.latitude);
 
-                         $("#reservLatitude").val(data.latitude);
-                         $("#reservLongitude").val(data.longitude);
-                         $("#messageId").val(data.messageId);
+                             $("#reservLatitude").val(data.latitude);
+                             $("#reservLongitude").val(data.longitude);
+                             $("#messageId").val(data.messageId);
+                             $("#reservTime").val(data.selectedDateTime);
 
-                        $("#reservInfoModal").modal("show");
-                    },
-                    error:function(err){
-                        console("실패실패", err)
-                    }
+                            $("#reservInfoModal").modal("show");
+                        },
+                        error:function(err){
+                            console("실패실패", err)
+                        }
 
-                })
+                    })
+                }
+
 
             });// 버튼 클릭 시 모달 창 열기 END=================
             //수정하시겠습니까 버튼 클릭 시 액션
@@ -1272,11 +1287,14 @@
                     url: '/user/${userId}/block',
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ writer }),
+                    data: JSON.stringify({
+                        writer
+
+                    }),
                     success: function(response) {
                         console.log('Success:', response);
 
-                        $('#confirmModal').modal('hide');
+                        window.location.href = "/chatList/"+"${userId}";
                     },
                     error: function(xhr, status, error) {
 

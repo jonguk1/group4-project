@@ -15,6 +15,9 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -146,27 +149,33 @@ public class ChatServiceImpl implements ChatService {
         return reservLoadList;
     }
 
+    //약속 수정하기
+    @Override
+    public void updateReserv(Double reservLat, Double reservLong, Integer chatId,
+                             String from, String to, String sendTime, String content, Integer messageId, Date selectedDateTime) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+        String formattedDateTime = formatter.format(selectedDateTime);
+
+        ChatReservUpdateDTO chatReservUpdateDTO = new ChatReservUpdateDTO(reservLat, reservLong, chatId, from, to, content, formattedDateTime, sendTime, messageId);
+
+        chatReservUpdateDTO.setReservLat(reservLat);
+        chatReservUpdateDTO.setReservLong(reservLong);
+        chatReservUpdateDTO.setChatId(chatId);
+        chatReservUpdateDTO.setFrom(from);
+        chatReservUpdateDTO.setTo(to);
+        chatReservUpdateDTO.setSendTime(sendTime);
+        chatReservUpdateDTO.setContent(content);
+        chatReservUpdateDTO.setSelectedDateTime(formattedDateTime);
+
+        log.info("잘되니 저장이??", chatReservUpdateDTO);
+
+        chatMapper.updateReserv(chatReservUpdateDTO);
+    }
+
     //약속 정보 가져오기
     @Override
     public Message loadReserv(Integer chatId) {
         return chatMapper.loadReserv(chatId);
-    }
-
-    //약속 수정하기
-    @Override
-    public void updateReserv(Double reservLat, Double reservLong, Integer chatId,
-                             String from, String to, String newSendTime, String content, Integer messageId) {
-        Message message = new Message();
-        message.setLatitude(reservLat);
-        message.setLongitude(reservLong);
-        message.setChatId(chatId);
-        message.setFrom(from);
-        message.setTo(to);
-        message.setSendTime(new Date());
-        message.setContent(content);
-        message.setMessageId(messageId);
-
-        chatMapper.updateReserv(message);
     }
 
     //채팅 내역 갖고오기
@@ -188,19 +197,26 @@ public class ChatServiceImpl implements ChatService {
     //약속하기 위한 메소드
     @Override
     public void saveReserv(Double reservLat, Double reservLong, Integer chatId,
-                           String from, String to, String time, String content) {
-        Message message = new Message();
-        message.setLatitude(reservLat);
-        message.setLongitude(reservLong);
-        message.setChatId(chatId);
-        message.setFrom(from);
-        message.setTo(to);
-        message.setSendTime(new Date());
-        message.setContent(content);
+                           String from, String to, String time, String content, Date selectedDateTime) {
 
-//        log.info("여기는 예약하기 임플 : " + message.toString());
+        SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+        String formattedDateTime = formatter.format(selectedDateTime);
 
-        chatMapper.saveReserv(message);
+        log.info("서비스 임플 날짜가 과연?" + formattedDateTime);
+        ChatReservDTO chatReservDTO = new ChatReservDTO(reservLat, reservLong, chatId, from, to, content, formattedDateTime, time);
+
+        chatReservDTO.setReservLat(reservLat);
+        chatReservDTO.setReservLong(reservLong);
+        chatReservDTO.setChatId(chatId);
+        chatReservDTO.setFrom(from);
+        chatReservDTO.setTo(to);
+        chatReservDTO.setSendTime(time);
+        chatReservDTO.setContent(content);
+        chatReservDTO.setSelectedDateTime(formattedDateTime);
+
+        log.info("잘되니 저장이??", chatReservDTO);
+
+        chatMapper.saveReserv(chatReservDTO);
     }
 
     //채팅방에 상세글 정보 넘겨주기 위한 메소드
