@@ -8,18 +8,13 @@ import com.lend.shareservice.domain.user.util.CommonUtil;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.User;
 
-import com.lend.shareservice.web.user.dto.BlockDTO;
+import com.lend.shareservice.web.user.dto.*;
 
-import com.lend.shareservice.web.user.dto.MyBoardDTO;
-
-import com.lend.shareservice.web.user.dto.MyDetailDTO;
-import com.lend.shareservice.web.user.dto.UpdateUserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
-import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
 import lombok.AllArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -392,6 +387,16 @@ public class UserController {
     public ResponseEntity<Integer> getUserMoney(@PathVariable("userId") String userId) {
         log.info("요청");
         return ResponseEntity.ok(userService.findByUserDetail(userId).getMoney());
+    }
+
+    // 유저의 리뷰 조회
+    @GetMapping("/user/{userId}/review")
+    @ResponseBody
+    public ResponseEntity<List<ReviewDTO>> getReview(@PathVariable("userId") String userId) {
+
+        List<ReviewDTO> reviews = userService.getReviewsByUserId(userId);
+        log.info("reviews = {}", reviews);
+        return ResponseEntity.ok(reviews);
     }
 
 }

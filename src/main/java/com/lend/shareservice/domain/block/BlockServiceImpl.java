@@ -2,16 +2,17 @@ package com.lend.shareservice.domain.block;
 
 import com.lend.shareservice.entity.Block;
 import com.lend.shareservice.web.block.dto.BlockDTO;
+import com.lend.shareservice.web.board.dto.PostDTO;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BlockServiceImpl implements BlockService{
 
     private final BlockMapper blockMapper;
@@ -36,5 +37,16 @@ public class BlockServiceImpl implements BlockService{
         return blockMapper.deleteBlock(userId);
     }
 
+    // 차단된 유저가 쓴 글 제외
+    @Override
+    public  List<PostDTO> findNonBlockedPosts(List<PostDTO> posts, String userId) {
 
+        List<String> blockedIds = blockMapper.selectAllBlokedIds(userId);
+
+        Set<String> idSet = new HashSet<>(blockedIds);
+
+        posts.removeIf(post -> idSet.contains(post.getWriter()));
+
+        return posts;
+    }
 }

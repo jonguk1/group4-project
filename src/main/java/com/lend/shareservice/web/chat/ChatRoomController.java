@@ -60,7 +60,7 @@ public class ChatRoomController {
             if (messageByChatId != null && messageByChatId.getLatitude() != null && messageByChatId.getLongitude() != null) {
                 ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(), messageByChatId.getMessageId());
                 model.addAttribute("reservList", reservLatiLongDTO);
-                log.info("이거 갖고오나요1" + reservLatiLongDTO.toString());
+
             } else {
                 model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0));
             }
@@ -95,7 +95,7 @@ public class ChatRoomController {
             if (messageByChatId != null && messageByChatId.getLatitude() != null && messageByChatId.getLongitude() != null) {
                 ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(), messageByChatId.getMessageId());
                 model.addAttribute("reservList", reservLatiLongDTO);
-                log.info("이거 갖고오나요2" + reservLatiLongDTO.toString());
+
             } else {
                 model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0));
             }
@@ -131,13 +131,13 @@ public class ChatRoomController {
 
         // redisPublisher.publish(chatService.getTopic(chatDTO.getChatId()), chatDTO);
         if (chatDTO.getContent().startsWith("#100")) {
-            log.info("아무거나 한번만");
+
 
             // 대화 조회
             List<ChatDTO> chatList = chatService.loadMessage(chatDTO.getChatId());
             if (chatList.size() == 0) {
                 //db에 저장된 내용이 없다면 받은 내용 그냥 보내보자.
-                log.info("그렇다면 여기는??");
+
                 return Arrays.asList(chatDTO);//#100을 그냥 전송
             } else {//DB에서 가져올때
                 //chatList[되나요, 잘되요]
@@ -161,7 +161,7 @@ public class ChatRoomController {
                            Model model) {
         HttpSession session = request.getSession();
         String userId = (String) session.getAttribute("userId");
-//        log.info("여기는 채팅리스트: " + userId);
+
 
         //채팅리스트 갖고오기
         List<ChatListItemDTO> chatRoomList = chatService.findChatList(userId);
@@ -180,12 +180,7 @@ public class ChatRoomController {
                               String to,
                               String content,
                               String sendTime) {
-        //log.info("여긴 컨트롤러 위도 : " + reservLat); //정상출력 완료
-        //log.info("여긴 컨트롤러 경도 : " + reservLong); //정상출력 완료
-        //log.info("여긴 컨트롤러 채팅방번호 : " + chatId); //정상출력 완료
-        //log.info("from은 누구?? : " + from);
-        //log.info("to는 누구?? : " + to);
-        //log.info(sendTime);
+
 
         chatService.saveReserv(reservLat, reservLong, chatId, from, to, sendTime, content);
 
@@ -195,12 +190,11 @@ public class ChatRoomController {
     @GetMapping("/chat/{chatId}/appointed-place-date")
     @ResponseBody
     public ReservLatiLongDTO reservLoadList(@PathVariable("chatId") Integer chatId) {
-        log.info("로드로드 챗아이디 : " + chatId);
+
         ReservLatiLongDTO reservLoadList = chatService.reservLoadList(chatId);
-        log.info("컨트롤러에서도 받아와지니 제발 : " + reservLoadList);
+
         return reservLoadList;
     }
-
 
     //약속 수정하기
     @ResponseBody
@@ -213,13 +207,6 @@ public class ChatRoomController {
                                     String content,
                                     String sendTime,
                                     Integer messageId) {
-//        log.info("여긴 수정 위도 : " + reservLat); //정상출력 완료
-//        log.info("여긴 수정 경도 : " + reservLong); //정상출력 완료
-//        log.info("여긴 수정 채팅방번호 : " + chatId); //정상출력 완료
-//        log.info("from은 누구?? : " + from);
-//        log.info("to는 누구?? : " + to);
-//        log.info("수정된 시간은:" + sendTime);
-//        log.info("멘트는 뭐라고? :" + content);
 
         chatService.updateReserv(reservLat, reservLong, chatId, from, to, sendTime, content, messageId);
 

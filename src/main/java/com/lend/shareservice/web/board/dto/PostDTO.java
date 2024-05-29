@@ -98,4 +98,8 @@ public class PostDTO {
     private String currentState;
 
     private Integer distance;
+
+    private String itemCategoryName;
+
+    private Integer chatCount;
 }

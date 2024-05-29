@@ -59,9 +59,10 @@
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="#" id="notificationIcon">
-                                                    <img src="/images/icon/notificationIcon.png"  style="width:30px; height:30px;">
+                                                <a class="nav-link" href="#" id="notificationIcon" style="position: relative;">
+                                                    <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
                                                     <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
+                                                    <span id="messageCount" class="badge badge-danger" style="color: white; background-color: red; position: absolute; top: -0px; left: -10px; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 10px; font-size: 12px;"></span>
                                                 </a>
                                             </c:if>
                                         </li>
@@ -121,14 +122,7 @@
                             </div>
                         </li>
 
-                        <li class="nav-item dropdown text-center">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">경매 현황</a>
-                                <a class="dropdown-item" href="#">마감 임박</a>
 
-                            </div>
-                        </li>
                     </ul>
                 </nav>
             </div>
@@ -164,6 +158,10 @@
                                <a href="#" onclick="sendEditRequest()">
                                    <img src="/images/icon/editIcon.png" style="width:25px; height:25px;">
                                </a>
+                               &nbsp;
+                               <a href="#" onclick="deletePost()">
+                                  <img src="/images/icon/trashIcon.png" style="width:25px; height:25px;">
+                              </a>
                            </div>
                        </div>
                    </div>
@@ -428,7 +426,7 @@
                     <div class="col-md-6">
                         <span id="interestCnt"><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postById.interestCnt}</span>&nbsp;
                         <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postById.hits}</span>
-                        <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 12</span>
+                        <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${postById.chatCount}</span>
 
                     </div>
                     <div class="col-md-3">
@@ -492,6 +490,8 @@
                                             <span class="badge bg-danger">${postsBySearchTerm[0].isAuction}</span>
                                             <span class="badge bg-success">${postsBySearchTerm[0].isLend}</span>
                                             <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[0].regDate}</div>
+                                            <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[0].itemCategoryName}</div>
+                                            <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[0].itemName}</div>
                                             <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[0].address}</div>
                                             <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[0].price}원</div>
                                             <div>
@@ -506,7 +506,7 @@
                                                 </c:choose>
                                             </div>
                                             <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[0].interestCnt}</span>
-                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${postsBySearchTerm[0].chatCount}</span>
                                             <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[0].hits}</span>
                                         </div>
                                     </div>
@@ -533,6 +533,8 @@
                                             <span class="badge bg-danger">${postsBySearchTerm[1].isAuction}</span>
                                             <span class="badge bg-success">${postsBySearchTerm[1].isLend}</span>
                                             <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[1].regDate}</div>
+                                            <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[1].itemCategoryName}</div>
+                                            <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[1].itemName}</div>
                                             <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[1].address}</div>
                                             <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[1].price}원</div>
                                             <div>
@@ -547,7 +549,7 @@
                                                 </c:choose>
                                             </div>
                                             <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[1].interestCnt}</span>
-                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${postsBySearchTerm[1].chatCount}</span>
                                             <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[1].hits}</span>
                                         </div>
                                     </div>
@@ -575,6 +577,8 @@
                                             <span class="badge bg-danger">${postsBySearchTerm[2].isAuction}</span>
                                             <span class="badge bg-success">${postsBySearchTerm[2].isLend}</span>
                                             <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[2].regDate}</div>
+                                            <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[2].itemCategoryName}</div>
+                                            <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[2].itemName}</div>
                                             <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[2].price}원</div>
                                             <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[2].address}</div>
                                             <div>
@@ -589,7 +593,7 @@
                                                 </c:choose>
                                             </div>
                                             <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[2].interestCnt}</span>
-                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${postsBySearchTerm[2].chatCount}</span>
                                             <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[2].hits}</span>
                                         </div>
                                     </div>
@@ -630,6 +634,8 @@
                                                     <span class="badge bg-danger">${postsBySearchTerm[3].isAuction}</span>
                                                     <span class="badge bg-success">${postsBySearchTerm[3].isLend}</span>
                                                     <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[3].regDate}</div>
+                                                    <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[3].itemCategoryName}</div>
+                                                    <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[3].itemName}</div>
                                                     <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[3].address}</div>
                                                     <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[3].price}원</div>
                                                     <div>
@@ -644,7 +650,7 @@
                                                         </c:choose>
                                                     </div>
                                                     <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[3].interestCnt}</span>
-                                                    <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                    <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${postsBySearchTerm[3].chatCount}</span>
                                                     <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[3].hits}</span>
                                                 </div>
                                             </div>
@@ -672,6 +678,8 @@
                                                     <span class="badge bg-danger">${postsBySearchTerm[4].isAuction}</span>
                                                     <span class="badge bg-success">${postsBySearchTerm[4].isLend}</span>
                                                     <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[4].regDate}</div>
+                                                    <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[4].itemCategoryName}</div>
+                                                    <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[4].itemName}</div>
                                                     <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[4].address}</div>
                                                     <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[4].price}원</div>
                                                     <div>
@@ -686,7 +694,7 @@
                                                         </c:choose>
                                                     </div>
                                                     <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[4].interestCnt}</span>
-                                                    <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                    <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${postsBySearchTerm[4].chatCount}</span>
                                                     <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[4].hits}</span>
                                                 </div>
                                             </div>
@@ -715,6 +723,8 @@
                                                     <span class="badge bg-danger">${postsBySearchTerm[5].isAuction}</span>
                                                     <span class="badge bg-success">${postsBySearchTerm[5].isLend}</span>
                                                     <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[5].regDate}</div>
+                                                    <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[5].itemCategoryName}</div>
+                                                    <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[5].itemName}</div>
                                                     <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[5].address}</div>
                                                     <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${postsBySearchTerm[5].price}원</div>
                                                     <div>
@@ -729,7 +739,7 @@
                                                         </c:choose>
                                                     </div>
                                                     <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[5].interestCnt}</span>
-                                                    <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                    <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${postsBySearchTerm[5].chatCount}</span>
                                                     <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${postsBySearchTerm[5].hits}</span>
                                                 </div>
                                             </div>
@@ -801,6 +811,8 @@
                                                             <span class="badge bg-danger">${interestPosts[0].isAuction}</span>
                                                             <span class="badge bg-success">${interestPosts[0].isLend}</span>
                                                             <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[0].regDate}</div>
+                                                            <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[0].itemCategoryName}</div>
+                                                            <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[0].itemName}</div>
                                                             <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[0].address}</div>
                                                             <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[0].price}원</div>
                                                             <div>
@@ -815,7 +827,7 @@
                                                                 </c:choose>
                                                             </div>
                                                             <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[0].interestCnt}</span>
-                                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${interestPosts[0].chatCount}</span>
                                                             <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[0].hits}</span>
                                                         </div>
                                                     </div>
@@ -842,6 +854,8 @@
                                                             <span class="badge bg-danger">${interestPosts[1].isAuction}</span>
                                                             <span class="badge bg-success">${interestPosts[1].isLend}</span>
                                                             <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[1].regDate}</div>
+                                                            <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[1].itemCategoryName}</div>
+                                                            <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[1].itemName}</div>
                                                             <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[1].address}</div>
                                                             <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[1].price}원</div>
                                                             <div>
@@ -856,7 +870,7 @@
                                                                 </c:choose>
                                                             </div>
                                                             <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[1].interestCnt}</span>
-                                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${interestPosts[1].chatCount}</span>
                                                             <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[1].hits}</span>
                                                         </div>
                                                     </div>
@@ -884,6 +898,8 @@
                                                             <span class="badge bg-danger">${interestPosts[2].isAuction}</span>
                                                             <span class="badge bg-success">${interestPosts[2].isLend}</span>
                                                             <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[2].regDate}</div>
+                                                            <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[2].itemCategoryName}</div>
+                                                            <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[2].itemName}</div>
                                                             <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[2].address}</div>
                                                             <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[2].price}원</div>
                                                             <div>
@@ -898,7 +914,7 @@
                                                                 </c:choose>
                                                             </div>
                                                             <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[2].interestCnt}</span>
-                                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                            <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${interestPosts[2].chatCount}</span>
                                                             <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[2].hits}</span>
                                                         </div>
                                                     </div>
@@ -939,6 +955,8 @@
                                                                                 <span class="badge bg-danger">${interestPosts[3].isAuction}</span>
                                                                                 <span class="badge bg-success">${interestPosts[3].isLend}</span>
                                                                                 <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[3].regDate}</div>
+                                                                                <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[3].itemCategoryName}</div>
+                                                                                <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[3].itemName}</div>
                                                                                 <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[3].address}</div>
                                                                                 <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[3].price}원</div>
                                                                                 <div>
@@ -953,7 +971,7 @@
                                                                                         </c:choose>
                                                                                     </div>
                                                                                 <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[3].interestCnt}</span>
-                                                                                <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                                                <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${interestPosts[3].chatCount}</span>
                                                                                 <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[3].hits}</span>
                                                                             </div>
                                                                         </div>
@@ -980,6 +998,8 @@
                                                                                 <span class="badge bg-danger">${interestPosts[4].isAuction}</span>
                                                                                 <span class="badge bg-success">${interestPosts[4].isLend}</span>
                                                                                 <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[4].regDate}</div>
+                                                                                <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[4].itemCategoryName}</div>
+                                                                                <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[4].itemName}</div>
                                                                                  <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[4].address}</div>
                                                                                  <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[4].price}원</div>
                                                                                  <div>
@@ -994,7 +1014,7 @@
                                                                                         </c:choose>
                                                                                     </div>
                                                                                  <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[4].interestCnt}</span>
-                                                                                 <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;">41</span>
+                                                                                 <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;">${interestPosts[4].chatCount}</span>
                                                                                  <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[4].hits}</span>
                                                                             </div>
                                                                         </div>
@@ -1022,6 +1042,8 @@
                                                                                  <span class="badge bg-danger">${interestPosts[5].isAuction}</span>
                                                                                  <span class="badge bg-success">${interestPosts[5].isLend}</span>
                                                                                  <div><img src="/images/icon/postRegDateIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[5].regDate}</div>
+                                                                                 <div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[5].itemCategoryName}</div>
+                                                                                 <div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[5].itemName}</div>
                                                                                  <div><img src="/images/icon/mapIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[5].address}</div>
                                                                                  <div><img src="/images/icon/moneyIcon.png" style="width: 20px; height: 20px;">&nbsp;${interestPosts[5].price}원</div>
                                                                                   <div>
@@ -1036,7 +1058,7 @@
                                                                                         </c:choose>
                                                                                     </div>
                                                                                  <span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[5].interestCnt}</span>
-                                                                                 <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41</span>
+                                                                                 <span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> ${interestPosts[5].chatCount}</span>
                                                                                  <span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;"> ${interestPosts[5].hits}</span>
                                                                             </div>
                                                                         </div>
@@ -1087,7 +1109,7 @@
                         hideEditIcon();
                      }
 
-                     // 글수정 버튼 보이지 않게 함
+                     // 글수정, 삭제 버튼 보이지 않게 함
                      function hideEditIcon() {
                         var editIconContainer = document.getElementById('editIconContainer');
                         editIconContainer.style.display = 'none';
@@ -1402,17 +1424,20 @@
                 };
 
 
-
                   function sendEditRequest() {
                       let boardId = ${postById.boardId};
 
                       var dataToSend = {
-                              boardId: boardId,
+                          boardId: boardId,
                       };
 
                       var queryString = $.param(dataToSend);
 
                       window.location.href = "/board/editForm?" + queryString;
+                  }
+
+                  function deletePost() {
+                      alert('글을 정말 삭제하겠습니까?');
                   }
             </script>
 

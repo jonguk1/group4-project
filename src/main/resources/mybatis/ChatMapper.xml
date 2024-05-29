@@ -6,11 +6,7 @@
         values(1,#{test})
     </insert>
     <select id="selectItem" resultType="com.lend.shareservice.entity.Board" parameterType="Integer">
-
         select boardId, title, writer, itemImage1, isLend from board
-
-        select title,writer,itemImage1,boardId from board
-
         <where>
             boardId = #{boardId}
         </where>
@@ -93,5 +89,11 @@
             chatId = #{chatId}
         </where>
         and latitude is not null
+    </select>
+
+    <select id="countChatByBoardId" parameterType="_int">
+        SELECT COUNT(*)
+        FROM Chatroom
+        WHERE boardId = #{boardId}
     </select>
 </mapper>

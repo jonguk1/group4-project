@@ -1,10 +1,16 @@
 package com.lend.shareservice;
 
+import com.lend.shareservice.domain.block.BlockMapper;
+import com.lend.shareservice.domain.block.BlockService;
+import com.lend.shareservice.domain.block.BlockServiceImpl;
 import com.lend.shareservice.interceptor.AdminCheckImterceptor;
 import com.lend.shareservice.interceptor.BanUserCheckInterceptor;
 import com.lend.shareservice.interceptor.LoginCheckInterceptor;
+import com.lend.shareservice.web.board.interceptor.BlockedUserInterceptor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -12,8 +18,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
+    private final BlockService blockService;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -33,5 +41,9 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(new AdminCheckImterceptor())
                 .addPathPatterns("/report/**");
+
+        registry.addInterceptor(new BlockedUserInterceptor(blockService))
+                .addPathPatterns("/board");
+
     }
 }
