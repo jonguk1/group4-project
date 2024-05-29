@@ -61,7 +61,6 @@ public class ChatRoomController {
                 ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(),
                         messageByChatId.getMessageId(), String.valueOf(messageByChatId.getReservation()));
                 model.addAttribute("reservList", reservLatiLongDTO);
-
             } else {
                 model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0, null));
             }
@@ -97,7 +96,6 @@ public class ChatRoomController {
                 ReservLatiLongDTO reservLatiLongDTO = new ReservLatiLongDTO(messageByChatId.getLatitude(), messageByChatId.getLongitude(),
                         messageByChatId.getMessageId(), String.valueOf(messageByChatId.getReservation()));
                 model.addAttribute("reservList", reservLatiLongDTO);
-
             } else {
                 model.addAttribute("reservList", new ReservLatiLongDTO(0, 0, 0, null));
             }
@@ -118,11 +116,8 @@ public class ChatRoomController {
     @SendTo("/topic/messages/{chatId}")
     public List<ChatDTO> sendChat(@DestinationVariable String chatId, ChatDTO chatDTO) {
 
-        log.info("서버가 받은 정보: chatId: " + chatId + chatDTO.toString());
         String from = chatDTO.getFrom();
-        log.info("from : " + from);
         String to = chatDTO.getTo();
-        log.info("to : " + to);
         if (chatDTO != null && chatDTO.getContent() != null && !chatDTO.getContent().startsWith("#100")) {//입장 메시지가 아니라면 redis에 저
             // DB & Redis 에 대화 저장
             chatService.saveMessage(chatDTO);
@@ -133,13 +128,10 @@ public class ChatRoomController {
 
         // redisPublisher.publish(chatService.getTopic(chatDTO.getChatId()), chatDTO);
         if (chatDTO.getContent().startsWith("#100")) {
-
-
             // 대화 조회
             List<ChatDTO> chatList = chatService.loadMessage(chatDTO.getChatId());
             if (chatList.size() == 0) {
                 //db에 저장된 내용이 없다면 받은 내용 그냥 보내보자.
-
                 return Arrays.asList(chatDTO);//#100을 그냥 전송
             } else {//DB에서 가져올때
                 //chatList[되나요, 잘되요]
@@ -163,8 +155,6 @@ public class ChatRoomController {
                            Model model) {
         HttpSession session = request.getSession();
         String userId = (String) session.getAttribute("userId");
-
-
         //채팅리스트 갖고오기
         List<ChatListItemDTO> chatRoomList = chatService.findChatList(userId);
 
@@ -181,14 +171,8 @@ public class ChatRoomController {
                               String from,
                               String to,
                               String content,
-
-                              String sendTime) {
-
-
                               String sendTime,
                               Date selectedDateTime) {
- 
-
         chatService.saveReserv(reservLat, reservLong, chatId, from, to, sendTime, content, selectedDateTime);
 
         return "/chat/chatRoom";
@@ -197,9 +181,7 @@ public class ChatRoomController {
     @GetMapping("/chat/{chatId}/appointed-place-date")
     @ResponseBody
     public ReservLatiLongDTO reservLoadList(@PathVariable("chatId") Integer chatId) {
-
         ReservLatiLongDTO reservLoadList = chatService.reservLoadList(chatId);
-
         return reservLoadList;
     }
 
@@ -213,15 +195,17 @@ public class ChatRoomController {
                                     String to,
                                     String content,
                                     String sendTime,
-
-                                    Integer messageId) {
-
                                     Integer messageId,
                                     Date selectedDateTime) {
-
-
         chatService.updateReserv(reservLat, reservLong, chatId, from, to, sendTime, content, messageId, selectedDateTime);
 
+        return "/chat/chatRoom";
+    }
+
+    @ResponseBody
+    @DeleteMapping("/chat/{chatId}")
+    public String deleteChatRoom(@PathVariable("chatId") Integer chatId) {
+        chatService.deleteChatRoom(chatId);
         return "/chat/chatRoom";
     }
 

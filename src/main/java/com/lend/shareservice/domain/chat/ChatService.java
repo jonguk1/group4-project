@@ -35,4 +35,6 @@ public interface ChatService {
     void updateReserv(Double reservLat, Double reservLong, Integer chatId, String from, String to, String sendTime, String content, Integer messageId, Date selectedDateTime);
 
     Message loadReserv(Integer chatId);
+
+    void deleteChatRoom(Integer chatId);
 }
