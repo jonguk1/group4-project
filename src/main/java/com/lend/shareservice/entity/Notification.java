@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -28,7 +29,7 @@ public class Notification {
 
     // 생성일자 (default = sysdate)
     @NotNull
-    private Date notiRegDate;
+    private LocalDateTime notiRegDate;
 
     // 글번호
     @NotNull

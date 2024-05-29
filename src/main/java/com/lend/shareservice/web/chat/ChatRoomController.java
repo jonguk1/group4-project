@@ -128,7 +128,6 @@ public class ChatRoomController {
 
         // redisPublisher.publish(chatService.getTopic(chatDTO.getChatId()), chatDTO);
         if (chatDTO.getContent().startsWith("#100")) {
-
             // 대화 조회
             List<ChatDTO> chatList = chatService.loadMessage(chatDTO.getChatId());
             if (chatList.size() == 0) {
@@ -156,7 +155,6 @@ public class ChatRoomController {
                            Model model) {
         HttpSession session = request.getSession();
         String userId = (String) session.getAttribute("userId");
-
         //채팅리스트 갖고오기
         List<ChatListItemDTO> chatRoomList = chatService.findChatList(userId);
 
@@ -186,7 +184,6 @@ public class ChatRoomController {
         ReservLatiLongDTO reservLoadList = chatService.reservLoadList(chatId);
         return reservLoadList;
     }
-
 
     //약속 수정하기
     @ResponseBody

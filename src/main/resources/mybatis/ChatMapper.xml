@@ -109,4 +109,9 @@
             chatId = #{chatId}
         </where>
     </delete>
+    <select id="countChatByBoardId" parameterType="_int">
+        SELECT COUNT(*)
+        FROM Chatroom
+        WHERE boardId = #{boardId}
+    </select>
 </mapper>

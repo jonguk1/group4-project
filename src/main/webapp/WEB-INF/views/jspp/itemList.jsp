@@ -50,11 +50,13 @@
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                            <a class="nav-link" href="#" id="notificationIcon">
-                                                <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
-                                                <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
-                                            </a>
+                                                <a class="nav-link" href="#" id="notificationIcon" style="position: relative;">
+                                                    <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                    <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
+                                                    <span id="messageCount" class="badge badge-danger" style="color: white; background-color: red; position: absolute; top: -0px; left: -10px; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 10px; font-size: 12px;"></span>
+                                                </a>
                                             </c:if>
+
                                         </li>
                                         <li>
                                             <div id="messageContainer" style="display: none;">
@@ -65,7 +67,7 @@
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
                                                 <a class="nav-link" href="/chatList/${userId}">
-                                                    <img id="notificationIcon" src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
+                                                    <img id="chatIcon" src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
 
                                                 </a>
                                             </c:if>
@@ -448,13 +450,15 @@
                     '<span class="badge bg-primary">' + post.isLend + '</span>' +
                     '</div>' +
                     '<div><img src="/images/icon/postRegDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.regDate + '</div>' +
-                    '<div><img src="/images/icon/mapIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.address + (post.distance ? ' <span style="color: orange;">(' + post.distance + ' km)</span>' : '') + '</div>' +
+                    '<div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;' + post.itemCategoryName + '</div>' +
+                    '<div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;' + post.itemName + '</div>' +
+                    '<div><img src="/images/icon/mapIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.address + (post.distance ? ' <span style="color: orange;">(' + post.distance + ' km)</span>' : ' <span style="color: orange;">(0 km)</span>') + '</div>' +
 
                     '<div><img src="/images/icon/moneyIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.price + '원</div>' +
                     '<div><img src="/images/icon/returnDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;반납 희망일 : ' + (post.returnDate ? post.returnDate : '미정') + '</div>' +
                     '<div class="d-flex justify-content-start">' +
                     '<span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + post.interestCnt + '&nbsp;</span>' +
-                    '<span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41&nbsp;</span>' +
+                    '<span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;">&nbsp;' + post.chatCount + '&nbsp;</span>' +
                     '<span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;">&nbsp;' + post.hits + '</span>' +
                     '</div>' +
                     '</div>' +

@@ -2,6 +2,7 @@ package com.lend.shareservice.domain.user;
 
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.Block;
+import com.lend.shareservice.entity.Review;
 import com.lend.shareservice.entity.User;
 import com.lend.shareservice.web.user.dto.*;
 import org.apache.ibatis.annotations.Mapper;
@@ -45,4 +46,6 @@ public interface UserMapper {
 
 
     User selectUserById(String userId);
+
+    List<Review> selectReviewsByUserId(String userId);
 }

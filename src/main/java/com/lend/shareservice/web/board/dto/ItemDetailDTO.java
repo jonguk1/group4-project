@@ -32,4 +32,5 @@ public class ItemDetailDTO {
     private Integer distance;
 
     private String itemCategoryName;
+    private Integer chatCount;
 }

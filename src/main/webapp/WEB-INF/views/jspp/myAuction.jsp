@@ -225,16 +225,14 @@
                                         <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                            <a class="nav-link" href="#" >
-                                                <img src="/images/icon/notificationIcon.png" id="notificationIcon" style="width:30px; height:30px;">
-                                            </a>
+                                                <a class="nav-link" href="#" id="notificationIcon" style="position: relative;">
+                                                     <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                     <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
+                                                     <span id="messageCount" class="badge badge-danger" style="color: white; background-color: red; position: absolute; top: -0px; left: -10px; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 10px; font-size: 12px;"></span>
+                                                 </a>
                                             </c:if>
                                         </li>
-                                        <li>
-                                            <div id="messageContainer" style="display: none;">
 
-                                            </div>
-                                        </li>
 
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
@@ -281,6 +279,7 @@
 
                 </div>
             </li>
+
         </ul>
     </nav>
 </div>

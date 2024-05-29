@@ -44,10 +44,11 @@
                                         <ul class="navbar-nav">
                                             <li class="nav-item">
                                                 <c:if test="${loggedIn}">
-                                                    <a class="nav-link" href="#" id="notificationIcon">
-                                                        <img src="/images/icon/notificationIcon.png"  style="width:30px; height:30px;">
-                                                        <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
-                                                    </a>
+                                                    <a class="nav-link" href="#" id="notificationIcon" style="position: relative;">
+                                                         <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                         <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
+                                                         <span id="messageCount" class="badge badge-danger" style="color: white; background-color: red; position: absolute; top: -0px; left: -10px; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 10px; font-size: 12px;"></span>
+                                                     </a>
                                                 </c:if>
                                             </li>
 
@@ -106,6 +107,7 @@
                                 </div>
                             </li>
 
+
                         </ul>
                     </nav>
                 </div>
@@ -159,13 +161,11 @@
     	</div>
     </div>
 
-
     </body>
-
-
     </html>
-    <script src="/js/notification.js"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/js/notification.js"></script>
     <script>
         $(document).ready(function() {
             $.ajax({
