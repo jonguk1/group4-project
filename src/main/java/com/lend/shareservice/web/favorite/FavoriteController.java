@@ -27,8 +27,9 @@ public class FavoriteController {
 
     private final AddressService addressService;
 
+    //관심 목록 보여주기
     @GetMapping("/favorite/{userId}")
-    public String favoriteView(Model model,
+    public String favoriteList(Model model,
                                PagingDTO page,
                                @PathVariable("userId") String userId,
                                @RequestParam(defaultValue = "1") int pageNum){
@@ -41,7 +42,7 @@ public class FavoriteController {
 
         page.init();
 
-        List<FavoriteDTO> favorites=favoriteService.favorites(page,userId);
+        List<FavoriteDTO> favorites=favoriteService.findByFavoriteList(page,userId);
 
         for (FavoriteDTO favoriteDTO : favorites) {
             if (favoriteDTO.getBoards() != null && favoriteDTO.getBoards().size() > 0) {

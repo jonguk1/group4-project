@@ -1,6 +1,7 @@
 package com.lend.shareservice.web.user;
 
 import com.lend.shareservice.domain.address.AddressService;
+import com.lend.shareservice.domain.review.ReviewService;
 import com.lend.shareservice.domain.user.UserService;
 
 import com.lend.shareservice.domain.user.service.UserSignupService;
@@ -8,18 +9,13 @@ import com.lend.shareservice.domain.user.util.CommonUtil;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.User;
 
-import com.lend.shareservice.web.user.dto.BlockDTO;
+import com.lend.shareservice.web.user.dto.*;
 
-import com.lend.shareservice.web.user.dto.MyBoardDTO;
-
-import com.lend.shareservice.web.user.dto.MyDetailDTO;
-import com.lend.shareservice.web.user.dto.UpdateUserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
-import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
 import lombok.AllArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -53,12 +49,11 @@ public class UserController {
 
     private final AddressService addressService;
 
+    private final ReviewService reviewService;
+
 
     @Autowired
     private CommonUtil util;
-
-
-
 
 
     @GetMapping("/test")
@@ -120,7 +115,7 @@ public class UserController {
     }
 
 
-
+    //빌려준 목록 보여주기
     @GetMapping("/user/{userId}/lender")
     public String lenderList(Model model,
                              PagingDTO page,
@@ -157,7 +152,7 @@ public class UserController {
 
         return "jspp/myLender";
     }
-
+    //빌린 목록 보여주기
     @GetMapping("/user/{userId}/lendy")
     public String lendyList(Model model,
                             PagingDTO page,
@@ -194,7 +189,7 @@ public class UserController {
 
         return "jspp/myLendy";
     }
-
+    //내 글 목록 보여주기
     @GetMapping("/user/{userId}/board")
     public String myBoardList(Model model,
                               PagingDTO page,
@@ -288,11 +283,12 @@ public class UserController {
     //내 정보
     @GetMapping("/user/{userId}")
     public String myDetail(Model model,
-                           @PathVariable("userId")String userId){
-
-
+                           @PathVariable("userId") String userId,
+                           HttpServletRequest request){
 
         MyDetailDTO details=userService.findByUserDetail(userId);
+
+        Double avgStar=reviewService.averageStar(userId);
 
         if(details.getLatitude()!=null && details.getLongitude()!=null){
             details.setAddress(addressService.getAddressFromLatLng(details.getLatitude(),details.getLongitude()));
@@ -300,7 +296,16 @@ public class UserController {
             details.setAddress("");
         }
 
+        HttpSession session = request.getSession();
+        String sessionUserId = (String) session.getAttribute("userId");
+
         model.addAttribute("details",details);
+        model.addAttribute("avgStar",avgStar);
+        if (userId.equals(sessionUserId)) {
+            model.addAttribute("sessionUserId", sessionUserId);
+        } else {
+            model.addAttribute("notSessionUserId", userId);
+        }
 
         return "jspp/myDetail";
     }
@@ -322,7 +327,7 @@ public class UserController {
 
         return "jspp/editUser";
     }
-
+    //유저 수정
     @PutMapping("/user/{userId}")
     public ResponseEntity<Map<String, String>> updateUser(@PathVariable("userId") String userId,
                                                           @Valid @RequestBody UpdateUserDTO updateUserDTO,
@@ -346,7 +351,7 @@ public class UserController {
         response.put("message", "no");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
+    //주소 수정
     @PutMapping("/user/{userId}/address")
     public ResponseEntity<String> updateUserAddress(@PathVariable("userId") String userId,
                                                     @RequestParam("latitude") Double latitude,
@@ -360,7 +365,7 @@ public class UserController {
             return ResponseEntity.ok("no");
         }
     }
-
+    //유저 탈퇴
     @DeleteMapping("/user/{userId}")
     public ResponseEntity<String> DeleteUser(@PathVariable("userId")String userId, HttpSession session){
 
@@ -375,6 +380,7 @@ public class UserController {
 
     }
 
+    //돈 충전기능
     @PutMapping("/user/{userId}/charge")
     public ResponseEntity<String> ChargeMoney(@PathVariable("userId")String userId,
                                               @RequestParam("money") Integer money){
@@ -394,6 +400,16 @@ public class UserController {
     public ResponseEntity<Integer> getUserMoney(@PathVariable("userId") String userId) {
         log.info("요청");
         return ResponseEntity.ok(userService.findByUserDetail(userId).getMoney());
+    }
+
+    // 유저의 리뷰 조회
+    @GetMapping("/user/{userId}/review")
+    @ResponseBody
+    public ResponseEntity<List<ReviewDTO>> getReview(@PathVariable("userId") String userId) {
+
+        List<ReviewDTO> reviews = userService.getReviewsByUserId(userId);
+        log.info("reviews = {}", reviews);
+        return ResponseEntity.ok(reviews);
     }
 
 }

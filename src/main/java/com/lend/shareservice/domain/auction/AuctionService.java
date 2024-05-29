@@ -17,17 +17,21 @@ public interface AuctionService {
 
     int getCompleteAuctionCount(String userId);
 
-    List<AuctionDTO> auctions(PagingDTO page,String userId);
+    List<AuctionDTO> findByAuctionList(PagingDTO page,String userId);
 
-    List<AuctionDTO> completeAuctions(PagingDTO page,String userId);
+    List<AuctionDTO> findByCompleteAuctionList(PagingDTO page,String userId);
 
     String updateCurrentPrice(int auctionId,int currentPrice,String userId);
 
     int paticipateAuction(String id, Integer boardId);
 
-    boolean findCurrentAuctionState(String userId);
+    boolean findCurrentAuctionState(String userId, Integer boardId);
 
     int updateIsAuction(int auctionId);
 
     List<AuctionDTO> getDeadlineList();
+
+    String auctionCancel(String userId,int auctionId);
+
+
 }

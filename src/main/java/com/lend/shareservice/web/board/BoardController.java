@@ -25,6 +25,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class BoardController {
     // 글 등록 요청
     @PostMapping
     public String postRegister(HttpServletRequest request, @Valid @ModelAttribute PostRegistrationDTO postRegistrationDTO, BindingResult bindingResult, Model model) throws ParseException {
-
+        log.info("bindingResult = {}", bindingResult);
         if (postRegistrationDTO.getFileInput().get(0).getSize() == 0 &&
                 postRegistrationDTO.getFileInput().get(1).getSize() == 0 &&
         postRegistrationDTO.getFileInput().get(2).getSize() == 0) {
@@ -88,7 +89,7 @@ public class BoardController {
 
     // 글 카테고리 + 물건 카테고리에 해당하는 글들 응답 -> 메뉴에서 선택하면 나오는 글들
     @GetMapping()
-    public String getPostsByCategory(HttpServletRequest request, Model model, @RequestParam("boardCategoryId") Integer boardCategoryId
+    public ModelAndView getPostsByCategory(HttpServletRequest request, Model model, @RequestParam("boardCategoryId") Integer boardCategoryId
             , @RequestParam("itemCategoryId") Integer itemCategoryId) {
 
         HttpSession session = request.getSession();
@@ -103,9 +104,9 @@ public class BoardController {
 
         }
 
-        model.addAttribute("allPostsByCategorys", allPostsByCategorysJson);
-
-        return "jspp/itemList";
+        ModelAndView modelAndView = new ModelAndView("jspp/itemList");
+        modelAndView.addObject("allPostsByCategorys", allPostsByCategorysJson);
+        return modelAndView;
     }
 
     @GetMapping("/itemList")
@@ -351,5 +352,16 @@ public class BoardController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"status\": \"error\", \"message\": \"Failed to edit post\"}");
             }
         }
+    }
+
+    // 글 대여상태 변경
+    @PutMapping("/{boardId}/isLend")
+    public ResponseEntity<String> updateLendState(@PathVariable("boardId") Integer boardId, @RequestBody String lendState) {
+        log.info("lendState = {}", lendState);
+        if (boardService.updateLendState(boardId, lendState) > 0) {
+            return ResponseEntity.ok("ok");
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
     }
 }

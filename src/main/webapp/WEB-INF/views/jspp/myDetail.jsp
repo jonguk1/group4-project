@@ -28,6 +28,52 @@
             width: 100%;
             height: 400px;
         }
+
+        .star-ratings-container {
+            display: flex;
+            align-items: center; /* 세로 중앙 정렬 */
+            margin-top:-5px;
+        }
+
+        .star-ratings {
+          font-size: 28px;
+          color: #aaa9a9;
+          position: relative;
+          unicode-bidi: bidi-override;
+          width: max-content;
+          -webkit-text-fill-color: transparent;
+          -webkit-text-stroke-width: 1.3px;
+          -webkit-text-stroke-color: #2b2a29;
+        }
+
+        .star-ratings,
+        #avgRating {
+            margin: 0; /* 기본 마진 제거 */
+            display: inline-block; /* 가로로 배치하기 위해 인라인 블록 요소로 설정 */
+        }
+
+        #avgRating{
+            font-size:20px;
+            margin-top:10px;
+        }
+
+        .star-ratings-fill {
+          color: #fff58c;
+          padding: 0;
+          position: absolute;
+          z-index: 1;
+          display: flex;
+          top: 0;
+          left: 0;
+          overflow: hidden;
+          -webkit-text-fill-color: gold;
+        }
+
+        .star-ratings-base {
+          z-index: 0;
+          padding: 0;
+        }
+
     </style>
     <script>
         var map;
@@ -143,8 +189,6 @@
 
              // 완료 버튼 클릭 시 모달 창 닫기
             $("#completeBtn").click(function(){
-                console.log(lat);
-                console.log(lng);
              if (askForConfirmation()) {
                 $.ajax({
                     url: "/user/${userId}/address",
@@ -216,6 +260,10 @@
                     });
                 }
              });
+
+              const avgStarValue = parseFloat("${avgStar}");
+              const ratingToPercent = (avgStarValue * 20) + 1.5;
+              $('.star-ratings-fill').css('width', ratingToPercent + '%');
         });
     </script>
 </head>
@@ -254,9 +302,11 @@
                                         <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                          <li class="nav-item">
                                              <c:if test="${loggedIn}">
-                                                 <a class="nav-link" href="#">
-                                                     <img src="/images/icon/notificationIcon.png" id="notificationIcon" style="width:30px; height:30px;">
-                                                 </a>
+                                                 <a class="nav-link" href="#" id="notificationIcon" style="position: relative;">
+                                                      <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                      <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
+                                                      <span id="messageCount" class="badge badge-danger" style="color: white; background-color: red; position: absolute; top: -0px; left: -10px; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 10px; font-size: 12px;"></span>
+                                                  </a>
                                              </c:if>
                                          </li>
 
@@ -309,14 +359,6 @@
                              </div>
                          </li>
 
-                         <li class="nav-item dropdown text-center">
-                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
-                             <div class="dropdown-menu">
-                                 <a class="dropdown-item" href="#">경매 현황</a>
-                                 <a class="dropdown-item" href="#">마감 임박</a>
-
-                             </div>
-                         </li>
                      </ul>
                  </nav>
              </div>
@@ -329,7 +371,12 @@
 
        		<span>
        				<h3>
+       				<c:if test="${userId eq sessionUserId}">
        				    <c:out value="${userId}"/>님의 정보
+       				</c:if>
+       				<c:if test="${userId ne sessionUserId}">
+       				    <c:out value="${notSessionUserId}"/>님의 정보
+       				</c:if>
        				</h3>
        		</span>
        		</div>
@@ -342,7 +389,9 @@
    <div class="container-fluid">
        <div class="row">
            <div class="col-md-2">
+           <c:if test="${userId eq sessionUserId}">
                <%@ include file="/WEB-INF/views/jspp/include/mypage.jsp"%>
+           </c:if>
            </div>
            <div class="col-md-2">
            </div>
@@ -355,10 +404,12 @@
                        <label for="inputDefault">이름</label>
                        <p>&nbsp;<c:out value="${details.name}"/></p>
                    </div>
+                   <c:if test="${userId eq sessionUserId}">
                    <div class="form-group">
                        <label for="inputDefault">전화번호</label>
                        <p>&nbsp;<c:out value="${details.phoneNumber}"/></p>
                    </div>
+                   </c:if>
                    <div class="form-group">
                        <label for="inputDefault">가입일</label>
                        <p>
@@ -367,6 +418,7 @@
                         <fmt:formatDate value="${details.regDate}" pattern="dd"/>일
                        </p>
                    </div>
+                   <c:if test="${userId eq sessionUserId}">
                    <div class="form-group">
                        <label for="inputDefault">포인트</label>
                        <p>&nbsp;<fmt:formatNumber value="${details.point}" pattern="#,###"/> 포인트</p>
@@ -398,7 +450,8 @@
                                </div>
                            </div>
                        </div>
-                 </div>
+                   </div>
+                   </c:if>
                    <div class="form-group">
                        <label for="inputDefault" style="margin-top:10px">
                            내 동네
@@ -406,9 +459,11 @@
                        <div class="row">
                           <div class="col-md-8 text-start">
                               <div class="form-group">
-                                  <input type="input" class="form-control" id="myAroundHome" value="${details.address}" placeholder="내 동네를 설정해주세요"/>
+                                  <input type="input" class="form-control" id="myAroundHome" value="${details.address}" placeholder="내 동네를 설정해주세요"
+                                  <c:if test="${userId ne sessionUserId}">readonly="readonly"</c:if>/>
                               </div>
                           </div>
+                          <c:if test="${userId eq sessionUserId}">
                           <div class="col-md-4 text-start">
                               <div class="form-group">
                                   <button type="submit" class="btn btn-primary" id="openMapBtn">
@@ -433,9 +488,29 @@
                           </div>
                           <input type="hidden" name="latitude" id="latitude" value="${details.latitude}">
                           <input type="hidden" name="longitude" id="longitude" value="${details.longitude}">
+                          </c:if>
                       </div>
+                      <c:if test="${userId ne sessionUserId}">
+                      <br>
+                      <div class="form-group">
+                        <label for="inputDefault">평균 별점</label>
+                            <div class="star-ratings-container">
+                                <div class="star-ratings">
+                                    <div class="star-ratings-fill space-x-2 text-lg">
+                                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                    </div>
+                                    <div class="star-ratings-base space-x-2 text-lg">
+                                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                    </div>
+                                </div>
+                                <p id="avgRating">&nbsp;<fmt:formatNumber value="${avgStar}" pattern=".00"/>점</p>
+                            </div>
+                        </label>
+                      </div>
+                      </c:if>
                    </div>
                <br>
+               <c:if test="${userId eq sessionUserId}">
                <div class="row">
                    <div class="col-md-6 text-start">
                        <form class="d-flex" method="get" action="/user/${userId}/edit">
@@ -454,6 +529,7 @@
                        </div>
                    </div>
                </div>
+               </c:if>
            </div>
            <div class="col-md-2">
            </div>

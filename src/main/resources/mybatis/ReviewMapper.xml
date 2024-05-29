@@ -5,7 +5,7 @@
     <resultMap id="reviews" type="com.lend.shareservice.web.review.dto.ReviewDTO">
     </resultMap>
 
-    <select id="receiveds" parameterType="map" resultMap="reviews">
+    <select id="findByReceivedList" parameterType="map" resultMap="reviews">
         select content,star,reviewer,reviewee
         from review
         <where>
@@ -21,7 +21,7 @@
         </where>
     </select>
 
-    <select id="sents" parameterType="map" resultMap="reviews">
+    <select id="findBySentList" parameterType="map" resultMap="reviews">
         select content,star,reviewer,reviewee
         from review
         <where>
@@ -37,4 +37,16 @@
         </where>
     </select>
 
+    <insert id="saveReview" parameterType="com.lend.shareservice.entity.Review" useGeneratedKeys="true" keyProperty="reviewId">
+        INSERT INTO REVIEW (reviewer, reviewee, content, star)
+        VALUES (#{reviewer}, #{reviewee}, #{content}, #{star})
+    </insert>
+
+    <select id="averageStar" parameterType="String" resultType="_double">
+        select avg(star)
+        from review
+        <where>
+            reviewee=#{value}
+        </where>
+    </select>
 </mapper>

@@ -6,10 +6,7 @@ package com.lend.shareservice.domain.user;
 import com.lend.shareservice.entity.User;
 
 import com.lend.shareservice.web.paging.dto.PagingDTO;
-import com.lend.shareservice.web.user.dto.MyBoardDTO;
-import com.lend.shareservice.web.user.dto.MyDetailDTO;
-import com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO;
-import com.lend.shareservice.web.user.dto.UpdateUserDTO;
+import com.lend.shareservice.web.user.dto.*;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -46,4 +43,5 @@ public interface UserService {
 
     int getMyBoardCount(String userId);
 
+    List<ReviewDTO> getReviewsByUserId(String userId);
 }

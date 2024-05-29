@@ -9,7 +9,7 @@
         </where>
     </select>
 
-    <select id="blocks" resultType="com.lend.shareservice.web.block.dto.BlockDTO" parameterType="map">
+    <select id="findByBlockList" resultType="com.lend.shareservice.web.block.dto.BlockDTO" parameterType="map">
         select blockedUserId from block
         <where>
             blockUserId=#{userId}
@@ -24,4 +24,9 @@
         </where>
     </delete>
 
+    <select id="selectAllBlokedIds" parameterType="string">
+        SELECT blockedUserId
+        FROM BLOCK
+        WHERE blockUserId = #{userId}
+    </select>
 </mapper>

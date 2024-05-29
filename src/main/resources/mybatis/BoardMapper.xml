@@ -100,7 +100,6 @@
         WHERE boardId = #{boardId}
     </update>
 
-
     <select id="selectImage1">
         SELECT itemImage1
         FROM BOARD
@@ -127,5 +126,32 @@
         UPDATE board
         SET isMegaphone = false
         WHERE isMegaphone = true AND TIMESTAMPDIFF(WEEK, regDate, NOW()) >= 1;
+    </update>
+
+    <select id="selectCategoryNameById" resultType="string" parameterType="_int">
+        SELECT itemCategoryName
+        FROM Item_Category
+        WHERE itemCategoryId = #{itemCategoryId}
+    </select>
+
+
+    <update id="updateIsLend" parameterType="com.lend.shareservice.entity.Board">
+        UPDATE BOARD
+        SET isLend = #{isLend}
+        WHERE boardId = #{boardId}
+    </update>
+
+    <!-- 반납 날짜 1주일 경과 글들 삭제   -->
+    <delete id="deletePostsAfterReturnDate">
+        DELETE FROM BOARD
+        WHERE DATEDIFF(NOW(), returnDate) >= 7;
+    </delete>
+
+    <update id="disableForeignKeyChecks">
+        SET FOREIGN_KEY_CHECKS = 0
+    </update>
+
+    <update id="enableForeignKeyChecks">
+        SET FOREIGN_KEY_CHECKS = 1
     </update>
 </mapper>

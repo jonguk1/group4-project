@@ -18,12 +18,12 @@ public class FavoriteServiceImpl implements FavoriteService{
 
 
     @Override
-    public List<FavoriteDTO> favorites(PagingDTO page, String userId) {
+    public List<FavoriteDTO> findByFavoriteList(PagingDTO page, String userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return favoriteMapper.favorites(map);
+        return favoriteMapper.findByFavoriteList(map);
     }
 
     @Override

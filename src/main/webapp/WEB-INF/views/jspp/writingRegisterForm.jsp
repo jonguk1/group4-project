@@ -62,9 +62,11 @@
                                         <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                                <li class="nav-item">
                                                    <c:if test="${loggedIn}">
-                                                       <a class="nav-link" href="#">
-                                                           <img src="/images/icon/notificationIcon.png" id="notificationIcon" style="width:30px; height:30px;">
-                                                       </a>
+                                                       <a class="nav-link" href="#" id="notificationIcon" style="position: relative;">
+                                                            <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                            <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
+                                                            <span id="messageCount" class="badge badge-danger" style="color: white; background-color: red; position: absolute; top: -0px; left: -10px; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 10px; font-size: 12px;"></span>
+                                                        </a>
                                                    </c:if>
                                                </li>
 
@@ -113,14 +115,6 @@
                                    </div>
                                </li>
 
-                               <li class="nav-item dropdown text-center">
-                                   <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
-                                   <div class="dropdown-menu">
-                                       <a class="dropdown-item" href="#">경매 현황</a>
-                                       <a class="dropdown-item" href="#">마감 임박</a>
-
-                                   </div>
-                               </li>
                            </ul>
                        </nav>
                    </div>
@@ -257,7 +251,7 @@
                                                 <div class="form-check form-switch" style="position: relative; z-index: 100;">
                                                     <input class="form-check-input" type="checkbox" id="isMegaphone" name="isMegaphone">
                                                     <label class="form-check-label" for="isMegaphone">
-                                                        <img src="/images/icon/megaphoneIcon.png" style="width: 15px; height: 15px;">&nbsp;확성기 사용
+                                                        <img src="/images/icon/megaphoneIcon.png" style="width: 15px; height: 15px;">&nbsp;확성기 사용(7일)
                                                         <span class="badge rounded-pill bg-warning">₩300</span>
                                                     </label>
                                                 </div>
@@ -309,10 +303,31 @@
 
                             <div class="row">
                                 <div class="col">
-                                    <label for="returnDate">반납 날짜</label>
+                                    <c:if test="${postRegistrationBindingResult.hasFieldErrors('returnDate')}">
+                                        <div>
+                                            <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('returnDate').defaultMessage}</span>
+                                        </div>
+                                    </c:if>
+                                    <label for="returnDate">반납 날짜(반납 날짜 1주일 후 글이 자동으로 삭제됩니다)</label>
                                     <input type="date" class="form-control" id="returnDate" name="returnDate">
                                 </div>
                                 <div class="col">
+                                    <c:if test="${postRegistrationBindingResult.hasFieldErrors('deadline')}">
+                                        <div>
+                                            <span class="badge bg-danger">${postRegistrationBindingResult.getFieldError('deadline').defaultMessage}</span>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${not empty postRegistrationBindingResult}">
+                                        <c:forEach var="error" items="${postRegistrationBindingResult.allErrors}">
+                                            <c:choose>
+                                                <c:when test="${error.code == 'FutureDateConstraint.postRegistrationDTO' || error.code == 'FutureDateConstraint'}">
+                                                    <div>
+                                                        <span class="badge bg-danger">${error.defaultMessage}<span>
+                                                    </div>
+                                                </c:when>
+                                            </c:choose>
+                                        </c:forEach>
+                                    </c:if>
                                     <label for="deadline">경매 마감 날짜</label>
                                     <c:if test="${postRegistrationBindingResult.hasFieldErrors('deadlineSetForAuctions')}">
                                         <div>

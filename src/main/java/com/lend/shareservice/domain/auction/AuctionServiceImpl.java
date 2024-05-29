@@ -56,21 +56,21 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public List<AuctionDTO> auctions(PagingDTO page, String userId) {
+    public List<AuctionDTO> findByAuctionList(PagingDTO page, String userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return auctionMapper.auctions(map);
+        return auctionMapper.findByAuctionList(map);
     }
 
     @Override
-    public List<AuctionDTO> completeAuctions(PagingDTO page, String userId) {
+    public List<AuctionDTO> findByCompleteAuctionList(PagingDTO page, String userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return auctionMapper.completeAuctions(map);
+        return auctionMapper.findByCompleteAuctionList(map);
     }
 
     @Override
@@ -115,6 +115,8 @@ public class AuctionServiceImpl implements AuctionService{
         if (duplicateUserId != null) {
             return "duplicateUserId";
         }
+
+        auctionMapper.lockAuction(auctionId);
 
         Map<String, Object> map = new HashMap<>();
         map.put("currentPrice", currentPrice);
@@ -235,8 +237,12 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public boolean findCurrentAuctionState(String userId) {
-        int cnt = auctionMapper.selectIsAuctionById(userId);
+    public boolean findCurrentAuctionState(String userId, Integer boardId) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+        map.put("boardId", boardId);
+        int cnt = auctionMapper.selectIsAuctionById(map);
 
         if (cnt >= 1) {
             return true;
@@ -253,6 +259,48 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public List<AuctionDTO> getDeadlineList() {
         return auctionMapper.getDeadlineList();
+    }
+
+    @Override
+    @Transactional
+    public String auctionCancel(String userId, int auctionId) {
+        try {
+            Auction auction = new Auction();
+            auction.setAuctionId(auctionId);
+            auction.setUserId(userId);
+
+            Participant_Auction participant = new Participant_Auction();
+            participant.setAuctionId(auctionId);
+            participant.setUserId(userId);
+
+            auctionMapper.lockParticipant(participant);
+
+            int n = auctionMapper.deleteParticipant(participant);
+
+            if (n > 0) {
+                int k = auctionMapper.selectParticipantCnt(auction);
+                updateBeforeIsAuctionIfNeeded(k, auction);
+                return "ok";
+            } else {
+                return "no";
+            }
+        } catch (Exception e) {
+            System.err.println("경매 취소 중 오류 발생: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    private void updateBeforeIsAuctionIfNeeded(int participantCount, Auction auction) {
+        if (participantCount == 0) {
+            auctionMapper.deleteAuction(auction);
+        } else {
+            auctionMapper.auctionCancel(auction);
+            if (participantCount == 1) {
+                String message = "경매전으로 변경되었습니다";
+                notificationService.sendMessageAuctionUsers(auction.getAuctionId(), message);
+                auctionMapper.updateBeforeIsAuction(auction);
+            }
+        }
     }
 
 }

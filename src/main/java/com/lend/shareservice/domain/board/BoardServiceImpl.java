@@ -2,11 +2,13 @@ package com.lend.shareservice.domain.board;
 
 import com.lend.shareservice.domain.address.AddressService;
 import com.lend.shareservice.domain.board.dto.BoardAuctionStateDTO;
+import com.lend.shareservice.domain.chat.ChatMapper;
 import com.lend.shareservice.domain.user.UserMapper;
 import com.lend.shareservice.domain.user.UserService;
 import com.lend.shareservice.domain.user.vo.UserVo;
 import com.lend.shareservice.entity.Board;
 import com.lend.shareservice.entity.Favorite;
+import com.lend.shareservice.web.board.ItemCategory;
 import com.lend.shareservice.web.board.dto.*;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,8 @@ public class BoardServiceImpl implements BoardService{
     private final AddressService addressService;
     private final UserMapper userMapper;
     private final UserService userService;
+    private final ChatMapper chatMapper;
+
     private static final double EARTH_RADIUS_KM = 6371;
     // 해당 상품 카테고리와 아이템 카테고리 글들 추출
     @Value("${file-url}")
@@ -120,6 +124,10 @@ public class BoardServiceImpl implements BoardService{
             postDTO.setAddress(addressService.getAddressFromLatLng(board.getLatitude(), board.getLongitude()));
 
             posts.add(postDTO);
+
+            String itemCategoryName = boardMapper.selectCategoryNameById(board.getItemCategoryId());
+            postDTO.setItemCategoryName(itemCategoryName);
+            postDTO.setChatCount(getChatCount(postDTO.getBoardId()));
         }
         return posts;
     }
@@ -235,8 +243,6 @@ public class BoardServiceImpl implements BoardService{
             return null;
         }
 
-
-
         ItemDetailDTO itemDetailDTO = new ItemDetailDTO();
 
         itemDetailDTO.setBoardId(board.getBoardId());
@@ -269,10 +275,17 @@ public class BoardServiceImpl implements BoardService{
         itemDetailDTO.setLatitude(board.getLatitude());
         itemDetailDTO.setLongitude(board.getLongitude());
 
+        String itemCategoryName = boardMapper.selectCategoryNameById(board.getItemCategoryId());
+        itemDetailDTO.setItemCategoryName(itemCategoryName);
+
 
         itemDetailDTO.setIsMegaphone(board.IsMegaphone(board.getIsMegaphone()));
-
+        itemDetailDTO.setChatCount(getChatCount(boardId));
         return itemDetailDTO;
+    }
+
+    private int getChatCount(Integer boardId) {
+        return chatMapper.countChatByBoardId(boardId);
     }
 
     @Override
@@ -301,30 +314,36 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public List<PostDTO> sortForHits(List<PostDTO> postDTOS) {
         return postDTOS.stream()
-                .sorted(Comparator.comparingInt(PostDTO::getHits).reversed())
+                .sorted(Comparator
+                        .comparing((PostDTO post) -> "급구".equals(post.getIsMegaphone()))
+                        .thenComparingInt(PostDTO::getHits).reversed())
                 .collect(Collectors.toList());
     }
 
     // 관심순으로 정렬
-    @Override
     public List<PostDTO> sortForInterest(List<PostDTO> postDTOS) {
         return postDTOS.stream()
-                .sorted(Comparator.comparingInt(PostDTO::getInterestCnt).reversed())
+                .sorted(Comparator
+                        .comparing((PostDTO post) -> "급구".equals(post.getIsMegaphone()))
+                        .thenComparingInt(PostDTO::getInterestCnt).reversed())
                 .collect(Collectors.toList());
     }
 
     // 가격 낮은순으로 정렬
-    @Override
     public List<PostDTO> sortForLowPrice(List<PostDTO> postDTOS) throws ParseException {
         return postDTOS.stream()
-                .sorted(Comparator.comparingDouble(dto -> Double.parseDouble(dto.getPrice().replace(",", ""))))
+                .sorted(Comparator
+                        .comparing((PostDTO post) -> !"급구".equals(post.getIsMegaphone()))
+                        .thenComparingDouble(dto -> Double.parseDouble(dto.getPrice().replace(",", ""))))
                 .collect(Collectors.toList());
     }
 
     // 최신순으로 정렬
     @Override
     public List<PostDTO> sortForRecent(List<PostDTO> postDTOS) {
-        Collections.sort(postDTOS, Comparator.comparing(PostDTO::getRegDate).reversed());
+        Collections.sort(postDTOS, Comparator
+                .comparing((PostDTO post) -> "급구".equals(post.getIsMegaphone()))
+                .thenComparing(PostDTO::getRegDate, Comparator.reverseOrder()));
         return postDTOS;
     }
 
@@ -332,9 +351,12 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public List<PostDTO> sortForDistance(List<PostDTO> postDTOS) {
         return postDTOS.stream()
-                .sorted(Comparator.comparingInt(PostDTO::getDistance))
+                .sorted(Comparator
+                        .comparing((PostDTO post) -> !"급구".equals(post.getIsMegaphone())) // '급구' 우선 정렬
+                        .thenComparingInt(PostDTO::getDistance)) // 거리순 정렬
                 .collect(Collectors.toList());
     }
+
 
     // 제목 + 내용으로 검색
     @Override
@@ -347,7 +369,25 @@ public class BoardServiceImpl implements BoardService{
                 postsToRemove.add(postDTO);
             }
         }
+
         postDTOS.removeAll(postsToRemove);
+
+        postDTOS.sort(new Comparator<PostDTO>() {
+            @Override
+            public int compare(PostDTO o1, PostDTO o2) {
+                // '급구'인 게시물을 우선적으로 정렬
+                boolean isO1Urgent = "급구".equals(o1.getIsMegaphone());
+                boolean isO2Urgent = "급구".equals(o2.getIsMegaphone());
+
+                if (isO1Urgent && !isO2Urgent) {
+                    return -1;
+                } else if (!isO1Urgent && isO2Urgent) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
 
         return postDTOS;
     }
@@ -461,5 +501,26 @@ public class BoardServiceImpl implements BoardService{
     @Scheduled(fixedRate = 60000 * 60 * 24 * 5)
     public void expireMegaphone() {
         boardMapper.expireMegaphone();
+    }
+
+    // 대여 상태 변경
+    @Override
+    public int updateLendState(Integer boardId, String lendState) {
+        System.out.println(lendState);
+        Board board = new Board();
+        board.setBoardId(boardId);
+        board.toIsLend(lendState);
+
+        return boardMapper.updateIsLend(board);
+    }
+
+    // 반납 날짜 1주일 경과에 해당하는 글 삭제
+    // 60000 * 60 * 24
+    @Override
+    @Scheduled(fixedRate = 60000 * 60 * 24)
+    public void deletePosts() {
+        boardMapper.disableForeignKeyChecks();
+        boardMapper.deletePostsAfterReturnDate();
+        boardMapper.enableForeignKeyChecks();
     }
 }

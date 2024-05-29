@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+    <link rel="stylesheet" type="text/css" href="/css/mainImage.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
@@ -50,11 +50,13 @@
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                            <a class="nav-link" href="#" id="notificationIcon">
-                                                <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
-                                                <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
-                                            </a>
+                                                <a class="nav-link" href="#" id="notificationIcon" style="position: relative;">
+                                                    <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                    <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
+                                                    <span id="messageCount" class="badge badge-danger" style="color: white; background-color: red; position: absolute; top: -0px; left: -10px; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 10px; font-size: 12px;"></span>
+                                                </a>
                                             </c:if>
+
                                         </li>
                                         <li>
                                             <div id="messageContainer" style="display: none;">
@@ -64,8 +66,8 @@
 
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="#">
-                                                    <img id="notificationIcon" src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
+                                                <a class="nav-link" href="/chatList/${userId}">
+                                                    <img id="chatIcon" src="/images/icon/chatIcon.png" style="width:37px; height:37px;">
 
                                                 </a>
                                             </c:if>
@@ -95,7 +97,9 @@
                     </div>
                 </div>
             </div>
-
+<div id="mainImage">
+</div>
+<br><br>
 <div class="container d-flex justify-content-center">
     <nav class="navbar navbar-expand-lg" data-bs-theme="light">
         <ul class="navbar-nav me-auto">
@@ -112,19 +116,9 @@
 
                 </div>
             </li>
-
-            <li class="nav-item dropdown text-center">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">경매 현황</a>
-                    <a class="dropdown-item" href="#">마감 임박</a>
-                </div>
-            </li>
         </ul>
     </nav>
 </div>
-
-<br><br>
 
 <div class="container-fluid">
 	<div class="row">
@@ -155,7 +149,7 @@
         </div>
     </div>
 
-<br><br>
+<br>
        <div class="row">
            <div class="col-md-12">
                <div class="row">
@@ -206,7 +200,7 @@
     <input type="hidden" id="whatIsCureentState" name="whatIsCureentState" value="hiddenInputValue">
 </div>
     <script id="allPostsByCategorys" type="application/json">${allPostsByCategorys}</script>
-
+    <script src="/js/mainImage.js"></script>
 <script>
     $(document).ready(function() {
 
@@ -409,7 +403,7 @@
 
         var allPostsByCategorys = JSON.parse(allPostsByCategorysJson);
         var numberOfPosts = allPostsByCategorys.length;
-        var visiblePosts = 9;
+        var visiblePosts = 6;
 
         function renderPosts(startIndex, count) {
 
@@ -456,13 +450,15 @@
                     '<span class="badge bg-primary">' + post.isLend + '</span>' +
                     '</div>' +
                     '<div><img src="/images/icon/postRegDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.regDate + '</div>' +
-                    '<div><img src="/images/icon/mapIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.address + (post.distance ? ' <span style="color: orange;">(' + post.distance + ' km)</span>' : '') + '</div>' +
+                    '<div><img src="/images/icon/tag.png" style="width: 20px; height: 20px;">&nbsp;' + post.itemCategoryName + '</div>' +
+                    '<div><img src="/images/icon/item.png" style="width: 20px; height: 20px;">&nbsp;' + post.itemName + '</div>' +
+                    '<div><img src="/images/icon/mapIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.address + (post.distance ? ' <span style="color: orange;">(' + post.distance + ' km)</span>' : ' <span style="color: orange;">(0 km)</span>') + '</div>' +
 
                     '<div><img src="/images/icon/moneyIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;' + post.price + '원</div>' +
                     '<div><img src="/images/icon/returnDateIcon.png" alt="Product Image" style="width: 20px; height: 20px;">&nbsp;반납 희망일 : ' + (post.returnDate ? post.returnDate : '미정') + '</div>' +
                     '<div class="d-flex justify-content-start">' +
                     '<span><img src="/images/icon/favoriteIcon.png" alt="관심 아이콘" style="width: 20px; height: 20px;">&nbsp;' + post.interestCnt + '&nbsp;</span>' +
-                    '<span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;"> 41&nbsp;</span>' +
+                    '<span><img src="/images/icon/chatIcon.png" alt="채팅 아이콘" style="width: 25px; height: 25px;">&nbsp;' + post.chatCount + '&nbsp;</span>' +
                     '<span><img src="/images/icon/hitsIcon.png" alt="조회수 아이콘" style="width: 20px; height: 20px;">&nbsp;' + post.hits + '</span>' +
                     '</div>' +
                     '</div>' +
@@ -478,11 +474,11 @@
             container.innerHTML += postHtml;
         }
 
-        var loadedPosts = 9;
+        var loadedPosts = 6;
 
         function loadMorePosts() {
 
-            var postsToAdd = 9;
+            var postsToAdd = 6;
             renderPosts(loadedPosts, postsToAdd);
             loadedPosts += postsToAdd;
             if (loadedPosts >= allPostsByCategorys.length) {

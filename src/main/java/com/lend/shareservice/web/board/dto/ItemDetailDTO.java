@@ -30,4 +30,7 @@ public class ItemDetailDTO {
     private String isMegaphone;
     private String address;
     private Integer distance;
+
+    private String itemCategoryName;
+    private Integer chatCount;
 }

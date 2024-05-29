@@ -21,9 +21,9 @@ public interface AuctionMapper {
 
     int getCompleteAuctionCount(String userId);
 
-    List<AuctionDTO> auctions(Map<String, Object> map);
+    List<AuctionDTO> findByAuctionList(Map<String, Object> map);
 
-    List<AuctionDTO> completeAuctions(Map<String, Object> map);
+    List<AuctionDTO> findByCompleteAuctionList(Map<String, Object> map);
 
     Auction selectAuctionByBoardId(Integer boardId);
 
@@ -35,7 +35,7 @@ public interface AuctionMapper {
 
     Auction selectMaxPrice(Auction auction);
 
-    int selectIsAuctionById(String userId);
+    int selectIsAuctionById(Map<String, Object> map);
 
     int selectParticipantCnt(Auction findAuctionId);
 
@@ -58,4 +58,16 @@ public interface AuctionMapper {
     int findByMoney(String userId);
 
     Integer selectBoardId(int auctionId);
+
+    void auctionCancel(Auction auction);
+
+    void updateBeforeIsAuction(Auction auction);
+
+    int deleteParticipant(Participant_Auction auction);
+
+    void deleteAuction(Auction auction);
+
+    void lockParticipant(Participant_Auction auction);
+
+    void lockAuction(int auctionId);
 }

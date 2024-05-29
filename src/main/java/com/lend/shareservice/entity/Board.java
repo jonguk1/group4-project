@@ -121,6 +121,16 @@ public class Board {
         }
     }
 
+    public void toIsLend(String lendState) {
+        if (lendState.equals("대여전")) {
+            isLend = "0";
+        } else if (lendState.equals("대여중")) {
+            isLend = "1";
+        } else if (lendState.equals("대여완료")) {
+            isLend = "2";
+        }
+    }
+
     public String IsLend(String isLend) {
         if (isLend.equals("0")) {
             return "대여전";
@@ -130,6 +140,7 @@ public class Board {
 
         return "대여 완료";
     }
+
 
     public String IsMegaphone(Boolean isMegaphone) {
         if (isMegaphone) {

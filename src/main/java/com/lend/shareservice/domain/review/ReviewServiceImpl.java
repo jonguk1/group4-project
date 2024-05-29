@@ -3,6 +3,7 @@ package com.lend.shareservice.domain.review;
 import com.lend.shareservice.entity.Review;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import com.lend.shareservice.web.review.dto.ReviewDTO;
+import com.lend.shareservice.web.review.dto.ReviewRegDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,21 +18,21 @@ public class ReviewServiceImpl implements ReviewService{
     private final ReviewMapper reviewMapper;
 
     @Override
-    public List<ReviewDTO> receiveds(PagingDTO page, String userId) {
+    public List<ReviewDTO> findByReceivedList(PagingDTO page, String userId) {
         Map<String,Object> map=new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return reviewMapper.receiveds(map);
+        return reviewMapper.findByReceivedList(map);
     }
 
     @Override
-    public List<ReviewDTO> sents(PagingDTO page, String userId) {
+    public List<ReviewDTO> findBySentList(PagingDTO page, String userId) {
         Map<String,Object> map=new HashMap<>();
         map.put("userId",userId);
         map.put("limit", page.getLimit());
         map.put("offset", page.getOffset());
-        return reviewMapper.sents(map);
+        return reviewMapper.findBySentList(map);
     }
 
     @Override
@@ -43,4 +44,18 @@ public class ReviewServiceImpl implements ReviewService{
     public int sentGetTotalCount(String userId) {
         return reviewMapper.sentGetTotalCount(userId);
     }
+
+    // 리뷰 등록
+    @Override
+    public int registerReview(ReviewRegDTO reviewRegDTO) {
+        Review review = new Review(reviewRegDTO.getReviewer(), reviewRegDTO.getReviewee(), reviewRegDTO.getContent(), reviewRegDTO.getStar());
+        return reviewMapper.saveReview(review);
+    }
+
+    @Override
+    public Double averageStar(String userId) {
+        return reviewMapper.averageStar(userId);
+    }
+
+
 }

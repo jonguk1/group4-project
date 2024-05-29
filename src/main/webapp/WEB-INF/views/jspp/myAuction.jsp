@@ -153,6 +153,39 @@
                     }
                 });
             });
+
+            $('.auction-cancel-form').submit(function(event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'PUT',
+                    data: formData,
+                    success: function(response) {
+                        const messages = {
+                                'ok': '경매 취소 성공!',
+                                'no': '경매 취소 실패!'
+                            };
+                        if (response in messages) {
+                            alert(messages[response]);
+                            if (response === 'ok') {
+                                location.reload();
+                            }
+                            return;
+                        }
+
+                        alert('알 수 없는 응답: ' + response);
+                        return;
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('경매 취소에 실패하였습니다:', error);
+                        alert("오류 발생");
+                    }
+                });
+
+
+            });
         });
 
 
@@ -192,16 +225,14 @@
                                         <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                            <a class="nav-link" href="#" >
-                                                <img src="/images/icon/notificationIcon.png" id="notificationIcon" style="width:30px; height:30px;">
-                                            </a>
+                                                <a class="nav-link" href="#" id="notificationIcon" style="position: relative;">
+                                                     <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                     <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
+                                                     <span id="messageCount" class="badge badge-danger" style="color: white; background-color: red; position: absolute; top: -0px; left: -10px; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 10px; font-size: 12px;"></span>
+                                                 </a>
                                             </c:if>
                                         </li>
-                                        <li>
-                                            <div id="messageContainer" style="display: none;">
 
-                                            </div>
-                                        </li>
 
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
@@ -249,13 +280,6 @@
                 </div>
             </li>
 
-            <li class="nav-item dropdown text-center">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">경매 현황</a>
-                    <a class="dropdown-item" href="#">마감 임박</a>
-                </div>
-            </li>
         </ul>
     </nav>
 </div>
@@ -385,11 +409,12 @@
                                                     <input type="text" name="currentPrice" style="margin-top:10px" placeholder="가격을 올려주세요" autocomplete='off'/>
                                                     <button type="submit" class="btn btn-primary btn-sm" style="margin-top:10px">가격 올리기</button>
                                                 </form>
-                                                <input type="hidden" name="auctionId" value="${auction.auctionId}">
-                                                <form class="d-flex auction-form" method="post" action="/auction/${userId}/cancel">
+                                                <form class="d-flex auction-cancel-form" method="post" action="/auction/${userId}/cancel">
                                                     <input type="hidden" name="_method" value="put">
+                                                    <input type="hidden" name="auctionId" value="${auction.auctionId}">
                                                     <button type="submit" class="btn btn-danger btn-sm">경매 취소</button>
                                                 </form>
+                                                <input type="hidden" name="auctionId" value="${auction.auctionId}">
                                            </div>
                                         </div>
                                     </div>

@@ -6,6 +6,7 @@ import com.lend.shareservice.entity.Favorite;
 import com.lend.shareservice.web.board.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -46,4 +47,14 @@ public interface BoardMapper {
     LatiLongDTO selectLatAndLong(Integer boardId);
 
     void expireMegaphone();
+
+    String selectCategoryNameById(Integer itemCategoryId);
+
+    int updateIsLend(Board board);
+
+    void deletePostsAfterReturnDate();
+
+    void disableForeignKeyChecks();
+
+    void enableForeignKeyChecks();
 }

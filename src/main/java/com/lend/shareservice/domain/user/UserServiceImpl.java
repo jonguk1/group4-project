@@ -1,12 +1,14 @@
 package com.lend.shareservice.domain.user;
 
 import com.lend.shareservice.entity.Block;
+import com.lend.shareservice.entity.Review;
 import com.lend.shareservice.entity.User;
 import com.lend.shareservice.web.paging.dto.PagingDTO;
 import com.lend.shareservice.web.user.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +117,15 @@ public class UserServiceImpl implements UserService{
         return userMapper.getLendyCount(userId);
     }
 
+    @Override
+    public List<ReviewDTO> getReviewsByUserId(String userId) {
 
+        List<Review> reviews = userMapper.selectReviewsByUserId(userId);
+        List<ReviewDTO> reviewDTOS = new ArrayList<>();
+        for (Review review : reviews) {
+            reviewDTOS.add(new ReviewDTO(review.getReviewee()));
+        }
 
+        return reviewDTOS;
+    }
 }

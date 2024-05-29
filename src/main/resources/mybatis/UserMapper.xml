@@ -153,4 +153,8 @@
         </where>
     </select>
 
+    <select id="selectReviewsByUserId" parameterType="string" resultType="com.lend.shareservice.entity.Review">
+        SELECT * FROM REVIEW
+        WHERE reviewer = #{userId}
+    </select>
 </mapper>

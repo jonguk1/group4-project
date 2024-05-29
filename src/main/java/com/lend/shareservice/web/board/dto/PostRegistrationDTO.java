@@ -1,5 +1,6 @@
 package com.lend.shareservice.web.board.dto;
 
+import com.lend.shareservice.web.board.boardexception.validator.FutureDateConstraint;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.eclipse.tags.shaded.org.apache.xpath.operations.Bool;
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@FutureDateConstraint
 public class PostRegistrationDTO {
 
     private Integer boardCategoryId;
@@ -24,8 +26,10 @@ public class PostRegistrationDTO {
     private String itemName;
 
     @NotBlank(message = "가격을 입력해주세요")
+    @Size(max = 10, message = "너무 높은 가격입니다")
     private String price;
 
+    @Size(max = 10, message = "너무 높은 가격입니다")
     private String maxPrice;
     @AssertTrue(message = "경매 최고가를 입력해주세요")
     private boolean isMaxPriceSetForAuctions() {
@@ -42,10 +46,10 @@ public class PostRegistrationDTO {
 
     private Boolean isAuction;
 
-    @Future
+    @Future(message = "현재보다 미래를 선택하세요")
     private LocalDate returnDate;
 
-    @Future
+    @Future(message = "현재보다 미래를 선택하세요")
     private LocalDate deadline;
 
     @AssertTrue(message = "경매 날짜를 입력해주세요")

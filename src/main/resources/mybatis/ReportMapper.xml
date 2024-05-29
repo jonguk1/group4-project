@@ -14,7 +14,7 @@
         </collection>
     </resultMap>
 
-    <select id="reports" parameterType="map" resultMap="reportMap">
+    <select id="findByReportList" parameterType="map" resultMap="reportMap">
         select count(*) as writerCnt,b.writer
         from report r inner join board b
         on r.boardId = b.boardId
@@ -27,7 +27,7 @@
         order by b.writer limit #{limit} offset #{offset}
     </select>
 
-    <select id="reportWriters" parameterType="map" resultMap="reportMap">
+    <select id="findByReportWriterList" parameterType="map" resultMap="reportMap">
         select r.userId,r.title,r.content,r.regDate from
         report r inner join board b
         on r.boardId=b.boardId

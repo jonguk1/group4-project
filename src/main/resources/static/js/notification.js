@@ -7,8 +7,6 @@ $(document).ready(function() {
         // 알림 메시지 표시
         document.getElementById("notificationMessage").style.display = "block";
 
-
-
         setTimeout(function() {
             document.getElementById("notificationMessage").style.display = "none";
         }, 3000);
@@ -30,6 +28,7 @@ $(document).ready(function() {
         success: function(response) {
             if (response.length === 0) {
                 addMessage("알림이 존재하지 않습니다");
+
             }
             response.forEach(function(notification) {
 
@@ -38,6 +37,8 @@ $(document).ready(function() {
                 addMessage(message);
 
             });
+
+            messageCount(response.length);
         },
         error: function(xhr, status, error) {
             // 에러 처리
@@ -67,6 +68,16 @@ $(document).ready(function() {
         newMessage.innerHTML = message;
         messageContainer.appendChild(newMessage);
         scrollToBottom();
+
+
+    }
+
+    // 메시지 개수
+    function messageCount(messageCount) {
+
+        var messageContainer = document.getElementById('messageContainer');
+        var messageCountSpan = document.getElementById('messageCount');
+        messageCountSpan.textContent = messageCount;
     }
 
     // 알림창안 X를 클릭했을 때
@@ -106,11 +117,11 @@ $(document).ready(function() {
                 }
                 // 새로운 알림 추가
                 response.forEach(function(notification) {
-
-
                     var message = "<div class='row'><div class='col-md-2'></div><div class='col-md-8'>" + notification.notiRegDate + "</div><div class='col-md-2'><img src='/images/icon/xIcon.png' id='" + notification.notiId + "' style='width:15px; height:15px;' class='xIcon'></div></div>" + notification.content + "<br> <a href='/board/" + notification.boardId + "'><img src='/images/icon/rightDirectionIcon.png' style='width:20px; height:20px;'> 해당 글로 가기</a> <hr>";
                     addMessage(message);
                 });
+
+                messageCount(response.length);
             },
             error: function(xhr, status, error) {
                 // 에러 처리
