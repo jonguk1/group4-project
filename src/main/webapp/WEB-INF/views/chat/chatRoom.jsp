@@ -328,11 +328,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-md-3">
-                                        <button type="button" class="btn btn-success">
-                                            리뷰등록
-                                        </button>
-                                    </div>
+
 
                                     <div id="myModal" class="modal">
                                         <div class="modal-dialog" role="document">
@@ -542,6 +538,9 @@
                     data: selectedOption,
                     success: function(response) {
                         console.log(response);
+                        if (selectedOption === '대여완료') {
+                            reviewButton.style.display = 'block';
+                        }
                     },
                     error: function(xhr, status, error) {
                         console.log(error);
