@@ -439,7 +439,7 @@
                                                                     <h5 class="modal-title">약속하기</h5>
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="noReserv">
                                                               <span aria-hidden="true"></span>
                                                             </button>
                                                       </div>
@@ -463,16 +463,16 @@
                                                         <!-- 유저 정보에서 가져온 위도 경도 -->
                                           <c:choose>
                                             <c:when test="${reservList.latitude != 0}">
-                                                <input type="hidden" name="latitude" id="latitude" value="${reservList.latitude}">
-                                                <input type="hidden" name="longitude" id="longitude" value="${reservList.longitude}">
-                                                <input type="hidden" name="reservationDateTime" id="reservationDateTime" value="${reservList.selectedDateTime}">
-                                                <input type="hidden" name="userId" id="userId" value="${userId}">
+                                                <input type="text" name="latitude" id="latitude" value="${reservList.latitude}">
+                                                <input type="text" name="longitude" id="longitude" value="${reservList.longitude}">
+                                                <input type="text" name="reservationDateTime" id="reservationDateTime" value="${reservList.selectedDateTime}">
+                                                <input type="text" name="userId" id="userId" value="${userId}">
                                             </c:when>
                                             <c:otherwise>
-                                                <input type="hidden" name="latitude" id="latitude" value="${latiAndLong.latitude}">
-                                                <input type="hidden" name="longitude" id="longitude" value="${latiAndLong.longitude}">
-                                                <input type="hidden" name="reservationDateTime" id="reservationDateTime" value="">
-                                                <input type="hidden" name="userId" id="userId" value="${userId}">
+                                                <input type="text" name="latitude" id="latitude" value="${latiAndLong.latitude}">
+                                                <input type="text" name="longitude" id="longitude" value="${latiAndLong.longitude}">
+                                                <input type="text" name="reservationDateTime" id="reservationDateTime" value="">
+                                                <input type="text" name="userId" id="userId" value="${userId}">
                                             </c:otherwise>
                                           </c:choose>
                                     </div>
@@ -499,10 +499,10 @@
                                                 </div>
                                           </div>
                                                         <!-- 메세지에서 가져온 위도 경도 -->
-                                          <input type="hidden" name="reservLatitude" id="reservLatitude">
-                                          <input type="hidden" name="reservLongitude" id="reservLongitude">
-                                          <input type="hidden" name="userId" id="userId" value="${userId}">
-                                          <input type="hidden" name="messageId" id="messageId">
+                                          <input type="text" name="reservLatitude" id="reservLatitude">
+                                          <input type="text" name="reservLongitude" id="reservLongitude">
+                                          <input type="text" name="userId" id="userId" value="${userId}">
+                                          <input type="text" name="messageId" id="messageId">
 
                                     </div>
                                 <!-- ---약속정보 클릭시 약속 된 장소 지도랑 시간 달력 출력 모달 나타나기--- -->
@@ -1094,16 +1094,25 @@
                // console.log("뭘까요??",reservLatitude);
                // console.log("뭘까요??",reservLongitude);
                 if($("#latitude").val() != ${latiAndLong.latitude} && $("#longitude").val() != ${latiAndLong.longitude}){
-                    alert("약속이 이미 정해졌습니다. 약속정보를 확인해주세요");
+                    alert("약속이 이미 정해졌습니다. 약속정보를 확인해주세요" );
                 }else{
                     $("#reservModal").modal("show");
                 }
+
             });// 버튼 클릭 시 모달 창 열기 END=================
+                $("#noReserv").click(function(e){
+                    //alert("된다!")
+                    if(${reservList.latitude} == 0 && ${reservList.longitude} == 0){
+                        //alert("aaaa")
+                        $("#latitude").val("${latiAndLong.latitude}")
+                        $("#latitude").val("${latiAndLong.latitude}")
+                    }
+                })
 
             // 약속 정하기 클릭 시 모달 창 닫기
             // 버튼의 온클릭 이벤트 핸들러 설정
             $("#completeReserv").click(function() {
-                alert("약속이 정해졌습니다.")
+
                 let reservLat = $("#latitude").val();
                 let reservLong = $("#longitude").val();
                 let selectedDateTimeString = $("#reservationDate").val();
@@ -1133,12 +1142,13 @@
                             content: "약속이 정해졌습니다",
                             sendTime: getCurrentTime()
                         });
-
+                        alert("약속이 정해졌습니다.")
                         // 모달 창 닫기
                         $("#reservModal").modal('hide');
                         location.reload();
                     },
                     error: function(xhr, status, error) {
+                        alert("예약 날짜와 시간을 설정해주세요.");
                         console.error("Ajax 요청 에러:", error);
                     }
                 });
@@ -1146,7 +1156,7 @@
 
             //약속 다시 정하기 버튼 눌렀을때 이벤트
             $("#completeChange").click(function(){
-                alert("약속을 다시 정했어요")
+
                 let reservLat = $("#latitude").val();
                 let reservLong = $("#longitude").val();
                 let selectedDateTimeString = $("#reservationDate").val();
@@ -1172,7 +1182,6 @@
                     },
                     success: function(response) {
                         console.log("요청 성공:", response);
-
                         // 예약이 성공적으로 완료되면 채팅창에 메시지를 출력
                          //function sendMessage(from,to, content, chatId, sendTime)
                        // sendMessage(from,to,"약속을 다시 정했어요",chatId, getCurrentTime());
@@ -1181,12 +1190,14 @@
                             content: "약속을 다시 정했어요",
                             sendTime: getCurrentTime()
                         });
+                        alert("약속을 다시 정했어요")
 
                         // 모달 창 닫기
                         $("#reservModal").modal('hide');
                         location.reload();
                     },
                     error: function(xhr, status, error) {
+                        alert("예약 날짜와 시간을 설정해주세요.");
                         console.error("Ajax 요청 에러:", error);
                     }
                 });
