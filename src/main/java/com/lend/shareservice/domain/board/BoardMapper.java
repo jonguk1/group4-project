@@ -51,4 +51,10 @@ public interface BoardMapper {
     String selectCategoryNameById(Integer itemCategoryId);
 
     int updateIsLend(Board board);
+
+    void deletePostsAfterReturnDate();
+
+    void disableForeignKeyChecks();
+
+    void enableForeignKeyChecks();
 }

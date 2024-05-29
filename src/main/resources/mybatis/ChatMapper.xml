@@ -91,4 +91,10 @@
         </where>
         and latitude is not null
     </select>
+
+    <select id="countChatByBoardId" parameterType="_int">
+        SELECT COUNT(*)
+        FROM Chatroom
+        WHERE boardId = #{boardId}
+    </select>
 </mapper>

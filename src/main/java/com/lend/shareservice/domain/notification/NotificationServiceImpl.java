@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,6 @@ public class NotificationServiceImpl implements NotificationService{
 
     public SseEmitter subscribe(String userId) {
         SseEmitter emitter = createEmitter(userId);
-
         sendToClient(userId, "first message");
         return emitter;
     }
@@ -47,7 +47,6 @@ public class NotificationServiceImpl implements NotificationService{
 
     public void sendToClient(String id, Object data) {
         SseEmitter emitter = emitterRepository.get(id);
-        log.info("emitter = {}", emitter);
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().id(String.valueOf(id)).name("auction").data(data));
@@ -61,10 +60,12 @@ public class NotificationServiceImpl implements NotificationService{
     public List<NotificationDTO> findNotificationByUserId(String userId) {
 
         List<Notification> findNotifications = notificationMapper.selectNotificationsByUserId(userId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         List<NotificationDTO> findNotificationDTOS = new ArrayList<>();
         for (Notification findNotification : findNotifications) {
-            findNotificationDTOS.add(new NotificationDTO(findNotification.getNotiId(), findNotification.getUserId(), findNotification.getContent(), findNotification.getNotiRegDate(), findNotification.getBoardId()));
+
+            findNotificationDTOS.add(new NotificationDTO(findNotification.getNotiId(), findNotification.getUserId(), findNotification.getContent(), findNotification.getNotiRegDate().format(formatter), findNotification.getBoardId()));
         }
 
         return findNotificationDTOS;

@@ -47,4 +47,6 @@ public interface BoardService {
     int editPost(PostEditDTO postEditDTO);
 
     int updateLendState(Integer boardId, String lendState);
+
+    void deletePosts();
 }

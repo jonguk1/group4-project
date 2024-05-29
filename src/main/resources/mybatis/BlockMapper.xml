@@ -24,4 +24,9 @@
         </where>
     </delete>
 
+    <select id="selectAllBlokedIds" parameterType="string">
+        SELECT blockedUserId
+        FROM BLOCK
+        WHERE blockUserId = #{userId}
+    </select>
 </mapper>

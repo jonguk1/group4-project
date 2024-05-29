@@ -45,15 +45,17 @@ public class ReviewController {
 
         page.init();
 
-        List<ReviewDTO> receiveds = reviewService.findByReceivedList(page, userId);
 
-        String loc = "/review/" + userId + "/received";
+        List<ReviewDTO> receiveds=reviewService.findByReceivedList(page,userId);
 
-        String pageNavi = page.getPageNavi(loc);
+        String loc ="/review/"+userId+"/received";
 
-        model.addAttribute("receiveds", receiveds);
-        model.addAttribute("page", page);
-        model.addAttribute("pageNavi", pageNavi);
+        String pageNavi=page.getPageNavi(loc);
+
+        model.addAttribute("receiveds",receiveds);
+        model.addAttribute("page",page);
+        model.addAttribute("pageNavi",pageNavi);
+
 
         return "jspp/myReceivedReview";
     }

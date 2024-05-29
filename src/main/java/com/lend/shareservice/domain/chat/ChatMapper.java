@@ -27,9 +27,15 @@ public interface ChatMapper {
 
     ReservLatiLongDTO reservLoadList(Integer chatId);
 
+
+    void updateReserv(Message message);
+
+    int countChatByBoardId(Integer boardId);
+
     void updateReserv(ChatReservUpdateDTO chatReservUpdateDTO);
 
     void saveReserv(ChatReservDTO chatReservDTO);
 
     Message loadReserv(Integer chatId);
+
 }

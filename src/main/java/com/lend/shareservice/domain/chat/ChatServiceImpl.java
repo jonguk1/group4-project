@@ -145,7 +145,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ReservLatiLongDTO reservLoadList(Integer chatId) {
         ReservLatiLongDTO reservLoadList = chatMapper.reservLoadList(chatId);
-        log.info("이거 되나요 제발 진심 : " + reservLoadList.toString());
+
         return reservLoadList;
     }
 

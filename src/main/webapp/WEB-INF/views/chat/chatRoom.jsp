@@ -137,10 +137,11 @@
                                     <ul class="navbar-nav">
                                         <li class="nav-item">
                                             <c:if test="${loggedIn}">
-                                                <a class="nav-link" href="#" id="notificationIcon">
-                                                    <img src="/images/icon/notificationIcon.png"  style="width:30px; height:30px;">
-                                                    <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
-                                                </a>
+                                                <a class="nav-link" href="#" id="notificationIcon" style="position: relative;">
+                                                     <img src="/images/icon/notificationIcon.png" style="width:30px; height:30px;">
+                                                     <span id="notificationMessage" class="notification-message" >여기에 알림 메시지를 입력하세요.</span>
+                                                     <span id="messageCount" class="badge badge-danger" style="color: white; background-color: red; position: absolute; top: -0px; left: -10px; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 10px; font-size: 12px;"></span>
+                                                 </a>
                                             </c:if>
                                         </li>
 
@@ -205,7 +206,7 @@
                 </nav>
             </div>
 
-
+<br><br>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2">
@@ -380,6 +381,11 @@
                                         </div>
                                     </div>
 
+
+                                    <div class="col-md-3">
+                                        <button type="button" id="reviewButton" class="btn btn-success" style="display: none;">리뷰등록</button>
+                                    </div>
+
                                 </div>
 
                             </div>
@@ -522,36 +528,26 @@
 
             let lendState = '${chatItem.lendState}';
             let boardId = '${chatItem.boardId}';
+            let userId = '${userId}';
             const selectBox = document.getElementById('isLend');
 
             selectBox.addEventListener('change', function(event) {
                 let selectedOption = event.target.value;
 
+                // 대여 상태 변경
                 $.ajax({
                     url: '/board/' + boardId + '/isLend',
                     method: 'PUT',
                     contentType: 'text/plain',
                     data: selectedOption,
                     success: function(response) {
-
+                        console.log(response);
                     },
                     error: function(xhr, status, error) {
-
+                        console.log(error);
                     }
                 });
             });
-
-            if (lendState === '대여전') {
-                selectBox.value = '대여전';
-            } else if (lendState == '대여중') {
-                selectBox.value = '대여중';
-            } else if (lendState == '대여 완료') {
-                selectBox.value = '대여완료';
-                selectBox.setAttribute('disabled', 'disabled');
-            }
-
-            const modal = document.getElementById('myModal');
-            let selectedStars = 0;
 
             if ('${userId}' === '${chatItem.writer}') {
                 reviewee = '${chatRoomDTO.lendy}';
@@ -559,12 +555,62 @@
                 reviewee = '${chatItem.writer}';
             }
 
+            if (lendState === '대여전') {
+                selectBox.value = '대여전';
+            } else if (lendState == '대여중') {
+                selectBox.value = '대여중';
+            } else if (lendState == '대여 완료') {
+                // 리뷰 등록을 하지 않은 상태면
+                $.ajax({
+                    url: '/user/' + userId + '/review',
+                    method: 'GET',
+                    contentType: 'text/plain',
+                    success: function(response) {
+                        if ($.isEmptyObject(response)) {
+                            reviewModal();
+                            var reviewButton = document.getElementById('reviewButton');
+                            reviewButton.style.display = 'block';
+                        } else {
+                             if (hasValueInArray(response, reviewee)) {
+                                 reviewButton.style.display = 'none';
+                             } else {
+                                 reviewModal();
+                                 reviewButton.style.display = 'block';
+                             }
+                        }
+                    },
+                    error: function(xhr, status, error) {
+
+                    }
+                });
+                selectBox.value = '대여완료';
+                selectBox.setAttribute('disabled', 'disabled');
+            }
+
+            function hasValueInArray(array, value) {
+                for (var i = 0; i < array.length; i++) {
+                    var obj = array[i];
+                    for (var key in obj) {
+                        if (obj[key] === value) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            document.getElementById("reviewButton").addEventListener("click", function() {
+                reviewModal();
+            });
+
+            const modal = document.getElementById('myModal');
+            let selectedStars = 0;
+
             selectBox.addEventListener('change', function () {
                 const selectedValue = selectBox.value;
 
                 if (selectedValue === '대여완료') {
                     reviewModal();
-
                 }
             });
 
@@ -657,7 +703,6 @@
             });
 
             function reviewModal() {
-
                 var textarea = document.getElementById('content');
                 textarea.value = '';
                 $('#myModal').modal('show');
@@ -683,34 +728,30 @@
                             }
                         }
                         selectedStars = 5 - index;
-
-                        // 리뷰 등록
-
                     });
-
                 });
             }
 
-         chat_connect();
-            $.ajax({
-                       url: "/board/board-category",
-                       type: "GET",
-                       dataType: "json",
-                       success: function(response) {
-                           console.log(response);
+        chat_connect();
+        $.ajax({
+               url: "/board/board-category",
+               type: "GET",
+               dataType: "json",
+               success: function(response) {
+                   console.log(response);
 
-                           $.each(response, function(index, value) {
-                               $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                               $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
-                               $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
-                           });
-
-
-                       },
-                       error: function(xhr, status, error) {
-                           console.error("요청 실패:", status, error);
-                       }
+                   $.each(response, function(index, value) {
+                       $("#lendServe").append("<a class='dropdown-item' href='/board?boardCategoryId=1&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                       $("#lendServed").append("<a class='dropdown-item' href='/board?boardCategoryId=2&itemCategoryId=" + value.itemCategoryId + "'>" + value.itemCategoryName + "</a>");
+                       $("#itemCategoryId").append("<option value='" + value.itemCategoryId + "'>" + value.itemCategoryName + "</option>");
                    });
+
+
+               },
+               error: function(xhr, status, error) {
+                   console.error("요청 실패:", status, error);
+               }
+           });
         });
     </script>
     <!------------------------------- script ----------------------------------->
