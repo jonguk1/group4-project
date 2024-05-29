@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -135,6 +135,7 @@
                             </div>
 				        </div>
 				        <div class="col-md-6">
+
 				        </div>
 				        <div class="col-md-2">
 				            <c:if test="${loggedIn}">
@@ -156,20 +157,23 @@
                <div class="col-md-2">
                </div>
                <div class="col-md-8">
-                   <ul class="nav nav-pills">
-                       <li class="nav-item dropdown">
-                           <a class="nav-link dropdown-toggle" id="top" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">정렬</a>
-                           <div class="dropdown-menu" style="">
-                               <a class="dropdown-item" href="/board/hits" id="recent-link">최신순</a>
-                               <a class="dropdown-item" href="/board/hits" id="hits-link">조회순</a>
-                               <a class="dropdown-item" href="/board/interest" id="interest-link">관심순</a>
-                               <c:if test="${loggedIn}">
-                                <a class="dropdown-item" href="/board/distance" id="distance-link">거리순</a>
-                               </c:if>
-                               <a class="dropdown-item" href="/board/price" id="low-price-link">가격 낮은순</a>
-                           </div>
-                       </li>
-                    </ul>
+                   <div class="row">
+
+                       <ul class="nav nav-pills">
+                           <li class="nav-item dropdown">
+                               <a class="nav-link dropdown-toggle" id="top" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">정렬</a>
+                                   <div class="dropdown-menu" style="">
+                                       <a class="dropdown-item" href="/board/hits" id="recent-link">최신순</a>
+                                       <a class="dropdown-item" href="/board/hits" id="hits-link">조회순</a>
+                                       <a class="dropdown-item" href="/board/interest" id="interest-link">관심순</a>
+                                       <c:if test="${loggedIn}">
+                                        <a class="dropdown-item" href="/board/distance" id="distance-link">거리순</a>
+                                       </c:if>
+                                       <a class="dropdown-item" href="/board/price" id="low-price-link">가격 낮은순</a>
+                                   </div>
+                           </li>
+                        </ul>
+                    </div>
                </div>
                <div class="col-md-2">
                </div>
