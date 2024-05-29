@@ -6,7 +6,6 @@
         values(1,#{test})
     </insert>
     <select id="selectItem" resultType="com.lend.shareservice.entity.Board" parameterType="Integer">
-
         select boardId, title, writer, itemImage1, isLend from board
         <where>
             boardId = #{boardId}

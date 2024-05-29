@@ -41,4 +41,12 @@
         INSERT INTO REVIEW (reviewer, reviewee, content, star)
         VALUES (#{reviewer}, #{reviewee}, #{content}, #{star})
     </insert>
+
+    <select id="averageStar" parameterType="String" resultType="_double">
+        select avg(star)
+        from review
+        <where>
+            reviewee=#{value}
+        </where>
+    </select>
 </mapper>

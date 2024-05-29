@@ -47,7 +47,6 @@ public class ReviewController {
 
         List<ReviewDTO> receiveds = reviewService.findByReceivedList(page, userId);
 
-
         String loc = "/review/" + userId + "/received";
 
         String pageNavi = page.getPageNavi(loc);
