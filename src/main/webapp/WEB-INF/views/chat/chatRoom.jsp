@@ -1391,7 +1391,7 @@
                 url: '/report',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ writer: writer, boardId: boardId, title: title, content: content }),
+                data: JSON.stringify({ user: user, boardId: boardId, title: title, content: content }),
                 success: function(response) {
                     if (response === 'ok') {
                         alert('신고글 등록 완료');

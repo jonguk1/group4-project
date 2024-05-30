@@ -147,7 +147,6 @@
                                          </li>
                                         <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
                                              <c:out value="${chat.content}"/>
-                                             <span class="badge bg-primary rounded-pill">2</span>
                                         </li>
                                     </a>
                                 </c:forEach>
