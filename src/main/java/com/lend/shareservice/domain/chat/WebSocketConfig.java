@@ -17,7 +17,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     {
         // 브라우저: ws: //localhost:8081/chat → socketjs에서 접속할 때 사용(sockjs 연결 주소)
         registry.addEndpoint("/chatCon")// 연결될 엔드 포인트
-                .setAllowedOrigins("http://localhost:8081")
+                .setAllowedOrigins("http://somethinglend.n-e.kr:8081/")
                 .withSockJS(); // SocketJS를 연결한다는 설정
     }
 

@@ -12,7 +12,7 @@ $(document).ready(function() {
         }, 3000);
     }
 
-    const eventSource = new EventSource('http://localhost:8081/subscribe');
+    const eventSource = new EventSource('/subscribe');
     eventSource.addEventListener('auction', event => {
         if (event.data === "first message") {
             return;

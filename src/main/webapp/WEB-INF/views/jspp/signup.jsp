@@ -75,14 +75,6 @@
                              </div>
                          </li>
 
-                         <li class="nav-item dropdown text-center">
-                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black;">경매</a>
-                             <div class="dropdown-menu">
-                                 <a class="dropdown-item" href="#">경매 현황</a>
-                                 <a class="dropdown-item" href="#">마감 임박</a>
-
-                             </div>
-                         </li>
                      </ul>
                  </nav>
              </div>

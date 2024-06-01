@@ -334,7 +334,7 @@
                                         <div class="card-body">
                                             <p class="card-text">
                                             <a href="/board/${auction.boards[0].boardId}">
-                                                <img src="/postimage/${auction.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 100px;">
+                                                <img src="/upload/${auction.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 100px;">
                                             </a>
                                             </p>
                                         </div>

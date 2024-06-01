@@ -151,7 +151,7 @@
                                         <div class="card-body">
                                             <p class="card-text">
                                             <a href="/board/${lendy.boardId}">
-                                                <img src="/postimage/${lendy.itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
+                                                <img src="/upload/${lendy.itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
                                             </a>
                                             </p>
                                         </div>
@@ -223,7 +223,7 @@
                                 <div class="card-body">
                                     <p class="card-text">
                                     <a href="/board/${lendy.boardId}">
-                                        <img src="/postimage/${lendy.itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
+                                        <img src="/upload/${lendy.itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
                                     </a>
                                     </p>
                                 </div>

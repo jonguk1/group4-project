@@ -45,6 +45,7 @@
             c.lender= #{userId}
             and isLend=2
         </where>
+        GROUP BY b.boardId
         order by b.boardId desc limit #{limit} offset #{offset}
     </select>
 
@@ -58,6 +59,7 @@
             c.lendy= #{userId}
             and isLend=2
         </where>
+        GROUP BY b.boardId
         order by b.boardId desc limit #{limit} offset #{offset}
     </select>
 

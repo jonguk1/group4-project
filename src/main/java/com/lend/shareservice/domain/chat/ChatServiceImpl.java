@@ -223,7 +223,7 @@ public class ChatServiceImpl implements ChatService {
         chatItemDTO.setWriter(board.getWriter());
         chatItemDTO.setTitle(board.getTitle());
         chatItemDTO.setLendState(board.IsLend(board.getIsLend()));
-        chatItemDTO.setImages("/postimage/" + board.getItemImage1());
+        chatItemDTO.setImages("/upload/" + board.getItemImage1());
 
         return chatItemDTO;
     }
