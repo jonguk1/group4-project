@@ -78,6 +78,11 @@
             width: 100%;
             height: 400px;
         }
+        /* 지도 크기 설정 */
+        #mapUpdate {
+            width: 100%;
+            height: 400px;
+        }
 
         /* 지도 크기 설정 */
         #reservMap {
@@ -430,14 +435,7 @@
                                           <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                       <div class="modal-header">
-                                                            <c:choose>
-                                                                <c:when test="${reservList.latitude != 0}">
-                                                                    <h5 class="modal-title">약속 다시 정하기</h5>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <h5 class="modal-title">약속하기</h5>
-                                                                </c:otherwise>
-                                                            </c:choose>
+                                                            <h5 class="modal-title">약속하기</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="noReserv">
                                                               <span aria-hidden="true"></span>
                                                             </button>
@@ -448,32 +446,45 @@
                                                           <input type="datetime-local" id="reservationDate" name="reservationDate">
                                                       </div>
                                                       <div class="modal-footer">
-                                                        <c:choose>
-                                                            <c:when test="${reservList.latitude != 0}">
-                                                                <button type="button" class="btn btn-primary" id="completeChange">약속 다시 정하기</button>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <button type="button" class="btn btn-primary" id="completeReserv">약속 정하기</button>
-                                                            </c:otherwise>
-                                                        </c:choose>
+                                                            <button type="button" class="btn btn-primary" id="completeReserv">약속 정하기</button>
                                                       </div>
                                                 </div>
                                           </div>
-                                                        <!-- 유저 정보에서 가져온 위도 경도 -->
-                                          <c:choose>
-                                            <c:when test="${reservList.latitude != 0}">
-                                                <input type="hidden" name="latitude" id="latitude" value="${reservList.latitude}">
-                                                <input type="hidden" name="longitude" id="longitude" value="${reservList.longitude}">
-                                                <input type="hidden" name="reservationDateTime" id="reservationDateTime" value="${reservList.selectedDateTime}">
-                                                <input type="hidden" name="userId" id="userId" value="${userId}">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <input type="hidden" name="latitude" id="latitude" value="${latiAndLong.latitude}">
-                                                <input type="hidden" name="longitude" id="longitude" value="${latiAndLong.longitude}">
-                                                <input type="hidden" name="reservationDateTime" id="reservationDateTime" value="">
-                                                <input type="hidden" name="userId" id="userId" value="${userId}">
-                                            </c:otherwise>
-                                          </c:choose>
+                                                    <!-- 유저 정보에서 가져온 위도 경도 -->
+
+                                            <input type="hidden" name="latitude" id="latitude" value="${latiAndLong.latitude}">
+                                            <input type="hidden" name="longitude" id="longitude" value="${latiAndLong.longitude}">
+                                            <input type="hidden" name="reservationDateTime" id="reservationDateTime" value="">
+                                            <input type="hidden" name="userId" id="userId" value="${userId}">
+
+                                    </div>
+                                <!-- ---약속하기 클릭시 지도랑 달력 출력 모달 나타나기--- -->
+
+                                <!-- ---약속 수정하기 클릭시 지도랑 달력 출력 모달 나타나기--- -->
+                                    <div class="modal" id="reservUpdateModal">
+                                          <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                      <div class="modal-header">
+                                                                <h5 class="modal-title">약속 다시 정하기</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="noUpdateReserv">
+                                                              <span aria-hidden="true"></span>
+                                                            </button>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                          <div id="mapUpdate"></div>
+                                                          <label for="reservationDate">예약 날짜와 시간:</label>
+                                                          <input type="datetime-local" id="reservationUpdateDate" name="reservationUpdateDate">
+                                                      </div>
+                                                      <div class="modal-footer">
+                                                            <button type="button" class="btn btn-primary" id="completeChange">약속 다시 정하기</button>
+                                                      </div>
+                                                </div>
+                                          </div>
+
+                                            <input type="hidden" name="updateLatitude" id="updateLatitude" value="${reservList.latitude}">
+                                            <input type="hidden" name="updateLongitude" id="updateLongitude" value="${reservList.longitude}">
+                                            <input type="hidden" name="reservationUpdateDateTime" id="reservationUpdateDateTime" value="${reservList.selectedDateTime}">
+                                            <input type="hidden" name="updateMessageId" id="updateMessageId" value="${reservList.messageId}">
                                     </div>
                                 <!-- ---약속하기 클릭시 지도랑 달력 출력 모달 나타나기--- -->
 
@@ -500,7 +511,6 @@
                                                         <!-- 메세지에서 가져온 위도 경도 -->
                                           <input type="hidden" name="reservLatitude" id="reservLatitude">
                                           <input type="hidden" name="reservLongitude" id="reservLongitude">
-                                          <input type="hidden" name="userId" id="userId" value="${userId}">
                                           <input type="hidden" name="messageId" id="messageId">
 
                                     </div>
@@ -897,6 +907,10 @@
                     `;
                     //console.log("***********self");
                     addMessage('self', str, obj.sendTime);
+
+                    if (obj.content == "약속이 정해졌습니다" || obj.content == "약속을 다시 정했어요") {
+                        $("#modal_btn_reserv").addClass("disabled");
+                    }
                 } else { // 다른 사람이 보낸 메시지라면
                     let str = `
                         <label class="text-primary-emphasis medium-font">\${obj.from}</label>
@@ -908,7 +922,7 @@
                       //console.log("############other");
                     addMessage('other', str, obj.sendTime);
 
-                    if (obj.content == "약속이 정해졌습니다") {
+                    if (obj.content == "약속이 정해졌습니다" || obj.content == "약속을 다시 정했어요") {
                         $("#modal_btn_reserv").addClass("disabled");
                     }
 
@@ -993,13 +1007,7 @@
 
                   reservLatitude = $("#reservLatitude").val(),
                   reservLongitude = $("#reservLongitude").val()
-
                 }
-
-                //else {
-                //   reservLatitude = $("#reservLatitude").val(),
-               //    reservLongitude = $("#reservLongitude").val()
-                //}
 
 
                 // 네이버 지도 초기화
@@ -1096,13 +1104,13 @@
             $("#modal_btn_reserv").click(function(e){
                 e.stopPropagation();
 
-               // console.log("뭘까요??",reservLatitude);
-               // console.log("뭘까요??",reservLongitude);
-                if($("#latitude").val() != ${latiAndLong.latitude} && $("#longitude").val() != ${latiAndLong.longitude}){
-                    alert("약속이 이미 정해졌습니다. 약속정보를 확인해주세요" );
-                }else{
+               // console.log("뭘까요??",$("#latitude").val(),"===",${latiAndLong.latitude});
+               // console.log("뭘까요??",$("#longitude").val(),"===",${latiAndLong.longitude});
+               // if($("#updateLatitude").val() != ${latiAndLong.latitude} && $("#updateLongitude").val() != ${latiAndLong.longitude}){
+                 //   alert("약속이 이미 정해졌습니다. 약속정보를 확인해주세요" );
+                //}else{
                     $("#reservModal").modal("show");
-                }
+                //}
 
             });// 버튼 클릭 시 모달 창 열기 END=================
                 $("#noReserv").click(function(e){
@@ -1110,7 +1118,7 @@
                     if(${reservList.latitude} == 0 && ${reservList.longitude} == 0){
                         //alert("aaaa")
                         $("#latitude").val("${latiAndLong.latitude}")
-                        $("#latitude").val("${latiAndLong.latitude}")
+                        $("#longitude").val("${latiAndLong.longitude}")
                     }
                 })
 
@@ -1147,6 +1155,7 @@
                             content: "약속이 정해졌습니다",
                             sendTime: getCurrentTime()
                         });
+
                         alert("약속이 정해졌습니다.")
                         // 모달 창 닫기
                         $("#reservModal").modal('hide');
@@ -1159,17 +1168,121 @@
                 });
             });
 
+            //====약속 수정하기 모달====================
+            $('#reservUpdateModal').on('shown.bs.modal', function (){
+                // 모달 body의 크기를 가져옴
+                var modalBody = $(this).find('.modal-body');
+                var width = modalBody.width();
+
+                // 지도의 크기를 동적으로 설정
+                $('#mapUpdate').css({
+                    width: width
+                });
+
+                // 네이버 지도 초기화
+                var mapOptions = {
+                    center: new naver.maps.LatLng($('#updateLatitude').val(), $('#updateLongitude').val()),
+                    zoom: 17,
+                    zoomControl: true,
+                    zoomControlOptions: {
+                        position: naver.maps.Position.TOP_RIGHT
+                    },
+                    mapDataControl: false
+                };
+
+                // 네이버 지도 객체 생성
+                map = new naver.maps.Map('mapUpdate', mapOptions);
+
+                var marker = null; // 스탬프 마커
+                var marker2 = null;
+
+                marker2 = new naver.maps.Marker({
+                    position: new naver.maps.LatLng($('#updateLatitude').val(), $('#updateLongitude').val()),
+                    map: map
+                });
+
+                // 정보 창 생성
+                var infowindow2 = new naver.maps.InfoWindow({
+                    content: '<div style="padding:10px;">현재 위치</div>',
+                    backgroundColor: '#fff',
+                    borderColor: '#000',
+                    anchorSize: new naver.maps.Size(0, 0),
+                    anchorSkew: true
+                });
+                // 정보 창을 지도에 열어둠
+                infowindow2.open(map, marker2);
+
+                // 클릭 이벤트 핸들러 추가
+                naver.maps.Event.addListener(map, 'click', function(e) {
+                    // 클릭한 위치의 좌표 가져오기
+                    var latlng = e.coord;
+
+                    // 이전에 찍은 스탬프 마커가 있으면 지우기
+                    if (marker !== null) {
+                        marker.setMap(null);
+                    }
+
+                    // 마커 생성
+                    marker = new naver.maps.Marker({
+                        position: latlng,
+                        map: map
+                    });
+
+                    // 클릭한 위치의 위도와 경도를 변수에 저장
+                    clickedLatitude = latlng.lat();
+                    clickedLongitude = latlng.lng();
+
+                    // 정보 창 생성
+                    var infowindow = new naver.maps.InfoWindow({
+                        content: '<div style="padding:10px;">거래 희망 위치</div>',
+                        backgroundColor: '#fff',
+                        borderColor: '#000',
+                        anchorSize: new naver.maps.Size(0, 0),
+                        anchorSkew: true
+                    });
+
+                    // 정보 창을 마커 위에 표시
+                    infowindow.open(map, marker);
+
+                    // 위도와 경도를 hidden 필드에 설정
+                    document.getElementById('updateLatitude').value = clickedLatitude;
+                    document.getElementById('updateLongitude').value = clickedLongitude;
+                });
+
+                // 마커를 클릭했을 때 정보 창 열기
+                naver.maps.Event.addListener(marker2, 'click', function() {
+                    infowindow2.open(map, marker2);
+                });
+
+                // 마커를 클릭했을 때 정보 창 열기
+                naver.maps.Event.addListener(marker, 'click', function() {
+                    infowindow.open(map, marker);
+                });
+
+                // 지도를 클릭했을 때 정보 창이 닫히지 않도록 설정
+                naver.maps.Event.addListener(map, 'click', function() {
+                    // 정보 창이 열려있을 때만 닫히도록 설정
+                    if (infowindow2.getMap()) {
+                        infowindow2.close();
+                    }
+                });
+
+            });
+            //====약속 수정하기 모달====================
+
+
             //약속 다시 정하기 버튼 눌렀을때 이벤트
             $("#completeChange").click(function(){
 
-                let reservLat = $("#latitude").val();
-                let reservLong = $("#longitude").val();
-                let selectedDateTimeString = $("#reservationDate").val();
+                let reservLat = $("#updateLatitude").val();
+                let reservLong = $("#updateLongitude").val();
+                let selectedDateTimeString = $("#reservationUpdateDate").val();
+                let messageId = $("#updateMessageId").val();
                 let selectedDateTime = new Date(selectedDateTimeString);
 
-                //console.log("다시 정한 약속 위도는 : "+reservLat)
-                //console.log("다시 정한 약속 경도는 : "+reservLong)
-                //console.log("다시 정한 약속 날짜는 : "+selectedDateTime)
+                console.log("다시 정한 약속 위도는 : "+reservLat)
+                console.log("다시 정한 약속 경도는 : "+reservLong)
+                console.log("다시 정한 약속 날짜는 : "+selectedDateTime)
 
                 $.ajax({
                     url: "/chat/{chatId}/appointed-place-date",
@@ -1258,16 +1371,23 @@
 
             // 버튼 클릭 시 모달 창 열기
             $("#modal_btn_infoReserv").click(function(){
-                if($("#reservLatitude").val() == 0 && $("#reservLongitude").val() == 0 && $("#reservationDate").val() == null){
-                    alert("약속을 정하지 않았어요. 약속을 정해주세요");
-                }else{
+                //alert("위도는"+$("#reservLatitude").val());
+                //alert("경도는"+$("#reservLongitude").val());
+                //alert("날짜는"+$("#reservationDate").val());
+
+                //if(!$("#reservLatitude").val() && !$("#reservLongitude").val()&& !$("#reservationDate").val()){
+                 //   alert("약속을 정하지 않았어요. 약속을 정해주세요");
+              //  }else{
                      $.ajax({
                         type : "get",
                         url : '/chat/' + chatId + '/appointed-place-date',
                         contentType:"application/json; charset=UTF-8",
                         dataType:"json",
-                        data:{chatId},
                         success : function(data){
+                           if(!data.latitude){
+                            alert("약속을 정하지 않았어요. 약속을 정해주세요");
+                            return;
+                           }
                              //console.log("성공성공", data);
                              //console.log("성공??", data.latitude);
 
@@ -1279,11 +1399,11 @@
                             $("#reservInfoModal").modal("show");
                         },
                         error:function(err){
-                            console("실패실패", err)
+                            console.error("실패실패", err)
                         }
 
                     })
-                }
+               // }
 
 
             });// 버튼 클릭 시 모달 창 열기 END=================
@@ -1292,7 +1412,31 @@
                 //console.log("이거 눌리는지 띄워봐");
                 // 모달 창 닫기
                 $("#reservInfoModal").modal('hide');
-                $("#reservModal").modal("show");
+                $.ajax({
+                    type : "get",
+                    url : '/chat/' + chatId + '/appointed-place-date',
+                    contentType:"application/json; charset=UTF-8",
+                    dataType:"json",
+                    success : function(data){
+                       if(!data.latitude){
+                        alert("약속을 정하지 않았어요. 약속을 정해주세요");
+                        return;
+                       }
+                         //console.log("성공성공", data);
+                         //console.log("성공??", data.latitude);
+
+                         $("#updateLatitude").val(data.latitude);
+                         $("#updateLongitude").val(data.longitude);
+                         $("#updateMessageId").val(data.messageId);
+                         $("#reservationUpdateDateTime").val(data.selectedDateTime);
+
+                        $("#reservUpdateModal").modal("show");
+                    },
+                    error:function(err){
+                        console.error("실패실패", err)
+                    }
+
+                })
             })
 
 

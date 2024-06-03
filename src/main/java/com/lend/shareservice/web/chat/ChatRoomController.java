@@ -164,7 +164,7 @@ public class ChatRoomController {
         return "/chat/chatList";
     }
 
-    //약속하기를 위한 채팅방 아이디와 날짜 갖고오기
+    //약속등록
     @ResponseBody
     @PostMapping("/chat/{chatId}/appointed-place-date")
     public String reservation(Double reservLat,
@@ -182,9 +182,14 @@ public class ChatRoomController {
 
     @GetMapping("/chat/{chatId}/appointed-place-date")
     @ResponseBody
-    public ReservLatiLongDTO reservLoadList(@PathVariable("chatId") Integer chatId) {
-        ReservLatiLongDTO reservLoadList = chatService.reservLoadList(chatId);
-        return reservLoadList;
+    public ResponseEntity<?> reservLoadList(@PathVariable("chatId") Integer chatId) {
+        ReservLatiLongDTO reservList = chatService.reservLoadList(chatId);
+        System.out.println("reservLoadList: " + reservList);
+        if (reservList != null) {
+            return ResponseEntity.ok().body(reservList);
+        } else {
+            return ResponseEntity.ok().body(new ReservLatiLongDTO(0, 0, 0, ""));
+        }
     }
 
     //약속 수정하기
