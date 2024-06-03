@@ -171,8 +171,10 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void deleteChatRoom(Integer chatId) {
-        chatMapper.deleteChatRoom(chatId);
+    public void deleteChatRoom(String writer) {
+        chatMapper.disableForeignKeyChecks();
+        chatMapper.deleteChatRoom(writer);
+        chatMapper.enableForeignKeyChecks();
     }
 
     //채팅 내역 갖고오기

@@ -36,5 +36,5 @@ public interface ChatService {
 
     Message loadReserv(Integer chatId);
 
-    void deleteChatRoom(Integer chatId);
+    void deleteChatRoom(String writer);
 }

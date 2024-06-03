@@ -24,7 +24,7 @@
                     type: 'DELETE',
                     success: function(result) {
                         if (result === 'ok') {
-                            alert('차단을 해제하셧습니다');
+                            alert('차단을 해제하셨습니다');
                             location.reload();
                         } else {
                             alert('차단해제를 실패하였습니다');
