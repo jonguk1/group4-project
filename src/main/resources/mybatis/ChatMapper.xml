@@ -106,9 +106,16 @@
     <delete id="deleteChatRoom" parameterType="com.lend.shareservice.entity.Chatroom">
         delete from chatRoom
         <where>
-            chatId = #{chatId}
+            lendy=#{writer} or lender=#{writer}
         </where>
     </delete>
+    <update id="disableForeignKeyChecks">
+        SET FOREIGN_KEY_CHECKS = 0
+    </update>
+
+    <update id="enableForeignKeyChecks">
+        SET FOREIGN_KEY_CHECKS = 1
+    </update>
     <select id="countChatByBoardId" parameterType="_int">
         SELECT COUNT(*)
         FROM Chatroom
