@@ -774,6 +774,10 @@
         //제일 처음 메세지를 보내는 사람
         let from = lendy;//메세지 보내는 사람 -> 구매자
         let to = lender;//메세지 받는 사람 -> 판매자
+        if("<c:out value='${userId}'/>" == "<c:out value='${chatItem.writer}'/>"){
+            from = "<c:out value='${userId}'/>";
+            to = "<c:out value='${chatRoomDTO.lendy}'/>";
+        }
 
         let sendTime = getCurrentTime();
         let socket = null;
@@ -1325,7 +1329,6 @@
               if("<c:out value='${userId}'/>" == writer){
                     writer = "<c:out value='${chatRoomDTO.lendy}'/>"
               }
-              let chatId = "<c:out value='${chatId}'/>";
 
               //alert(writer);
               $.ajax({
@@ -1337,21 +1340,19 @@
                     }),
                     success: function(response) {
                         console.log('Success:', response);
+                        console.log('차단할사람은:', writer,"${writer}");
                         $.ajax({
-                            url : '/chat/${chatId}',
+                            url : '/chat/'+writer,
                             type : 'Delete',
-                            data: (
-                                chatId
-                            ),
-                            success : function(data){
-                                alert("차단 되었습니다")
+                            success : function(response){
+                                if (response === "ok") {alert("차단 되었습니다")}
+                                window.location.href = "/chatList/"+"${userId}";
                             },error : function(err){
-                                console.log("ajax요청 실패 : " + err);
+                                console.error('Status:', status);
+                                console.log("ajax요청 실패 : " + JSON.stringify(err));
                             }
                         });
 
-                        location.reload();
-                        window.location.href = "/chatList/"+"${userId}";
                     },
                     error: function(xhr, status, error) {
 

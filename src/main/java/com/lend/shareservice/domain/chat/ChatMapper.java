@@ -35,6 +35,9 @@ public interface ChatMapper {
 
     Message loadReserv(Integer chatId);
 
-    void deleteChatRoom(Integer chatId);
+    void deleteChatRoom(String writer);
 
+    void disableForeignKeyChecks();
+
+    void enableForeignKeyChecks();
 }

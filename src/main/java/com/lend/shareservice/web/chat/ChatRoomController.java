@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -202,11 +204,13 @@ public class ChatRoomController {
         return "/chat/chatRoom";
     }
 
-    @ResponseBody
-    @DeleteMapping("/chat/{chatId}")
-    public String deleteChatRoom(@PathVariable("chatId") Integer chatId) {
-        chatService.deleteChatRoom(chatId);
-        return "/chat/chatRoom";
+    //차단 시 채팅방 삭제
+    @DeleteMapping("/chat/{writer}")
+    public ResponseEntity<String> deleteChatRoom(@PathVariable("writer") String writer) {
+        log.info("차단하기 : " + writer);
+        chatService.deleteChatRoom(writer);
+        // ResponseEntity.status(HttpStatus.);
+        return ResponseEntity.ok("ok");
     }
 
 

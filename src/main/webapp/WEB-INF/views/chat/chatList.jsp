@@ -126,30 +126,38 @@
     					</h3>
                          <div id="chatList">
                              <ul class="list-group">
-                                 <c:forEach var="chat" items="${chatList}">
-                                    <a href="/chat/${chat.chatId}" style="text-decoration-line: none;">
-                                        <input type="hidden" name="boardId" id="boardId" value="${chat.boardId}">
+                                <c:choose>
+                                    <c:when test="${not empty chatList}">
+                                        <c:forEach var="chat" items="${chatList}">
+                                            <a href="/chat/${chat.chatId}" style="text-decoration-line: none;">
+                                                <input type="hidden" name="boardId" id="boardId" value="${chat.boardId}">
 
-                                        <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
-                                              <c:choose>
-                                                <c:when test="${chat.from eq userId}">
-                                                    <c:out value="${chat.to}"/>님과의 채팅
-                                                </c:when>
-                                                <c:when test="${chat.to eq userId}">
-                                                    <c:out value="${chat.from}"/>님과의 채팅
-                                                </c:when>
-                                              </c:choose>
-                                             <span class="badge bg-primary rounded-pill"><fmt:formatDate pattern="yy-MM-dd HH:mm:ss" value="${chat.sendTime}"/></span>
-                                        </li>
-                                        <li class="list-group-item list-group-item-secondary d-flex justify-content-between align-items-center">
-                                            <c:out value="${chat.chatItemDTO.title}"/>
-                                            <img alt="이미지 없음" src="${chat.chatItemDTO.images}" id="detailImg" />
-                                         </li>
-                                        <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                                             <c:out value="${chat.content}"/>
-                                        </li>
-                                    </a>
-                                </c:forEach>
+                                                <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
+                                                      <c:choose>
+                                                        <c:when test="${chat.from eq userId}">
+                                                            <c:out value="${chat.to}"/>님과의 채팅
+                                                        </c:when>
+                                                        <c:when test="${chat.to eq userId}">
+                                                            <c:out value="${chat.from}"/>님과의 채팅
+                                                        </c:when>
+                                                      </c:choose>
+                                                     <span class="badge bg-primary rounded-pill"><fmt:formatDate pattern="yy-MM-dd HH:mm:ss" value="${chat.sendTime}"/></span>
+                                                </li>
+                                                <li class="list-group-item list-group-item-secondary d-flex justify-content-between align-items-center">
+                                                    <c:out value="${chat.chatItemDTO.title}"/>
+                                                    <img alt="이미지 없음" src="${chat.chatItemDTO.images}" id="detailImg" />
+                                                 </li>
+                                                <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
+                                                     <c:out value="${chat.content}"/>
+                                                </li>
+                                            </a>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <h5>채팅방이 없습니다.</h5>
+                                    </c:otherwise>
+                                </c:choose>
+
                              </ul>
                          </div>
                     </div>
