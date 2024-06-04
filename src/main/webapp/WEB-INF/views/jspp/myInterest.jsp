@@ -149,7 +149,7 @@
                                         <div class="card-body">
                                             <p class="card-text">
                                                 <a href="/board/${favorite.boards[0].boardId}">
-                                                  <img src="/postimage/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
+                                                  <img src="/upload/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
                                                 </a>
                                             </p>
                                         </div>
@@ -221,7 +221,7 @@
                                 <div class="card-body">
                                     <p class="card-text">
                                         <a href="/board/${favorite.boards[0].boardId}">
-                                            <img src="/postimage/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
+                                            <img src="/upload/${favorite.boards[0].itemImage1}" alt="대체_텍스트" style="width: 100%; height: 200px;">
                                         </a>
                                     </p>
                                 </div>

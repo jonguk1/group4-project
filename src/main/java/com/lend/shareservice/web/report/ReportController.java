@@ -48,7 +48,7 @@ public class ReportController {
 
         List<ReportDTO> reports= reportService.findByReportList(page);
 
-        String loc ="/report";
+        String loc ="/admin/report";
 
         String pageNavi=page.getPageNavi(loc);
 

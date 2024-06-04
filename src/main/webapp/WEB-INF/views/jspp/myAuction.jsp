@@ -334,7 +334,7 @@
                                         <div class="card-body">
                                             <p class="card-text">
                                             <a href="/board/${auction.boards[0].boardId}">
-                                                <img src="/postimage/${auction.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 100px;">
+                                                <img src="/upload/${auction.boards[0].itemImage1}" alt="대체_텍스트" style="width: 180px; height: 100px;">
                                             </a>
                                             </p>
                                         </div>
@@ -412,11 +412,13 @@
                                                     <input type="text" name="currentPrice" style="margin-top:10px" placeholder="가격을 올려주세요" autocomplete='off'/>
                                                     <button type="submit" class="btn btn-primary btn-sm" style="margin-top:10px">가격 올리기</button>
                                                 </form>
-                                                <form class="d-flex auction-cancel-form" method="post" action="/auction/${userId}/cancel">
-                                                    <input type="hidden" name="_method" value="put">
-                                                    <input type="hidden" name="auctionId" value="${auction.auctionId}">
-                                                    <button type="submit" class="btn btn-danger btn-sm">경매 취소</button>
-                                                </form>
+                                                <c:if test="${auction.boards[0].isAuction eq 1}">
+                                                    <form class="d-flex auction-cancel-form" method="post" action="/auction/${userId}/cancel">
+                                                        <input type="hidden" name="_method" value="put">
+                                                        <input type="hidden" name="auctionId" value="${auction.auctionId}">
+                                                        <button type="submit" class="btn btn-danger btn-sm">경매 취소</button>
+                                                    </form>
+                                                </c:if>
                                                 <input type="hidden" name="auctionId" value="${auction.auctionId}">
                                            </div>
                                         </div>

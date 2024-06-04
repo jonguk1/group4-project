@@ -30,7 +30,7 @@
 		<title>Eventually by HTML5 UP</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="/assets/css/main.css" />
 	</head>
 
 	<body class="is-preload">
@@ -58,7 +58,7 @@
 
 
 		<!-- Scripts -->
-			<script src="assets/js/main.js"></script>
+			<script src="/assets/js/main.js"></script>
 
             <!-- 부트스트랩 JS 및 종속성 -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
