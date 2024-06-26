@@ -1,5 +1,6 @@
 package com.lend.shareservice.entity;
 
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 import jakarta.validation.constraints.NotNull;
@@ -10,9 +11,14 @@ public class Participant_Auction {
 
     // 경매번호 (FK)
     @NotNull
-    private Integer auction_id;
+    private Integer auctionId;
 
     // 아이디 (FK)
     @NotNull
-    private String user_id;
+    private String userId;
+
+    // 현재 금액
+    @PositiveOrZero
+    @NotNull
+    private Integer currentPrice;
 }

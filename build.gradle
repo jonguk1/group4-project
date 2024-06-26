@@ -1,8 +1,8 @@
 plugins {
 	id 'java'
-	id 'war'
 	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id 'war'
 }
 
 group = 'com.lend'
@@ -11,6 +11,7 @@ version = '0.0.1-SNAPSHOT'
 java {
 	sourceCompatibility = '17'
 }
+
 
 configurations {
 	compileOnly {
@@ -23,24 +24,54 @@ repositories {
 }
 
 dependencies {
-	// implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-	// implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	//implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
-	compileOnly 'org.projectlombok:lombok'
-	// runtimeOnly 'com.mysql:mysql-connector-j'
-	//runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
-	annotationProcessor 'org.projectlombok:lombok'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 
+	//implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// 마이바티스
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+	// 롬복
+	compileOnly 'org.projectlombok:lombok'
+
+	implementation 'org.json:json:20210307'
+
+
+	// mysql
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	annotationProcessor 'org.projectlombok:lombok'
+	// providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+	implementation group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.7.6'
+
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.6'
 
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	implementation 'jakarta.servlet:jakarta.servlet-api'
 	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'
 	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	//웹소켓을 이용하기 위한 라이브러리
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	// jackson ObjectMapper를 사용하기 위한 라이브러리
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.2'
+
+	// sockjs
+	implementation 'org.webjars:sockjs-client:1.5.1'
+	// stomp
+	implementation 'org.webjars:stomp-websocket:2.3.4'
+	// gson
+	implementation 'com.google.code.gson:gson:2.9.0'
+
+	//Redis를 사용하기 위한 라이브러리들
+	//Redis를 사용할 수 있도록 지원하는 스프링 부트 스타터
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	//스프링 세션을 Redis에 저장하고 관리하기 위한 기능을 제공
+	implementation 'org.springframework.session:spring-session-data-redis'
+	//캐시를 사용하기 위한 스프링 부트 스타터
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
 
 }
 

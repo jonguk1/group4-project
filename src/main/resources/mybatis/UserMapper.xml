@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lend.shareservice.domain.user.UserMapper">
+
+    <select id="selectUserById" parameterType="string" resultType="com.lend.shareservice.entity.User">
+        SELECT * FROM USER
+        WHERE userId = #{userId};
+    </select>
+
+
+    <!--로그인-->
+    <select id="getUserAccount" resultType="com.lend.shareservice.domain.user.vo.UserVo">
+        SELECT * FROM user
+        WHERE userId= #{userId}
+    </select>
+
+
+    <resultMap id="MyLenderAndMyLendyMap" type="com.lend.shareservice.web.user.dto.MyLenderAndMyLendyDTO">
+    </resultMap>
+
+    <resultMap id="MyBoardDTOMap" type="com.lend.shareservice.web.user.dto.MyBoardDTO">
+    </resultMap>
+
+    <!--회원가입-->
+
+    <insert id="saveUser" parameterType="com.lend.shareservice.domain.user.vo.UserVo">
+        INSERT  IGNORE INTO user
+        (userId, name, phoneNumber, pw, address,latitude, longitude)
+        VALUES(#{userId},#{name},#{phoneNumber},#{pw},#{address},#{latitude}, #{longitude});
+    </insert>
+
+    <!-- 차단을 등록함 -->
+    <insert id="blockUser" parameterType="com.lend.shareservice.entity.Block"  useGeneratedKeys="true" keyProperty="blockId">
+        INSERT INTO BLOCK (blockedUserId, blockUserId)
+        VALUES (#{blockedUserId}, #{blockUserId})
+    </insert>
+
+    <select id="findByLender" parameterType="map" resultMap="MyLenderAndMyLendyMap">
+        select
+        writer,title,content,price,isAuction,isLend,interestCnt,hits,
+        itemName,itemImage1,regDate,returnDate,b.latitude,b.longitude,b.boardId
+        from chatroom c inner join board b
+        on c.boardId=b.boardId
+        <where>
+            c.lender= #{userId}
+            and isLend=2
+        </where>
+        GROUP BY b.boardId
+        order by b.boardId desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="findByLendy" parameterType="map" resultMap="MyLenderAndMyLendyMap">
+        select
+        writer,title,content,price,isAuction,isLend,interestCnt,hits,
+        itemName,itemImage1,regDate,returnDate,b.latitude,b.longitude,b.boardId
+        from chatroom c inner join board b
+        on c.boardId=b.boardId
+        <where>
+            c.lendy= #{userId}
+            and isLend=2
+        </where>
+        GROUP BY b.boardId
+        order by b.boardId desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getLenderCount" resultType="_int" parameterType="String">
+        select count(*) from chatroom
+        <where>
+            lender=#{values}
+        </where>
+    </select>
+
+    <select id="getLendyCount" resultType="_int" parameterType="String">
+        select count(*) from chatroom
+        <where>
+            lendy=#{values}
+        </where>
+    </select>
+
+    <select id="idCheck" resultType="_int" parameterType="string">
+        select count(userId) from user
+        <where>
+            userId=#{userId}
+        </where>
+    </select>
+
+    <select id="findByUserId" parameterType="String" resultType="com.lend.shareservice.domain.user.vo.UserVo">
+        select userId from user
+        <where>
+            userId=#{value}
+        </where>
+    </select>
+
+    <select id="findByUserDetail" parameterType="String" resultType="com.lend.shareservice.web.user.dto.MyDetailDTO">
+        select userId,name,pw,phoneNumber,point,money,latitude,longitude,regDate
+        from user
+        <where>
+            userId=#{value}
+        </where>
+    </select>
+
+    <update id="updateUser" parameterType="com.lend.shareservice.web.user.dto.UpdateUserDTO">
+        update user
+        set name=#{name},
+        pw=#{pw},
+        phoneNumber=#{phoneNumber},
+        latitude=#{latitude},
+        longitude=#{longitude}
+        <where>
+            userId=#{userId}
+        </where>
+    </update>
+
+    <update id="updateUserAddress" parameterType="com.lend.shareservice.web.user.dto.UpdateUserAddressDTO">
+        update user
+        set latitude=#{latitude},
+        longitude=#{longitude}
+        <where>
+            userId=#{userId}
+        </where>
+    </update>
+
+    <delete id="deleteUser" parameterType="String">
+        delete from user
+        <where>
+            userId=#{value}
+        </where>
+    </delete>
+
+    <update id="updateMoney" parameterType="com.lend.shareservice.entity.User">
+        update user
+        set
+            money=money+#{money}
+        <where>
+            userId=#{userId}
+        </where>
+    </update>
+
+    <select id="findByMyBoard" resultMap="MyBoardDTOMap" parameterType="map">
+        select
+        writer,title,content,price,isAuction,isLend,interestCnt,hits,
+        itemName,itemImage1,regDate,returnDate,latitude,longitude,boardId
+        from board
+        <where>
+            writer=#{userId}
+        </where>
+        order by boardId desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getMyBoardCount" parameterType="String" resultType="_int">
+        select count(*)
+        from board
+        <where>
+            writer=#{userId}
+        </where>
+    </select>
+
+    <select id="selectReviewsByUserId" parameterType="string" resultType="com.lend.shareservice.entity.Review">
+        SELECT * FROM REVIEW
+        WHERE reviewer = #{userId}
+    </select>
+</mapper>

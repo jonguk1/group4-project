@@ -10,10 +10,10 @@ public class Board_Category {
 
     // 글 카테고리 번호 (ID)
     @NotNull
-    private Integer board_category_id;
+    private Integer boardCategoryId;
 
     // 카테고리명
     @NotNull
-    private String category_name;
+    private String categoryName;
 
 }

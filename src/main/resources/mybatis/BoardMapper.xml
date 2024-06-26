@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lend.shareservice.domain.board.BoardMapper">
+
+    <!-- 글을 등록함 -->
+    <insert id="insertBoard" parameterType="com.lend.shareservice.entity.Board" useGeneratedKeys="true" keyProperty="boardId">
+        INSERT INTO Board (boardCategoryId, writer, title, content, regDate, price, deadline, isAuction, isLend, interestCnt, hits, lendDate, returnDate, itemName, itemImage1, itemImage2, itemImage3, itemCategoryId, latitude, longitude, isMegaphone, maxPrice)
+        VALUES (#{boardCategoryId}, #{writer}, #{title}, #{content}, NOW(), #{price}, #{deadline}, #{isAuction}, #{isLend}, #{interestCnt}, #{hits}, #{lendDate}, #{returnDate}, #{itemName}, #{itemImage1}, #{itemImage2}, #{itemImage3}, #{itemCategoryId}, #{latitude}, #{longitude}, #{isMegaphone}, #{maxPrice})
+    </insert>
+
+    <!-- 상품의 모든 카테고리 가져옴-->
+    <select id="selectAllItemCategory" resultType="com.lend.shareservice.web.board.dto.ItemCategoryDTO">
+        SELECT * FROM Item_Category;
+    </select>
+
+    <!-- 상품 카테고리와 보드 카테고리와 일치하는 글들을 가져옴-->
+    <select id="selectAllPostsByCategorys" parameterType="com.lend.shareservice.web.board.dto.ItemAndBoardCategoryDTO" resultType="com.lend.shareservice.entity.Board">
+        SELECT * FROM Board
+        WHERE itemCategoryId = #{itemCategoryId}
+        AND boardCategoryId = #{boardCategoryId}
+        ORDER BY isMegaphone DESC, regDate DESC;
+    </select>
+
+
+    <!-- 해당 ID 글 조회   -->
+    <select id="selectPostById" parameterType="Integer" resultType="com.lend.shareservice.entity.Board">
+        SELECT * FROM Board
+        WHERE boardId = #{value}
+    </select>
+
+    <!-- 상품명 검색어로 글들 조회   -->
+    <select id="selectPostsBySearchTerm" parameterType="String" resultType="com.lend.shareservice.entity.Board">
+        SELECT * FROM Board
+        WHERE itemName LIKE CONCAT('%', #{searchTerm}, '%')
+        ORDER BY isMegaphone DESC, regDate DESC;
+    </select>
+
+    <!-- 조회수 1증가   -->
+    <update id="incrementingViewCount" parameterType="Integer">
+        UPDATE Board
+        SET hits = hits + 1
+        WHERE boardId = #{boardId}
+    </update>
+
+    <!-- 인기순 글 조회   -->
+    <select id="selectAllPostsInOrderOfInterest" resultType="com.lend.shareservice.entity.Board">
+        SELECT * FROM Board
+        ORDER BY isMegaphone DESC, interestCnt DESC, regDate DESC;
+    </select>
+
+    <!-- 관심글 등록 -->
+    <insert id="insertFavorite" parameterType="com.lend.shareservice.entity.Favorite" useGeneratedKeys="true" keyProperty="favoriteId">
+        INSERT INTO FAVORITE (userId, boardId)
+        VALUES (#{userId}, #{boardId})
+    </insert>
+
+    <delete id="deleteFavorite" parameterType="com.lend.shareservice.entity.Favorite">
+        DELETE FROM FAVORITE
+        WHERE boardId = #{boardId} AND userId = #{userId}
+    </delete>
+
+    <update id="incrementInterest" parameterType="com.lend.shareservice.entity.Favorite">
+        UPDATE BOARD
+        SET interestCnt = interestCnt + 1
+        WHERE boardId = #{boardId}
+    </update>
+
+    <update id="decreaseInterest" parameterType="com.lend.shareservice.entity.Favorite">
+        UPDATE BOARD
+        SET interestCnt = interestCnt - 1
+        WHERE boardId = #{boardId}
+    </update>
+
+    <select id="getInterestCnt" parameterType="com.lend.shareservice.entity.Favorite" resultType="_int">
+        SELECT COUNT(*)
+        FROM FAVORITE
+        WHERE boardId = #{boardId}
+    </select>
+
+    <update id="updateIsAuction" parameterType="com.lend.shareservice.domain.board.dto.BoardAuctionStateDTO">
+        UPDATE BOARD
+        SET isAuction = #{state}
+        WHERE boardId = #{boardId}
+    </update>
+
+    <update id="updatePost" parameterType="com.lend.shareservice.web.board.dto.PostEditDTO">
+        UPDATE BOARD
+        SET boardCategoryId = #{boardCategoryId},
+        title = #{title},
+        itemName = #{itemName},
+        price = #{intTypePrice},
+        itemCategoryId = #{itemCategoryId},
+        itemImage1 = #{image1},
+        itemImage2 = #{image2},
+        itemImage3 = #{image3},
+        content = #{content},
+        latitude = #{latitude},
+        longitude = #{longitude},
+        returnDate = #{dateTypeReturnDate}
+        WHERE boardId = #{boardId}
+    </update>
+
+    <select id="selectImage1">
+        SELECT itemImage1
+        FROM BOARD
+        WHERE boardId = #{boardId}
+    </select>
+    <select id="selectImage2">
+        SELECT itemImage2
+        FROM BOARD
+        WHERE boardId = #{boardId}
+    </select>
+    <select id="selectImage3">
+        SELECT itemImage3
+        FROM BOARD
+        WHERE boardId = #{boardId}
+    </select>
+
+    <select id="selectLatAndLong" parameterType="_int" resultType="com.lend.shareservice.web.board.dto.LatiLongDTO">
+        SELECT latitude, longitude
+        FROM board
+        WHERE boardId = #{boardId}
+    </select>
+
+    <update id="expireMegaphone">
+        UPDATE board
+        SET isMegaphone = false
+        WHERE isMegaphone = true AND TIMESTAMPDIFF(WEEK, regDate, NOW()) >= 1;
+    </update>
+
+    <select id="selectCategoryNameById" resultType="string" parameterType="_int">
+        SELECT itemCategoryName
+        FROM Item_Category
+        WHERE itemCategoryId = #{itemCategoryId}
+    </select>
+
+
+    <update id="updateIsLend" parameterType="com.lend.shareservice.entity.Board">
+        UPDATE BOARD
+        SET isLend = #{isLend}
+        WHERE boardId = #{boardId}
+    </update>
+
+    <!-- 반납 날짜 1주일 경과 글들 삭제   -->
+    <delete id="deletePostsAfterReturnDate">
+        DELETE FROM BOARD
+        WHERE DATEDIFF(NOW(), returnDate) >= 7;
+    </delete>
+
+    <update id="disableForeignKeyChecks">
+        SET FOREIGN_KEY_CHECKS = 0
+    </update>
+
+    <update id="enableForeignKeyChecks">
+        SET FOREIGN_KEY_CHECKS = 1
+    </update>
+</mapper>

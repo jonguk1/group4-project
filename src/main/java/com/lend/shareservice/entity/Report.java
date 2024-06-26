@@ -13,15 +13,15 @@ public class Report {
 
     // 신고 번호 (ID)
     @NotNull
-    private Integer report_id;
+    private Integer reportId;
 
     // 글번호 (FK)
     @NotNull
-    private Integer writing_num;
+    private Integer boardId;
 
     // 작성자 (FK)
     @NotNull
-    private String user_id;
+    private String userId;
 
     // 제목
     @NotNull
@@ -35,5 +35,12 @@ public class Report {
 
     // 등록일 (default = sysdate)
     @NotNull
-    private Date reg_date;
+    private Date regDate;
+
+    public Report(Integer boardId, String userId, String title, String content) {
+        this.boardId = boardId;
+        this.userId = userId;
+        this.title = title;
+        this.content = content;
+    }
 }

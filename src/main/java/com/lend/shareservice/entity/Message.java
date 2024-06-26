@@ -1,29 +1,38 @@
 package com.lend.shareservice.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
 import java.util.Date;
 
 // 메시지
 @Data
 public class Message {
 
-    // 메세지 번호 (ID)
+    //메세지 아이디 (ID)
     @NotNull
-    private Integer message_no;
+    private Integer messageId;
 
-    // 채팅방번호 (FK)
+    // 채팅방번호
     @NotNull
-    private Integer chat_id;
+    private Integer chatId;
+
+    // 보낸사람 (FK)
+    @NotNull
+    private String from;
+
+    // 받는사람 (FK)
+    @NotNull
+    private String to;
 
     // 메세지 내용
     private String content;
 
     // 보낸 시간 (default = sysdate)
     @NotNull
-    private Date send_time;
+    private Date sendTime;
 
     // 확인 여부 (default = false)
     @NotNull
@@ -54,5 +63,8 @@ public class Message {
 
     // 경도
     private Double longitude;
+
+    // 예약 날짜
+    private Date reservation;
 
 }

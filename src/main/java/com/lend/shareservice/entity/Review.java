@@ -12,7 +12,7 @@ public class Review {
 
     // 리뷰 번호
     @NotNull
-    private Integer review_id;
+    private Integer reviewId;
 
     // 내용
     @NotBlank(message = "리뷰 내용을 입력해주세요")
@@ -31,4 +31,10 @@ public class Review {
     @NotNull
     private String reviewee;
 
+    public Review(String reviewer, String reviewee, String content, Integer star) {
+        this.reviewer = reviewer;
+        this.reviewee = reviewee;
+        this.content = content;
+        this.star = star;
+    }
 }

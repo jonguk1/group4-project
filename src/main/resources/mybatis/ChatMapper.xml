@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lend.shareservice.domain.chat.ChatMapper">
+    <insert id="insertTest" parameterType="string">
+        insert into test
+        values(1,#{test})
+    </insert>
+    <select id="selectItem" resultType="com.lend.shareservice.entity.Board" parameterType="Integer">
+        select boardId, title, writer, itemImage1, isLend from board
+        <where>
+            boardId = #{boardId}
+        </where>
+    </select>
+    <insert id="createRoom" parameterType="com.lend.shareservice.entity.Chatroom">
+        insert into Chatroom (chatId, boardId, lendy, lender, chatDate)
+        values(#{chatId},#{boardId},#{lendy},#{lender},#{chatDate})
+    </insert>
+    <select id="selectChatId" resultType="Integer" parameterType="com.lend.shareservice.entity.Chatroom">
+        select chatId from chatRoom
+        <where>
+            lendy=#{lendy} and lender=#{lender} and boardId=${boardId}
+        </where>
+    </select>
+    <insert id="insertChat" parameterType="com.lend.shareservice.entity.Message">
+        insert into Message (chatId, `from`, `to`, content, sendTime)
+        values(#{chatId},#{from},#{to},#{content},#{sendTime})
+    </insert>
+    <select id="findChatList" resultType="com.lend.shareservice.web.chat.dto.ChatListItemDTO">
+        SELECT
+        m.`to` as `to`,
+        m.`from` as `from`,
+        m.chatId as chatId,
+        m.content as content,
+        m.sendTime as sendTime,
+        m.isRead as isRead,
+        m.messageId,
+        c.boardId
+        FROM message m
+        JOIN (
+        SELECT chatId, MAX(sendTime) AS maxSendTime
+        FROM message
+        GROUP BY chatId
+        ) AS latest
+        ON m.chatId = latest.chatId AND m.sendTime = latest.maxSendTime
+        JOIN (
+        SELECT chatId, sendTime, MAX(messageId) AS latestMessageId
+        FROM message
+        GROUP BY chatId, sendTime
+        ) AS unique_latest
+        ON m.chatId = unique_latest.chatId
+        AND m.sendTime = unique_latest.sendTime
+        AND m.messageId = unique_latest.latestMessageId
+        JOIN chatroom c
+        ON c.chatId = m.chatId
+        where `from`=#{userId} or `to`=#{userid}
+    </select>
+    <select id="loadMessage" parameterType="com.lend.shareservice.entity.Message">
+        select `from`, `to`, chatId, content, sendTime
+        from message
+        <where>
+            chatId = #{chatId}
+        </where>
+        ORDER BY sendTime asc
+    </select>
+    <select id="getChatRoomById" parameterType="com.lend.shareservice.entity.Chatroom">
+        select * from chatRoom
+        <where>
+            chatId = #{chatId}
+        </where>
+    </select>
+    <insert id="saveReserv" parameterType="com.lend.shareservice.web.chat.dto.ChatReservDTO">
+        insert into Message (latitude, longitude, chatId, `from`, `to`, sendTime, content,reservation)
+        values(#{reservLat},#{reservLong},#{chatId},#{from},#{to},#{sendTime},#{content},#{selectedDateTime})
+    </insert>
+    <select id="loadReserv" resultType="com.lend.shareservice.entity.Message">
+        select chatId, `from`, `to`, sendTime, latitude, longitude, messageId, reservation
+        from message
+        <where>
+            chatId = #{chatId}
+            and latitude is not null
+        </where>
+        ORDER BY sendTime asc
+        LIMIT 1
+    </select>
+    <update id="updateReserv" parameterType="com.lend.shareservice.web.chat.dto.ChatReservUpdateDTO">
+        UPDATE message
+        SET
+        `from` = #{from},
+        `to` = #{to},
+        sendTime = #{sendTime},
+        content = #{content},
+        latitude = #{reservLat},
+        longitude = #{reservLong},
+        reservation = #{selectedDateTime}
+        WHERE chatId = #{chatId}
+        and messageId = #{messageId}
+    </update>
+    <select id="reservLoadList" parameterType="com.lend.shareservice.web.chat.dto.ReservLatiLongDTO">
+        select latitude, longitude, messageId, reservation
+        from message
+        <where>
+            chatId = #{chatId}
+        </where>
+        and latitude is not null
+    </select>
+    <delete id="deleteChatRoom" parameterType="com.lend.shareservice.entity.Chatroom">
+        delete from chatRoom
+        <where>
+            lendy=#{writer} or lender=#{writer}
+        </where>
+    </delete>
+    <update id="disableForeignKeyChecks">
+        SET FOREIGN_KEY_CHECKS = 0
+    </update>
+
+    <update id="enableForeignKeyChecks">
+        SET FOREIGN_KEY_CHECKS = 1
+    </update>
+    <select id="countChatByBoardId" parameterType="_int">
+        SELECT COUNT(*)
+        FROM Chatroom
+        WHERE boardId = #{boardId}
+    </select>
+</mapper>

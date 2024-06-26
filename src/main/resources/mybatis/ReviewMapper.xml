@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lend.shareservice.domain.review.ReviewMapper">
+
+    <resultMap id="reviews" type="com.lend.shareservice.web.review.dto.ReviewDTO">
+    </resultMap>
+
+    <select id="findByReceivedList" parameterType="map" resultMap="reviews">
+        select content,star,reviewer,reviewee
+        from review
+        <where>
+            reviewee=#{userId}
+        </where>
+        order by reviewId desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="receivedGetTotalCount" resultType="_int" parameterType="String">
+        select count(*) from review
+        <where>
+            reviewee=#{values}
+        </where>
+    </select>
+
+    <select id="findBySentList" parameterType="map" resultMap="reviews">
+        select content,star,reviewer,reviewee
+        from review
+        <where>
+            reviewer=#{userId}
+        </where>
+        order by reviewId desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="sentGetTotalCount" resultType="_int" parameterType="String">
+        select count(*) from review
+        <where>
+            reviewer=#{values}
+        </where>
+    </select>
+
+    <insert id="saveReview" parameterType="com.lend.shareservice.entity.Review" useGeneratedKeys="true" keyProperty="reviewId">
+        INSERT INTO REVIEW (reviewer, reviewee, content, star)
+        VALUES (#{reviewer}, #{reviewee}, #{content}, #{star})
+    </insert>
+
+    <select id="averageStar" parameterType="String" resultType="_double">
+        select avg(star)
+        from review
+        <where>
+            reviewee=#{value}
+        </where>
+    </select>
+</mapper>

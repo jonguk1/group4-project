@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lend.shareservice.domain.favorite.FavoriteMapper">
+
+    <resultMap type="com.lend.shareservice.web.favorite.dto.FavoriteDTO" id="FavoriteMap">
+        <id property="favoriteId" column="favoriteId" />
+        <result property="userId" column="userId"/>
+        <result property="boardId" column="boardId"/>
+        <collection property="boards" javaType="java.util.ArrayList"
+                    ofType="com.lend.shareservice.entity.Board">
+            <result property="boardId" column="boardId"/>
+            <result property="content" column="content"/>
+            <result property="title" column="title"/>
+            <result property="itemImage1" column="itemImage1"/>
+            <result property="price" column="price"/>
+            <result property="itemName" column="itemName"/>
+            <result property="interestCnt" column="interestCnt"/>
+            <result property="hits" column="hits"/>
+            <result property="isAuction" column="isAuction"/>
+            <result property="isLend" column="isLend"/>
+            <result property="latitude" column="latitude"/>
+            <result property="longitude" column="longitude"/>
+            <result property="regDate" column="regDate"/>
+            <result property="returnDate" column="returnDate"/>
+        </collection>
+    </resultMap>
+
+    <select id="findByFavoriteList" parameterType="map" resultMap="FavoriteMap">
+        select
+        userId,writer,b.title,b.content,price,isAuction,isLend,
+        interestCnt,hits,itemName,itemImage1,b.boardId,longitude,latitude
+        ,regDate,returnDate
+        from favorite f inner join board b
+        on f.boardId=b.boardId
+        <where>
+            f.userId= #{userId}
+        </where>
+        order by favoriteId  desc limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getFavoriteTotalCount" parameterType="com.lend.shareservice.web.paging.dto.PagingDTO" resultType="_int">
+        select count(*) from favorite
+    </select>
+
+    <select id="selectByBoardIdAndUserId" parameterType="com.lend.shareservice.entity.Favorite" resultType="com.lend.shareservice.entity.Favorite">
+        SELECT * FROM FAVORITE
+        WHERE boardId = #{boardId} AND userId = #{userId}
+    </select>
+</mapper>

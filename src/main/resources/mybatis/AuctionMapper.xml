@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lend.shareservice.domain.auction.AuctionMapper">
+    <resultMap type="com.lend.shareservice.web.auction.dto.AuctionDTO" id="auctionMap">
+        <id property="auctionId" column="auctionId" />
+        <result property="currentPrice" column="auctionCurrentPrice"/>
+        <result property="maxPrice" column="maxPrice"/>
+        <result property="userId" column="userId"/>
+        <collection property="boards" javaType="java.util.ArrayList"
+                    ofType="com.lend.shareservice.web.auction.dto.AuctionBoardDTO">
+            <result property="boardId" column="boardId"/>
+            <result property="title" column="title"/>
+            <result property="itemImage1" column="itemImage1"/>
+            <result property="price" column="price"/>
+            <result property="itemName" column="itemName"/>
+            <result property="interestCnt" column="interestCnt"/>
+            <result property="hits" column="hits"/>
+            <result property="isAuction" column="isAuction"/>
+            <result property="isLend" column="isLend"/>
+            <result property="latitude" column="latitude"/>
+            <result property="longitude" column="longitude"/>
+            <result property="deadline" column="deadline"/>
+        </collection>
+        <collection property="participantAuctions" javaType="java.util.ArrayList"
+                    ofType="com.lend.shareservice.entity.Participant_Auction">
+            <result property="currentPrice" column="participantCurrentPrice"/>
+        </collection>
+    </resultMap>
+
+    <resultMap type="com.lend.shareservice.entity.Participant_Auction" id="participantAuctionMap">
+    </resultMap>
+
+    <select id="findByAuctionList" parameterType="map" resultMap="auctionMap">
+        select
+        a.auctionId,a.userId,b.deadline,b.title,b.itemImage1,b.isAuction,b.isLend
+        ,b.price,b.itemName,b.latitude,b.longitude
+        ,b.hits,b.interestCnt
+        ,a.currentPrice as auctionCurrentPrice
+        ,a.maxPrice
+        ,p.currentPrice as participantCurrentPrice
+        ,b.boardId
+        from auction a
+        inner join board b
+        on a.boardId=b.boardId
+        inner join participant_Auction p
+        on a.auctionId=p.auctionId
+        <where>
+        b.isAuction=1
+        and p.userId=#{userId}
+        and a.currentPrice = (
+            select
+                currentPrice
+            from auction a2
+            where a2.auctionId=a.auctionId
+            group by auctionId )
+        </where>
+        order by b.deadline limit #{limit} offset #{offset}
+    </select>
+
+    <select id="findByCompleteAuctionList" parameterType="map" resultMap="auctionMap">
+        select
+        a.auctionId,a.userId,b.deadline,b.title,b.itemImage1,b.isAuction,b.isLend
+        ,b.price,b.itemName,b.latitude,b.longitude
+        ,b.hits,b.interestCnt
+        ,a.maxPrice
+        ,a.currentPrice as auctionCurrentPrice
+        ,p.currentPrice as participantCurrentPrice
+        ,b.boardId
+        from auction a
+        inner join board b
+        on a.boardId=b.boardId
+        inner join participant_Auction p
+        on a.auctionId=p.auctionId
+        <where>
+            b.isAuction=2
+            and p.userId=#{userId}
+            and a.currentPrice = (
+            select
+                currentPrice
+            from auction a2
+            where a2.auctionId=a.auctionId
+            group by auctionId )
+        </where>
+        order by b.deadline limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getAuctionCount" parameterType="String" resultType="_int">
+        select count(*) from participant_Auction p
+        inner join auction a
+        on p.auctionId=a.auctionId
+        inner join board b
+        on a.boardId=b.boardId
+        <where>
+            p.userId=#{values}
+            and b.isAuction=1
+        </where>
+    </select>
+
+    <select id="getCompleteAuctionCount" parameterType="String" resultType="_int">
+        select count(*) from participant_Auction p
+        inner join auction a
+        on p.auctionId=a.auctionId
+        inner join board b
+        on a.boardId=b.boardId
+        <where>
+            p.userId=#{values}
+            and b.isAuction=2
+        </where>
+    </select>
+
+    <update id="updateCurrentPrice" parameterType="map">
+        update auction a,participant_Auction p
+        set a.currentPrice=#{currentPrice},
+            p.currentPrice=#{currentPrice},
+            a.userId=#{userId}
+        <where>
+            a.auctionId=#{auctionId}
+            and a.auctionId=p.auctionId
+            and p.userId=#{userId}
+        </where>
+    </update>
+
+    <select id="getMaxPrice" parameterType="_int">
+        select maxPrice from auction
+        <where>
+            auctionId=#{values}
+        </where>
+    </select>
+
+    <select id="selectAuctionByBoardId" parameterType="_int" resultType="com.lend.shareservice.entity.Auction">
+        SELECT * FROM AUCTION
+        WHERE boardId = #{boardId}
+    </select>
+
+    <insert id="insertAuction" parameterType="com.lend.shareservice.entity.Auction">
+        <selectKey keyProperty="auctionId" resultType="java.lang.Integer" order="AFTER" keyColumn="auctionId">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO AUCTION (currentPrice, regDate, maxPrice, boardId, userId)
+        VALUES (0, NOW(), #{maxPrice}, #{boardId}, null)
+    </insert>
+
+    <select id="selectAuctionId" parameterType="com.lend.shareservice.entity.Auction" resultType="com.lend.shareservice.entity.Auction">
+        SELECT * FROM AUCTION
+        WHERE boardId = #{boardId}
+    </select>
+
+    <insert id="insertAuctionParticipant" parameterType="com.lend.shareservice.entity.Participant_Auction">
+        INSERT INTO participant_auction (userId, auctionId)
+        VALUES (#{userId}, #{auctionId})
+    </insert>
+
+    <select id="selectMaxPrice" parameterType="com.lend.shareservice.entity.Auction" resultType="com.lend.shareservice.entity.Auction">
+        SELECT maxPrice FROM BOARD
+        WHERE boardId = #{boardId}
+    </select>
+
+    <select id="selectIsAuctionById" parameterType="java.util.Map" resultType="_int">
+        SELECT COUNT(*) AS cnt
+        FROM Auction a
+        JOIN Participant_Auction pa ON a.auctionId = pa.auctionId
+        WHERE pa.userId = #{userId}
+        AND a.boardId = #{boardId};
+    </select>
+
+    <select id="selectParticipantCnt" parameterType="com.lend.shareservice.entity.Auction" resultType="_int">
+        SELECT COUNT(*)
+        FROM Participant_Auction
+        WHERE auctionId = #{auctionId}
+    </select>
+
+    <select id="selectIdsByAuctionId" parameterType="Integer" resultType="java.lang.String">
+        SELECT userId
+        FROM Participant_Auction
+        WHERE auctionId = #{auctionId}
+    </select>
+
+    <update id="updateIsAuction" parameterType="_int">
+        update board
+        set isAuction=2
+        <where>
+            boardId=(select boardId
+                      from auction
+                     <where>
+                       auctionId=#{value}
+                     </where>
+                    )
+        </where>
+    </update>
+    <select id="getCurrentPrice" parameterType="_int">
+        select currentPrice
+        from auction
+        <where>
+            auctionId=#{value}
+        </where>
+    </select>
+
+    <select id="getDeadlineList" resultMap="auctionMap">
+        select
+        a.auctionId,b.deadline
+        from auction a
+        inner join board b
+        on a.boardId=b.boardId
+        inner join participant_Auction p
+        on a.auctionId=p.auctionId
+        <where>
+            b.isAuction=1
+            and a.currentPrice = (
+            select
+            currentPrice
+            from auction a2
+            where a2.auctionId=a.auctionId
+            group by auctionId )
+        </where>
+        order by b.deadline
+    </select>
+
+    <select id="getDeadline" parameterType="_int" resultType="date">
+        select b.deadline
+        from board b
+        inner join auction a
+        on b.boardId=a.boardId
+        <where>
+            a.auctionId=#{value}
+            and b.isAuction=1
+        </where>
+    </select>
+
+    <select id="findByAuctionUserId" resultType="String">
+        select userId
+        from auction
+        <where>
+            userId=#{userId}
+            and auctionId=#{auctionId}
+        </where>
+    </select>
+
+    <select id="findByMoney" parameterType="String" resultType="_int">
+        select money
+        from user u
+        inner join Participant_Auction p
+        on u.userId=p.userId
+        <where>
+            u.userId=#{value}
+        </where>
+        group by u.userId
+    </select>
+
+    <select id="selectBoardId" parameterType="_int">
+        SELECT boardId
+        FROM AUCTION
+        WHERE auctionId = #{auctionId}
+    </select>
+
+    <delete id="deleteParticipant" parameterType="com.lend.shareservice.entity.Participant_Auction">
+        delete from Participant_Auction
+        <where>
+            auctionId=#{auctionId}
+            and userId=#{userId}
+        </where>
+    </delete>
+
+    <delete id="deleteAuction" parameterType="com.lend.shareservice.entity.Auction">
+        delete from auction
+        <where>
+            auctionId=#{auctionId}
+        </where>
+    </delete>
+
+    <update id="updateBeforeIsAuction" parameterType="com.lend.shareservice.entity.Auction">
+        update board
+        set isAuction=0
+        <where>
+            boardId=(
+            select boardId
+            from auction
+            <where>
+                auctionId=#{auctionId}
+            </where>
+            )
+        </where>
+    </update>
+
+    
+    <update id="auctionCancel" parameterType="com.lend.shareservice.entity.Auction">
+        UPDATE auction a
+        JOIN (
+        SELECT auctionId, MAX(currentPrice) AS maxCurrentPrice, userId
+        FROM participant_auction
+        where auctionId=5
+        GROUP BY auctionId, userId
+        having MAX(currentPrice)
+        ) p ON a.auctionId = p.auctionId
+        SET a.currentPrice = p.maxCurrentPrice
+           ,a.userId=p.userId
+        <where>
+            a.auctionId = #{auctionId}
+        </where>
+    </update>
+
+    <select id="lockParticipant" parameterType="com.lend.shareservice.entity.Participant_Auction" resultType="com.lend.shareservice.entity.Participant_Auction">
+        SELECT * FROM Participant_Auction WHERE auctionId = #{auctionId} and userId=#{userId} FOR UPDATE
+    </select>
+
+    <select id="lockAuction" parameterType="_int" resultType="com.lend.shareservice.entity.Auction">
+        SELECT * FROM auction WHERE auctionId = #{auctionId} FOR UPDATE
+    </select>
+    
+</mapper>

@@ -1,17 +1,23 @@
 package com.lend.shareservice.entity;
 
 import jakarta.validation.constraints.NotNull;
-import java.sql.Date;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
+
+@Data
+@NoArgsConstructor
 public class Notification {
 
     // 알림 번호 (ID)
     @NotNull
-    private Integer noti_id;
+    private Integer notiId;
 
     // 유저 아이디 (FK)
     @NotNull
-    private String user_id;
+    private String userId;
 
     // 내용
     @NotNull
@@ -23,7 +29,16 @@ public class Notification {
 
     // 생성일자 (default = sysdate)
     @NotNull
-    private Date noti_reg_date;
+    private LocalDateTime notiRegDate;
 
+    // 글번호
+    @NotNull
+    private Integer boardId;
 
+    public Notification(String userId, String content, Boolean isRead, Integer boardId) {
+        this.userId = userId;
+        this.content = content;
+        this.isRead = isRead;
+        this.boardId = boardId;
+    }
 }
